@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
@@ -17,6 +18,7 @@ class User extends Authenticatable
         'otp',
         'otp_expires_at',
         'role',
+        'trainee_id',
     ];
 
     protected $hidden = [
@@ -29,4 +31,9 @@ class User extends Authenticatable
         'otp_expires_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function trainee(): BelongsTo
+    {
+        return $this->belongsTo(Trainee::class);
+    }
 }
