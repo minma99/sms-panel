@@ -11,10 +11,56 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainees', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+     Schema::create('trainees', function (Blueprint $table) {
+
+    $table->id();
+
+    // relation to course
+    $table->foreignId('course_id')
+          ->nullable()
+          ->constrained()
+          ->nullOnDelete();
+
+    // personal info
+    $table->string('first_name');
+    $table->string('last_name');
+    $table->string('father_name')->nullable();
+
+    $table->string('national_code', 10)->unique();
+    $table->string('phone', 20)->nullable()->index();
+
+    $table->date('birth_date')->nullable();
+
+    // statuses
+    $table->enum('registration_status', [
+        'ثبت نام شده',
+        'انصراف داده',
+        'تکمیل شده'
+    ])->default('ثبت نام شده');
+
+    $table->string('exam_status')->nullable();
+    $table->string('certificate_status')->nullable();
+
+    // financial
+    $table->decimal('total_fee', 15, 0)->default(0);
+    $table->integer('discount_percent')->default(0);
+    $table->decimal('exam_fee', 15, 0)->default(0);
+
+    // exam info
+    $table->date('exam_date')->nullable();
+    $table->string('exam_date_shamsi')->nullable();
+
+    // files
+    $table->string('image')->nullable();
+    $table->string('file')->nullable();
+
+    $table->text('note')->nullable();
+
+    $table->timestamps();
+    $table->softDeletes();
+});
+
+
     }
 
     /**
