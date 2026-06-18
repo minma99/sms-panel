@@ -5,85 +5,56 @@
 
 @section('content')
 
-<div class="max-w-3xl mx-auto">
+<div class="max-w-4xl mx-auto">
 
 <div class="bg-white shadow rounded-lg p-6">
 
-<form action="{{ route('trainees.update',$trainee->id) }}" method="POST">
+<form action="{{ route('trainees.update',$trainee->id) }}" method="POST" enctype="multipart/form-data">
 
 @csrf
 @method('PUT')
 
 <div class="grid grid-cols-2 gap-6">
 
-<div>
-<label>First Name</label>
-<input type="text"
-name="first_name"
-value="{{ old('first_name',$trainee->first_name) }}"
-class="w-full border rounded p-2">
-</div>
+<input type="text" name="first_name" value="{{ old('first_name',$trainee->first_name) }}" class="border p-2">
 
-<div>
-<label>Last Name</label>
-<input type="text"
-name="last_name"
-value="{{ old('last_name',$trainee->last_name) }}"
-class="w-full border rounded p-2">
-</div>
+<input type="text" name="last_name" value="{{ old('last_name',$trainee->last_name) }}" class="border p-2">
 
-<div>
-<label>National Code</label>
-<input type="text"
-name="national_code"
-value="{{ old('national_code',$trainee->national_code) }}"
-class="w-full border rounded p-2">
-</div>
+<input type="text" name="father_name" value="{{ old('father_name',$trainee->father_name) }}" class="border p-2">
 
-<div>
-<label>Phone</label>
-<input type="text"
-name="phone"
-value="{{ old('phone',$trainee->phone) }}"
-class="w-full border rounded p-2">
-</div>
+<input type="text" name="national_code" value="{{ old('national_code',$trainee->national_code) }}" class="border p-2">
 
-<div class="col-span-2">
+<input type="text" name="phone" value="{{ old('phone',$trainee->phone) }}" class="border p-2">
 
-<label>Course</label>
+<input type="date" name="birth_date" value="{{ old('birth_date',$trainee->birth_date) }}" class="border p-2">
 
-<select name="course_id" class="w-full border rounded p-2">
+<input type="text" name="exam_status" value="{{ old('exam_status',$trainee->exam_status) }}" class="border p-2">
 
-<option value="">Select Course</option>
+<input type="text" name="certificate_status" value="{{ old('certificate_status',$trainee->certificate_status) }}" class="border p-2">
 
-@foreach($courses as $course)
+<input type="number" name="total_fee" value="{{ old('total_fee',$trainee->total_fee) }}" class="border p-2">
 
-<option value="{{ $course->id }}"
-{{ old('course_id',$trainee->course_id) == $course->id ? 'selected' : '' }}>
+<input type="number" name="discount_percent" value="{{ old('discount_percent',$trainee->discount_percent) }}" class="border p-2">
 
-{{ $course->title }}
+<input type="number" name="exam_fee" value="{{ old('exam_fee',$trainee->exam_fee) }}" class="border p-2">
 
-</option>
+<input type="date" name="exam_date" value="{{ old('exam_date',$trainee->exam_date) }}" class="border p-2">
 
-@endforeach
+<input type="text" name="exam_date_shamsi" value="{{ old('exam_date_shamsi',$trainee->exam_date_shamsi) }}" class="border p-2">
 
-</select>
+<input type="file" name="image" class="border p-2">
+
+<input type="file" name="file" class="border p-2">
+
+<textarea name="note" class="border p-2 col-span-2">{{ old('note',$trainee->note) }}</textarea>
 
 </div>
 
-</div>
+<div class="mt-6">
 
-<div class="mt-6 flex gap-3">
-
-<button type="submit"
-class="bg-blue-600 text-white px-6 py-2 rounded">
+<button class="bg-blue-600 text-white px-6 py-2 rounded">
 Update
 </button>
-
-<a href="{{ route('trainees.index') }}"
-class="bg-gray-500 text-white px-6 py-2 rounded">
-Cancel
-</a>
 
 </div>
 

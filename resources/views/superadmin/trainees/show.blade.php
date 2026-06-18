@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="max-w-3xl mx-auto">
+<div class="max-w-4xl mx-auto">
 
 <div class="bg-white shadow rounded-lg p-6">
 
@@ -16,23 +16,93 @@
 <div class="grid grid-cols-2 gap-6">
 
 <div>
-<label class="text-gray-500 text-sm">National Code</label>
+<label>Father Name</label>
+<p>{{ $trainee->father_name }}</p>
+</div>
+
+<div>
+<label>National Code</label>
 <p>{{ $trainee->national_code }}</p>
 </div>
 
 <div>
-<label class="text-gray-500 text-sm">Phone</label>
+<label>Phone</label>
 <p>{{ $trainee->phone }}</p>
 </div>
 
 <div>
-<label class="text-gray-500 text-sm">Course</label>
+<label>Birth Date</label>
+<p>{{ $trainee->birth_date }}</p>
+</div>
+
+<div>
+<label>Course</label>
 <p>{{ $trainee->course->title ?? '-' }}</p>
 </div>
 
 <div>
-<label class="text-gray-500 text-sm">Registration Status</label>
+<label>Registration Status</label>
 <p>{{ $trainee->registration_status }}</p>
+</div>
+
+<div>
+<label>Exam Status</label>
+<p>{{ $trainee->exam_status }}</p>
+</div>
+
+<div>
+<label>Certificate Status</label>
+<p>{{ $trainee->certificate_status }}</p>
+</div>
+
+<div>
+<label>Total Fee</label>
+<p>{{ $trainee->total_fee }}</p>
+</div>
+
+<div>
+<label>Discount Percent</label>
+<p>{{ $trainee->discount_percent }}%</p>
+</div>
+
+<div>
+<label>Exam Fee</label>
+<p>{{ $trainee->exam_fee }}</p>
+</div>
+
+<div>
+<label>Exam Date</label>
+<p>{{ $trainee->exam_date }}</p>
+</div>
+
+<div>
+<label>Exam Date Shamsi</label>
+<p>{{ $trainee->exam_date_shamsi }}</p>
+</div>
+
+<div>
+<label>Image</label>
+
+@if($trainee->image)
+<img src="{{ asset('storage/'.$trainee->image) }}" class="w-24">
+@endif
+
+</div>
+
+<div>
+<label>File</label>
+
+@if($trainee->file)
+<a href="{{ asset('storage/'.$trainee->file) }}" class="text-blue-600">
+Download
+</a>
+@endif
+
+</div>
+
+<div class="col-span-2">
+<label>Note</label>
+<p>{{ $trainee->note }}</p>
 </div>
 
 </div>

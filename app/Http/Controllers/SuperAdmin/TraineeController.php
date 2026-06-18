@@ -26,15 +26,41 @@ class TraineeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'course_id' => 'nullable|exists:courses,id',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'father_name' => 'nullable|string|max:255',
             'national_code' => 'required|unique:trainees,national_code',
             'phone' => 'required',
+            'birth_date' => 'nullable|date',
+
+            'registration_status' => 'nullable',
+            'exam_status' => 'nullable',
+            'certificate_status' => 'nullable',
+
+            'total_fee' => 'nullable|numeric',
+            'discount_percent' => 'nullable|numeric',
+            'exam_fee' => 'nullable|numeric',
+
+            'exam_date' => 'nullable|date',
+            'exam_date_shamsi' => 'nullable|string',
+
+            'image' => 'nullable|image|max:2048',
+            'file' => 'nullable|file|max:4096',
+
+            'note' => 'nullable|string',
         ]);
 
-        $trainee = Trainee::create($request->all());
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('trainees', 'public');
+        }
+
+        if ($request->hasFile('file')) {
+            $data['file'] = $request->file('file')->store('trainees', 'public');
+        }
+
+        $trainee = Trainee::create($data);
 
         User::create([
             'name' => $trainee->first_name.' '.$trainee->last_name,
@@ -65,14 +91,41 @@ class TraineeController extends Controller
     {
         $trainee = Trainee::findOrFail($id);
 
-        $request->validate([
+        $data = $request->validate([
             'course_id' => 'nullable|exists:courses,id',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'father_name' => 'nullable|string|max:255',
+            'national_code' => 'required|unique:trainees,national_code,'.$trainee->id,
             'phone' => 'required',
+            'birth_date' => 'nullable|date',
+
+            'registration_status' => 'nullable',
+            'exam_status' => 'nullable',
+            'certificate_status' => 'nullable',
+
+            'total_fee' => 'nullable|numeric',
+            'discount_percent' => 'nullable|numeric',
+            'exam_fee' => 'nullable|numeric',
+
+            'exam_date' => 'nullable|date',
+            'exam_date_shamsi' => 'nullable|string',
+
+            'image' => 'nullable|image|max:2048',
+            'file' => 'nullable|file|max:4096',
+
+            'note' => 'nullable|string',
         ]);
 
-        $trainee->update($request->all());
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('trainees', 'public');
+        }
+
+        if ($request->hasFile('file')) {
+            $data['file'] = $request->file('file')->store('trainees', 'public');
+        }
+
+        $trainee->update($data);
 
         return redirect()->route('trainees.index');
     }

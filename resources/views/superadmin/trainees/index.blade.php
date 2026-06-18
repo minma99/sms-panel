@@ -6,12 +6,12 @@
 @section('content')
 
 <div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-semibold">All Trainees</h2>
+<h2 class="text-xl font-semibold">All Trainees</h2>
 
-    <a href="{{ route('trainees.create') }}"
-       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-        + Add Trainee
-    </a>
+<a href="{{ route('trainees.create') }}"
+class="bg-blue-600 text-white px-4 py-2 rounded-lg">
++ Add Trainee
+</a>
 </div>
 
 <div class="bg-white shadow rounded-lg overflow-x-auto">
@@ -25,6 +25,7 @@
 <th class="p-3">National Code</th>
 <th class="p-3">Phone</th>
 <th class="p-3">Course</th>
+<th class="p-3">Status</th>
 <th class="p-3">Actions</th>
 </tr>
 </thead>
@@ -41,40 +42,32 @@
 {{ $trainee->first_name }} {{ $trainee->last_name }}
 </td>
 
-<td class="p-3">
-{{ $trainee->national_code }}
-</td>
+<td class="p-3">{{ $trainee->national_code }}</td>
 
-<td class="p-3">
-{{ $trainee->phone }}
-</td>
+<td class="p-3">{{ $trainee->phone }}</td>
 
 <td class="p-3">
 {{ $trainee->course->title ?? '-' }}
 </td>
 
+<td class="p-3">
+{{ $trainee->registration_status }}
+</td>
+
 <td class="p-3 flex gap-3">
 
 <a href="{{ route('trainees.show',$trainee->id) }}"
-class="text-blue-600 hover:underline">
-View
-</a>
+class="text-blue-600">View</a>
 
 <a href="{{ route('trainees.edit',$trainee->id) }}"
-class="text-green-600 hover:underline">
-Edit
-</a>
+class="text-green-600">Edit</a>
 
-<form action="{{ route('trainees.destroy',$trainee->id) }}"
-method="POST"
-onsubmit="return confirm('Delete trainee?')">
+<form action="{{ route('trainees.destroy',$trainee->id) }}" method="POST">
 
 @csrf
 @method('DELETE')
 
-<button class="text-red-600 hover:underline">
-Delete
-</button>
+<button class="text-red-600">Delete</button>
 
 </form>
 
@@ -85,9 +78,7 @@ Delete
 @empty
 
 <tr>
-<td colspan="6" class="p-4 text-center text-gray-500">
-No trainees found
-</td>
+<td colspan="7" class="p-4 text-center">No trainees found</td>
 </tr>
 
 @endforelse
