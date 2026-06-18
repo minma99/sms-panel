@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdmin\CourseController;
 use App\Http\Controllers\SuperAdmin\PaymentController;
 use App\Http\Controllers\SuperAdmin\TraineeController;
+use App\Http\Controllers\SuperAdmin\UserController;
 
 Route::prefix('superadmin')->group(function () {
 
@@ -13,5 +14,8 @@ Route::prefix('superadmin')->group(function () {
         ->only(['index', 'create', 'store', 'destroy']);
 
     Route::resource('trainees', TraineeController::class);
+
+    Route::resource('users', UserController::class)
+        ->except(['show']);
 
 });
