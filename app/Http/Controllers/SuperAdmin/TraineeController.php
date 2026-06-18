@@ -13,29 +13,31 @@ class TraineeController extends Controller
     public function index()
     {
         $trainees = Trainee::with('course')->latest()->paginate(10);
-        return view('super_admin.trainees.index', compact('trainees'));
+
+        return view('superadmin.trainees.index', compact('trainees'));
     }
 
     public function create()
     {
         $courses = Course::all();
-        return view('super_admin.trainees.create', compact('courses'));
+
+        return view('superadmin.trainees.create', compact('courses'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'course_id' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'national_code' => 'required|unique:trainees',
+            'course_id' => 'nullable|exists:courses,id',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'national_code' => 'required|unique:trainees,national_code',
             'phone' => 'required',
         ]);
 
         $trainee = Trainee::create($request->all());
 
         User::create([
-            'name' => $trainee->first_name . ' ' . $trainee->last_name,
+            'name' => $trainee->first_name.' '.$trainee->last_name,
             'phone' => $trainee->phone,
             'role' => 'user',
             'trainee_id' => $trainee->id
@@ -44,30 +46,38 @@ class TraineeController extends Controller
         return redirect()->route('trainees.index');
     }
 
-    public function show(string $id)
+    public function show($id)
     {
         $trainee = Trainee::with(['course','payments'])->findOrFail($id);
-        return view('super_admin.trainees.show', compact('trainee'));
+
+        return view('superadmin.trainees.show', compact('trainee'));
     }
 
-    public function edit(string $id)
+    public function edit($id)
     {
         $trainee = Trainee::findOrFail($id);
         $courses = Course::all();
 
-        return view('super_admin.trainees.edit', compact('trainee','courses'));
+        return view('superadmin.trainees.edit', compact('trainee','courses'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $trainee = Trainee::findOrFail($id);
+
+        $request->validate([
+            'course_id' => 'nullable|exists:courses,id',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required',
+        ]);
 
         $trainee->update($request->all());
 
         return redirect()->route('trainees.index');
     }
 
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $trainee = Trainee::findOrFail($id);
         $trainee->delete();
