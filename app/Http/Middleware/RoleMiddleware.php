@@ -8,13 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (!auth()->check()) {
-            return redirect()->route('login');
+            return redirect()->route('superadmin.login');
         }
 
         if (!in_array(auth()->user()->role, $roles)) {
