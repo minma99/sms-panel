@@ -1,38 +1,36 @@
-@extends('layouts.main')
+@extends('superadmin.layouts.main')
 
 @section('title','Create User')
-@section('page_title','Create User')
+@section('page_title','ایجاد کاربر')
 
 @section('content')
 
-<div class="max-w-xl mx-auto bg-white p-6 shadow rounded-lg">
+<div class="card shadow-sm">
+<div class="card-body">
 
 <form action="{{ route('users.store') }}" method="POST">
 
 @csrf
 
-<div class="mb-4">
-<label>Name</label>
-<input type="text" name="name"
-class="w-full border p-2 rounded">
+<div class="mb-3">
+<label class="form-label">نام</label>
+<input type="text" name="name" class="form-control">
 </div>
 
-<div class="mb-4">
-<label>Phone</label>
-<input type="text" name="phone"
-class="w-full border p-2 rounded">
+<div class="mb-3">
+<label class="form-label">تلفن</label>
+<input type="text" name="phone" class="form-control">
 </div>
 
-<div class="mb-4">
-<label>Password</label>
-<input type="password" name="password"
-class="w-full border p-2 rounded">
+<div class="mb-3">
+<label class="form-label">رمز عبور</label>
+<input type="password" name="password" class="form-control">
 </div>
 
-<div class="mb-4">
-<label>Role</label>
+<div class="mb-3">
+<label class="form-label">نقش کاربر</label>
 
-<select name="role" class="w-full border p-2 rounded">
+<select name="role" class="form-control">
 
 <option value="user">User</option>
 <option value="admin">Admin</option>
@@ -42,12 +40,13 @@ class="w-full border p-2 rounded">
 
 </div>
 
-<button class="bg-blue-600 text-white px-6 py-2 rounded">
-Create User
+<button class="btn btn-primary">
+ایجاد کاربر
 </button>
 
 </form>
 
+</div>
 </div>
 
 @endsection

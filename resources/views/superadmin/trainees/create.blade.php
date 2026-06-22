@@ -1,126 +1,112 @@
-@extends('layouts.main')
+@extends('superadmin.layouts.main')
 
-@section('title','Create Trainee')
-@section('page_title','Add Trainee')
+
+@section('title','ایجاد کارآموز')
+@section('page_title','افزودن کارآموز')
 
 @section('content')
 
-<div class="max-w-4xl mx-auto">
-<div class="bg-white shadow rounded-lg p-6">
+<div class="card shadow-sm">
+<div class="card-body">
 
 <form action="{{ route('trainees.store') }}" method="POST" enctype="multipart/form-data">
+
 @csrf
 
-<div class="grid grid-cols-2 gap-6">
+<div class="row g-3">
 
-<div>
-<label>First Name</label>
-<input type="text" name="first_name" value="{{ old('first_name') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>نام</label>
+<input type="text" name="first_name" class="form-control">
 </div>
 
-<div>
-<label>Last Name</label>
-<input type="text" name="last_name" value="{{ old('last_name') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>نام خانوادگی</label>
+<input type="text" name="last_name" class="form-control">
 </div>
 
-<div>
-<label>Father Name</label>
-<input type="text" name="father_name" value="{{ old('father_name') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>نام پدر</label>
+<input type="text" name="father_name" class="form-control">
 </div>
 
-<div>
-<label>National Code</label>
-<input type="text" name="national_code" value="{{ old('national_code') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>کد ملی</label>
+<input type="text" name="national_code" class="form-control">
 </div>
 
-<div>
-<label>Phone</label>
-<input type="text" name="phone" value="{{ old('phone') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>تلفن</label>
+<input type="text" name="phone" class="form-control">
 </div>
 
-<div>
-<label>Birth Date</label>
-<input type="date" name="birth_date" value="{{ old('birth_date') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>تاریخ تولد</label>
+<input type="date" name="birth_date" class="form-control">
 </div>
 
-<div>
-<label>Course</label>
-<select name="course_id" class="w-full border rounded p-2">
-<option value="">Select Course</option>
+<div class="col-md-6">
+<label>دوره</label>
+
+<select name="course_id" class="form-control">
+
+<option value="">انتخاب دوره</option>
+
 @foreach($courses as $course)
-<option value="{{ $course->id }}" {{ old('course_id')==$course->id?'selected':'' }}>
+
+<option value="{{ $course->id }}">
 {{ $course->title }}
 </option>
+
 @endforeach
+
 </select>
+
 </div>
 
-<div>
-<label>Registration Status</label>
-<select name="registration_status" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>وضعیت ثبت نام</label>
+
+<select name="registration_status" class="form-control">
+
 <option value="ثبت نام شده">ثبت نام شده</option>
 <option value="انصراف داده">انصراف داده</option>
 <option value="تکمیل شده">تکمیل شده</option>
+
 </select>
+
 </div>
 
-<div>
-<label>Exam Status</label>
-<input type="text" name="exam_status" value="{{ old('exam_status') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>شهریه کل</label>
+<input type="number" name="total_fee" class="form-control">
 </div>
 
-<div>
-<label>Certificate Status</label>
-<input type="text" name="certificate_status" value="{{ old('certificate_status') }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>درصد تخفیف</label>
+<input type="number" name="discount_percent" class="form-control">
 </div>
 
-<div>
-<label>Total Fee</label>
-<input type="number" name="total_fee" value="{{ old('total_fee',0) }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>عکس</label>
+<input type="file" name="image" class="form-control">
 </div>
 
-<div>
-<label>Discount Percent</label>
-<input type="number" name="discount_percent" value="{{ old('discount_percent',0) }}" class="w-full border rounded p-2">
+<div class="col-md-6">
+<label>فایل</label>
+<input type="file" name="file" class="form-control">
 </div>
 
-<div>
-<label>Exam Fee</label>
-<input type="number" name="exam_fee" value="{{ old('exam_fee',0) }}" class="w-full border rounded p-2">
-</div>
-
-<div>
-<label>Exam Date</label>
-<input type="date" name="exam_date" value="{{ old('exam_date') }}" class="w-full border rounded p-2">
-</div>
-
-<div>
-<label>Exam Date (Shamsi)</label>
-<input type="text" name="exam_date_shamsi" value="{{ old('exam_date_shamsi') }}" class="w-full border rounded p-2">
-</div>
-
-<div>
-<label>Image</label>
-<input type="file" name="image" class="w-full border rounded p-2">
-</div>
-
-<div>
-<label>File</label>
-<input type="file" name="file" class="w-full border rounded p-2">
-</div>
-
-<div class="col-span-2">
-<label>Note</label>
-<textarea name="note" class="w-full border rounded p-2">{{ old('note') }}</textarea>
+<div class="col-12">
+<label>توضیحات</label>
+<textarea name="note" class="form-control"></textarea>
 </div>
 
 </div>
 
-<div class="mt-6">
-<button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">
-Save Trainee
+<button class="btn btn-primary mt-4">
+ذخیره کارآموز
 </button>
-</div>
 
 </form>
 

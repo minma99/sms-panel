@@ -1,62 +1,135 @@
-@extends('layouts.main')
+@extends('superadmin.layouts.main')
 
 @section('title','Users')
-@section('page_title','Users List')
+@section('page_title','لیست کاربران')
 
 @section('content')
 
-<div class="flex justify-between mb-6">
-<h2 class="text-xl font-semibold">Users</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<a href="{{ route('users.create') }}"
-class="bg-blue-600 text-white px-4 py-2 rounded-lg">
-Add User
+<h4 class="mb-0">کاربران سیستم</h4>
+
+<a href="{{ route('users.create') }}" class="btn btn-primary">
+<i class="bi bi-plus-lg"></i>
+افزودن کاربر
 </a>
+
 </div>
 
-<div class="bg-white shadow rounded-lg overflow-x-auto">
+<div class="card shadow-sm border-0">
 
-<table class="w-full text-sm text-left">
+<div class="table-responsive">
 
-<thead class="bg-gray-100">
+<table class="table table-hover align-middle mb-0">
+
+<thead class="table-light">
+
 <tr>
-<th class="p-3">ID</th>
-<th class="p-3">Name</th>
-<th class="p-3">Phone</th>
-<th class="p-3">Role</th>
-<th class="p-3">Created</th>
-<th class="p-3">Actions</th>
+<th width="60">ID</th>
+<th>کاربر</th>
+<th>تلفن</th>
+<th>نقش</th>
+<th>تاریخ ایجاد</th>
+<th width="180">عملیات</th>
 </tr>
+
 </thead>
 
 <tbody>
 
 @forelse($users as $user)
 
-<tr class="border-t">
+<tr>
 
-<td class="p-3">{{ $user->id }}</td>
+<td>{{ $user->id }}</td>
 
-<td class="p-3">{{ $user->name }}</td>
+<td>
 
-<td class="p-3">{{ $user->phone }}</td>
+<div class="d-flex align-items-center gap-2">
 
-<td class="p-3">{{ $user->role }}</td>
+<div style="
+width:35px;
+height:35px;
+border-radius:50%;
+background:#0d6efd;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+">
 
-<td class="p-3">{{ $user->created_at }}</td>
+{{ strtoupper(substr($user->name,0,1)) }}
 
-<td class="p-3 flex gap-3">
+</div>
+
+<div>
+
+<div class="fw-semibold">
+{{ $user->name }}
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>{{ $user->phone }}</td>
+
+<td>
+
+@if($user->role == 'super_admin')
+
+<span class="badge bg-danger">
+Super Admin
+</span>
+
+@elseif($user->role == 'admin')
+
+<span class="badge bg-warning text-dark">
+Admin
+</span>
+
+@else
+
+<span class="badge bg-secondary">
+User
+</span>
+
+@endif
+
+</td>
+
+<td>
+
+{{ $user->created_at->format('Y-m-d') }}
+
+</td>
+
+<td>
 
 <a href="{{ route('users.edit',$user->id) }}"
-class="text-blue-600">Edit</a>
+class="btn btn-sm btn-warning">
 
-<form action="{{ route('users.destroy',$user->id) }}" method="POST">
+<i class="bi bi-pencil"></i>
+ویرایش
+
+</a>
+
+<form action="{{ route('users.destroy',$user->id) }}"
+method="POST"
+class="d-inline">
 
 @csrf
 @method('DELETE')
 
-<button class="text-red-600">
-Delete
+<button class="btn btn-sm btn-danger"
+onclick="return confirm('کاربر حذف شود؟')">
+
+<i class="bi bi-trash"></i>
+حذف
+
 </button>
 
 </form>
@@ -68,9 +141,13 @@ Delete
 @empty
 
 <tr>
-<td colspan="6" class="p-4 text-center">
-No users found
+
+<td colspan="6" class="text-center p-4">
+
+هیچ کاربری ثبت نشده است
+
 </td>
+
 </tr>
 
 @endforelse
@@ -81,8 +158,12 @@ No users found
 
 </div>
 
-<div class="mt-6">
+</div>
+
+<div class="mt-4">
+
 {{ $users->links() }}
+
 </div>
 
 @endsection

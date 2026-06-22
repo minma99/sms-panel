@@ -1,58 +1,58 @@
-@extends('layouts.main')
+@extends('superadmin.layouts.main')
 
 @section('title','Edit User')
-@section('page_title','Edit User')
+@section('page_title','ویرایش کاربر')
 
 @section('content')
 
-<div class="max-w-xl mx-auto bg-white p-6 shadow rounded-lg">
+<div class="card shadow-sm">
+<div class="card-body">
 
 <form action="{{ route('users.update',$user->id) }}" method="POST">
 
 @csrf
 @method('PUT')
 
-<div class="mb-4">
-<label>Name</label>
-<input type="text" name="name"
+<div class="mb-3">
+<label class="form-label">نام</label>
+<input type="text"
+name="name"
 value="{{ old('name',$user->name) }}"
-class="w-full border p-2 rounded">
+class="form-control">
 </div>
 
-<div class="mb-4">
-<label>Phone</label>
-<input type="text" name="phone"
+<div class="mb-3">
+<label class="form-label">تلفن</label>
+<input type="text"
+name="phone"
 value="{{ old('phone',$user->phone) }}"
-class="w-full border p-2 rounded">
+class="form-control">
 </div>
 
-<div class="mb-4">
-<label>Password</label>
-<input type="password" name="password"
-class="w-full border p-2 rounded">
+<div class="mb-3">
+<label class="form-label">رمز عبور</label>
+<input type="password" name="password" class="form-control">
 
-<p class="text-sm text-gray-500 mt-1">
-Leave blank if you don't want to change password
-</p>
+<small class="text-muted">
+اگر نمی‌خواهید رمز تغییر کند این فیلد را خالی بگذارید
+</small>
+
 </div>
 
-<div class="mb-4">
-<label>Role</label>
+<div class="mb-3">
+<label class="form-label">نقش</label>
 
-<select name="role" class="w-full border p-2 rounded">
+<select name="role" class="form-control">
 
-<option value="user"
-@if($user->role=='user') selected @endif>
+<option value="user" @if($user->role=='user') selected @endif>
 User
 </option>
 
-<option value="admin"
-@if($user->role=='admin') selected @endif>
+<option value="admin" @if($user->role=='admin') selected @endif>
 Admin
 </option>
 
-<option value="super_admin"
-@if($user->role=='super_admin') selected @endif>
+<option value="super_admin" @if($user->role=='super_admin') selected @endif>
 Super Admin
 </option>
 
@@ -60,12 +60,13 @@ Super Admin
 
 </div>
 
-<button class="bg-green-600 text-white px-6 py-2 rounded">
-Update User
+<button class="btn btn-success">
+بروزرسانی کاربر
 </button>
 
 </form>
 
+</div>
 </div>
 
 @endsection
