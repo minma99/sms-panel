@@ -1,4 +1,4 @@
-@extends('super_admin.layouts.main')
+@extends('superadmin.layouts.main')
 
 @section('title','Course Details')
 

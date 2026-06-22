@@ -1,4 +1,5 @@
-@extends('super_admin.layouts.main')
+@extends('superadmin.layouts.main')
+
 
 @section('title','Edit Course')
 
@@ -8,7 +9,7 @@
 
 <div class="bg-white p-6 rounded-xl shadow max-w-3xl">
 
-<form action="{{ route('super_admin.courses.update',$course->id) }}" method="POST">
+<form action="{{ route('courses.update',$course->id) }}" method="POST">
 
 @csrf
 @method('PUT')

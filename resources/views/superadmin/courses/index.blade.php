@@ -1,73 +1,71 @@
-@extends('super_admin.layouts.main')
+@extends('superadmin.layouts.main')
 
-@section('title','Courses')
+@section('title','دوره‌ها')
 
-@section('page_title','Courses')
+@section('page_title','مدیریت دوره‌ها')
 
 @section('content')
 
-<div class="bg-white rounded-xl shadow">
+<div class="bg-white rounded shadow">
 
-    <div class="flex items-center justify-between p-6 border-b">
-        <h2 class="text-lg font-semibold text-gray-700">Courses List</h2>
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
 
-        <a href="{{ route('super_admin.courses.create') }}"
-           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            Add Course
+        <h5 class="mb-0">لیست دوره‌ها</h5>
+
+        <a href="{{ route('courses.create') }}"
+           class="btn btn-primary">
+            افزودن دوره
         </a>
+
     </div>
 
-    <div class="overflow-x-auto">
+    <div class="table-responsive">
 
-        <table class="w-full text-sm text-left">
+        <table class="table table-hover mb-0">
 
-            <thead class="bg-gray-50 text-gray-600">
+            <thead class="table-light">
                 <tr>
-                    <th class="p-4">Title</th>
-                    <th class="p-4">Capacity</th>
-                    <th class="p-4">Start Date</th>
-                    <th class="p-4">End Date</th>
-                    <th class="p-4">Actions</th>
+                    <th>عنوان دوره</th>
+                    <th>ظرفیت</th>
+                    <th>تاریخ شروع</th>
+                    <th>تاریخ پایان</th>
+                    <th width="150">عملیات</th>
                 </tr>
             </thead>
 
-            <tbody class="divide-y">
+            <tbody>
 
                 @forelse($courses as $course)
 
-                <tr class="hover:bg-gray-50">
+                <tr>
 
-                    <td class="p-4">
-                        {{ $course->title }}
-                    </td>
+                    <td>{{ $course->title }}</td>
 
-                    <td class="p-4">
-                        {{ $course->capacity }}
-                    </td>
+                    <td>{{ $course->capacity }}</td>
 
-                    <td class="p-4">
-                        {{ $course->start_date_gregorian }}
-                    </td>
+                    <td>{{ $course->start_date_gregorian }}</td>
 
-                    <td class="p-4">
-                        {{ $course->end_date_gregorian }}
-                    </td>
+                    <td>{{ $course->end_date_gregorian }}</td>
 
-                    <td class="p-4 flex gap-3">
+                    <td>
 
-                        <a href="{{ route('super_admin.courses.edit',$course->id) }}"
-                           class="text-blue-600 hover:underline">
-                            Edit
+                        <a href="{{ route('courses.edit',$course->id) }}"
+                           class="btn btn-sm btn-warning">
+                            ویرایش
                         </a>
 
-                        <form action="{{ route('super_admin.courses.destroy',$course->id) }}" method="POST">
+                        <form action="{{ route('courses.destroy',$course->id) }}"
+                              method="POST"
+                              style="display:inline">
+
                             @csrf
                             @method('DELETE')
 
-                            <button class="text-red-600 hover:underline"
-                                    onclick="return confirm('Delete this course?')">
-                                Delete
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('آیا از حذف این دوره مطمئن هستید؟')">
+                                حذف
                             </button>
+
                         </form>
 
                     </td>
@@ -77,8 +75,8 @@
                 @empty
 
                 <tr>
-                    <td colspan="5" class="p-4 text-center text-gray-500">
-                        No courses found
+                    <td colspan="5" class="text-center p-4 text-muted">
+                        هیچ دوره‌ای ثبت نشده است
                     </td>
                 </tr>
 
