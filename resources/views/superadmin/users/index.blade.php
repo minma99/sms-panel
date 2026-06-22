@@ -5,165 +5,133 @@
 
 @section('content')
 
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 <div class="d-flex justify-content-between align-items-center mb-4">
 
-<h4 class="mb-0">کاربران سیستم</h4>
+    <h4 class="mb-0">کاربران سیستم</h4>
 
-<a href="{{ route('users.create') }}" class="btn btn-primary">
-<i class="bi bi-plus-lg"></i>
-افزودن کاربر
-</a>
+    <a href="{{ route('users.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        افزودن کاربر
+    </a>
 
 </div>
 
 <div class="card shadow-sm border-0">
 
-<div class="table-responsive">
+    <div class="table-responsive">
 
-<table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0">
 
-<thead class="table-light">
+            <thead class="table-light">
+                <tr>
+                    <th width="60">ID</th>
+                    <th>کاربر</th>
+                    <th>تلفن</th>
+                    <th>نقش</th>
+                    <th>تاریخ ایجاد</th>
+                    <th width="180">عملیات</th>
+                </tr>
+            </thead>
 
-<tr>
-<th width="60">ID</th>
-<th>کاربر</th>
-<th>تلفن</th>
-<th>نقش</th>
-<th>تاریخ ایجاد</th>
-<th width="180">عملیات</th>
-</tr>
+            <tbody>
 
-</thead>
+                @forelse($users as $user)
 
-<tbody>
+                    <tr>
+                        <td>{{ $user->id }}</td>
 
-@forelse($users as $user)
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
 
-<tr>
+                                <div style="
+                                    width:35px;
+                                    height:35px;
+                                    border-radius:50%;
+                                    background:#0d6efd;
+                                    color:white;
+                                    display:flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    font-weight:bold;
+                                ">
+                                    {{ strtoupper(substr($user->name ?? 'U',0,1)) }}
+                                </div>
 
-<td>{{ $user->id }}</td>
+                                <div>
+                                    <div class="fw-semibold">
+                                        {{ $user->name ?? 'بدون نام' }}
+                                    </div>
+                                </div>
 
-<td>
+                            </div>
+                        </td>
 
-<div class="d-flex align-items-center gap-2">
+                        <td>{{ $user->phone }}</td>
 
-<div style="
-width:35px;
-height:35px;
-border-radius:50%;
-background:#0d6efd;
-color:white;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-">
+                        <td>
+                            @if($user->role == 'super_admin')
+                                <span class="badge bg-danger">
+                                    Super Admin
+                                </span>
+                            @elseif($user->role == 'admin')
+                                <span class="badge bg-warning text-dark">
+                                    Admin
+                                </span>
+                            @endif
+                        </td>
 
-{{ strtoupper(substr($user->name,0,1)) }}
+                        <td>
+                            {{ $user->created_at->format('Y-m-d') }}
+                        </td>
 
-</div>
+                        <td>
+                            <a href="{{ route('users.edit',$user->id) }}"
+                               class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                                ویرایش
+                            </a>
 
-<div>
+                            <form action="{{ route('users.destroy',$user->id) }}"
+                                  method="POST"
+                                  class="d-inline">
+                                @csrf
+                                @method('DELETE')
 
-<div class="fw-semibold">
-{{ $user->name }}
-</div>
+                                <button class="btn btn-sm btn-danger"
+                                        onclick="return confirm('کاربر حذف شود؟')">
+                                    <i class="bi bi-trash"></i>
+                                    حذف
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
 
-</div>
+                @empty
 
-</div>
+                    <tr>
+                        <td colspan="6" class="text-center p-4">
+                            هیچ کاربری ثبت نشده است
+                        </td>
+                    </tr>
 
-</td>
+                @endforelse
 
-<td>{{ $user->phone }}</td>
+            </tbody>
 
-<td>
+        </table>
 
-@if($user->role == 'super_admin')
-
-<span class="badge bg-danger">
-Super Admin
-</span>
-
-@elseif($user->role == 'admin')
-
-<span class="badge bg-warning text-dark">
-Admin
-</span>
-
-@else
-
-<span class="badge bg-secondary">
-User
-</span>
-
-@endif
-
-</td>
-
-<td>
-
-{{ $user->created_at->format('Y-m-d') }}
-
-</td>
-
-<td>
-
-<a href="{{ route('users.edit',$user->id) }}"
-class="btn btn-sm btn-warning">
-
-<i class="bi bi-pencil"></i>
-ویرایش
-
-</a>
-
-<form action="{{ route('users.destroy',$user->id) }}"
-method="POST"
-class="d-inline">
-
-@csrf
-@method('DELETE')
-
-<button class="btn btn-sm btn-danger"
-onclick="return confirm('کاربر حذف شود؟')">
-
-<i class="bi bi-trash"></i>
-حذف
-
-</button>
-
-</form>
-
-</td>
-
-</tr>
-
-@empty
-
-<tr>
-
-<td colspan="6" class="text-center p-4">
-
-هیچ کاربری ثبت نشده است
-
-</td>
-
-</tr>
-
-@endforelse
-
-</tbody>
-
-</table>
-
-</div>
+    </div>
 
 </div>
 
 <div class="mt-4">
-
-{{ $users->links() }}
-
+    {{ $users->links() }}
 </div>
 
 @endsection

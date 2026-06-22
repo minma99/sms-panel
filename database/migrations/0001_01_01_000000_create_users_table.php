@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,15 +12,14 @@ return new class extends Migration
             $table->id();
 
             $table->string('name')->nullable();
-
-            $table->string('phone',20)->unique();
+            $table->string('phone', 20)->unique();
 
             $table->string('password')->nullable();
 
             $table->string('otp')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
 
-            $table->enum('role',['super_admin','admin','user'])->default('user');
+            $table->enum('role', ['super_admin', 'admin'])->default('admin');
 
             $table->rememberToken();
             $table->timestamps();
@@ -34,7 +34,7 @@ return new class extends Migration
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address',45)->nullable();
+            $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
@@ -43,8 +43,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

@@ -6,67 +6,64 @@
 @section('content')
 
 <div class="card shadow-sm">
-<div class="card-body">
+    <div class="card-body">
 
-<form action="{{ route('users.update',$user->id) }}" method="POST">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-@csrf
-@method('PUT')
+        <form action="{{ route('users.update',$user->id) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-<div class="mb-3">
-<label class="form-label">نام</label>
-<input type="text"
-name="name"
-value="{{ old('name',$user->name) }}"
-class="form-control">
-</div>
+            <div class="mb-3">
+                <label class="form-label">نام</label>
+                <input type="text"
+                       name="name"
+                       value="{{ old('name',$user->name) }}"
+                       class="form-control">
+            </div>
 
-<div class="mb-3">
-<label class="form-label">تلفن</label>
-<input type="text"
-name="phone"
-value="{{ old('phone',$user->phone) }}"
-class="form-control">
-</div>
+            <div class="mb-3">
+                <label class="form-label">شماره موبایل</label>
+                <input type="text"
+                       name="phone"
+                       value="{{ old('phone',$user->phone) }}"
+                       class="form-control"
+                       required>
+            </div>
 
-<div class="mb-3">
-<label class="form-label">رمز عبور</label>
-<input type="password" name="password" class="form-control">
+            <div class="mb-3">
+                <label class="form-label">نقش</label>
 
-<small class="text-muted">
-اگر نمی‌خواهید رمز تغییر کند این فیلد را خالی بگذارید
-</small>
+                <select name="role" class="form-control" required>
+                    <option value="admin" {{ old('role',$user->role) == 'admin' ? 'selected' : '' }}>
+                        Admin
+                    </option>
 
-</div>
+                    <option value="super_admin" {{ old('role',$user->role) == 'super_admin' ? 'selected' : '' }}>
+                        Super Admin
+                    </option>
+                </select>
+            </div>
 
-<div class="mb-3">
-<label class="form-label">نقش</label>
+            <button class="btn btn-success">
+                بروزرسانی کاربر
+            </button>
 
-<select name="role" class="form-control">
+            <a href="{{ route('users.index') }}" class="btn btn-secondary">
+                بازگشت
+            </a>
 
-<option value="user" @if($user->role=='user') selected @endif>
-User
-</option>
+        </form>
 
-<option value="admin" @if($user->role=='admin') selected @endif>
-Admin
-</option>
-
-<option value="super_admin" @if($user->role=='super_admin') selected @endif>
-Super Admin
-</option>
-
-</select>
-
-</div>
-
-<button class="btn btn-success">
-بروزرسانی کاربر
-</button>
-
-</form>
-
-</div>
+    </div>
 </div>
 
 @endsection

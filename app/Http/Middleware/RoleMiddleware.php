@@ -4,22 +4,20 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        // اگر لاگین نبود
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('superadmin.login');
         }
 
         $user = Auth::user();
 
-        // اگر نقش کاربر داخل لیست نبود
-        if (!in_array($user->role, $roles)) {
+        if (! $user || ! in_array($user->role, $roles, true)) {
             abort(403, 'Unauthorized');
         }
 

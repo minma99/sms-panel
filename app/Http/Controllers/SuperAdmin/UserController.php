@@ -5,7 +5,6 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -26,19 +25,18 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20|unique:users,phone',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:super_admin,admin,user',
+            'role' => 'required|in:super_admin,admin',
         ]);
 
         User::create([
-            'name' => $data['name'],
+            'name' => $data['name'] ?? null,
             'phone' => $data['phone'],
             'role' => $data['role'],
-            'password' => Hash::make($data['password']),
         ]);
 
-        return redirect()->route('users.index')
-            ->with('success', 'User created successfully');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'کاربر با موفقیت ایجاد شد');
     }
 
     public function edit(string $id)
@@ -55,32 +53,28 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20|unique:users,phone,' . $user->id,
-            'password' => 'nullable|string|min:6',
-            'role' => 'required|in:super_admin,admin,user',
+            'role' => 'required|in:super_admin,admin',
         ]);
 
-        $update = [
-            'name' => $data['name'],
+        $user->update([
+            'name' => $data['name'] ?? null,
             'phone' => $data['phone'],
             'role' => $data['role'],
-        ];
+        ]);
 
-        if (!empty($data['password'])) {
-            $update['password'] = Hash::make($data['password']);
-        }
-
-        $user->update($update);
-
-        return redirect()->route('users.index')
-            ->with('success', 'User updated successfully');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'کاربر با موفقیت بروزرسانی شد');
     }
 
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
+
         $user->delete();
 
-        return redirect()->route('users.index')
-            ->with('success', 'User deleted successfully');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'کاربر با موفقیت حذف شد');
     }
 }
