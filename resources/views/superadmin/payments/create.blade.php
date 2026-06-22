@@ -1,25 +1,26 @@
-@extends('layouts.app')
+@extends('superadmin.layouts.main')
+
+@section('title','ثبت پرداخت')
+@section('page_title','ثبت پرداخت')
 
 @section('content')
 
-<div class="max-w-3xl mx-auto py-6">
+<div class="card shadow-sm">
+<div class="card-body">
 
-<h1 class="text-2xl font-bold mb-6">Create Payment</h1>
-
-<form action="{{ route('payments.store') }}"
-method="POST"
-class="bg-white p-6 rounded shadow space-y-4">
+<form action="{{ route('payments.store') }}" method="POST">
 
 @csrf
 
-<div>
+<div class="row g-3">
 
-<label class="block mb-1 font-medium">
-Trainee
+<div class="col-md-6">
+
+<label class="form-label">
+کارآموز
 </label>
 
-<select name="trainee_id"
-class="w-full border rounded px-3 py-2">
+<select name="trainee_id" class="form-select">
 
 @foreach($trainees as $trainee)
 
@@ -33,62 +34,63 @@ class="w-full border rounded px-3 py-2">
 
 </div>
 
-<div>
+<div class="col-md-6">
 
-<label class="block mb-1 font-medium">
-Amount
+<label class="form-label">
+مبلغ
 </label>
 
 <input type="number"
 name="amount"
-class="w-full border rounded px-3 py-2">
+class="form-control">
 
 </div>
 
-<div>
+<div class="col-md-6">
 
-<label class="block mb-1 font-medium">
-Payment Method
+<label class="form-label">
+روش پرداخت
 </label>
 
-<select name="payment_method"
-class="w-full border rounded px-3 py-2">
+<select name="payment_method" class="form-select">
 
-<option value="cash">Cash</option>
-<option value="card">Card</option>
-<option value="online">Online</option>
+<option value="cash">نقدی</option>
+<option value="card">کارت</option>
+<option value="online">آنلاین</option>
 
 </select>
 
 </div>
 
-<div>
+<div class="col-md-12">
 
-<label class="block mb-1 font-medium">
-Note
+<label class="form-label">
+توضیحات
 </label>
 
 <textarea name="note"
-class="w-full border rounded px-3 py-2"></textarea>
+class="form-control"></textarea>
 
 </div>
 
-<div class="flex gap-3 pt-4">
+</div>
 
-<button
-class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-Save
+<div class="mt-4">
+
+<button class="btn btn-success">
+ذخیره
 </button>
 
 <a href="{{ route('payments.index') }}"
-class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-Cancel
+class="btn btn-secondary">
+بازگشت
 </a>
 
 </div>
 
 </form>
 
+</div>
 </div>
 
 @endsection

@@ -1,76 +1,111 @@
-@extends('layouts.app')
+@extends('superadmin.layouts.main')
+
+@section('title','لیست پرداخت‌ها')
+@section('page_title','لیست پرداخت‌ها')
 
 @section('content')
 
-<div class="max-w-7xl mx-auto py-6">
+<div class="card shadow-sm">
 
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">Payments</h1>
+<div class="card-header d-flex justify-content-between align-items-center">
+<h5 class="mb-0">پرداخت‌ها</h5>
 
-        <a href="{{ route('payments.create') }}"
-           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            New Payment
-        </a>
-    </div>
+<a href="{{ route('payments.create') }}" class="btn btn-primary">
+ثبت پرداخت
+</a>
+</div>
 
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+<div class="card-body p-0">
 
-        <table class="w-full text-sm text-left">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3">ID</th>
-                    <th class="p-3">Trainee</th>
-                    <th class="p-3">Course</th>
-                    <th class="p-3">Amount</th>
-                    <th class="p-3">Date</th>
-                    <th class="p-3">Action</th>
-                </tr>
-            </thead>
+<div class="table-responsive">
 
-            <tbody>
-                @foreach($payments as $payment)
-                <tr class="border-t">
-                    <td class="p-3">{{ $payment->id }}</td>
-                    <td class="p-3">{{ $payment->trainee->name ?? '-' }}</td>
-                    <td class="p-3">{{ $payment->course->title ?? '-' }}</td>
-                    <td class="p-3">{{ number_format($payment->amount) }}</td>
-                    <td class="p-3">{{ $payment->created_at->format('Y-m-d') }}</td>
+<table class="table table-bordered table-hover text-center mb-0">
 
-                    <td class="p-3 flex gap-2">
+<thead class="table-light">
+<tr>
+<th>ID</th>
+<th>کارآموز</th>
+<th>دوره</th>
+<th>مبلغ</th>
+<th>تاریخ</th>
+<th width="180">عملیات</th>
+</tr>
+</thead>
 
-                        <a href="{{ route('payments.show',$payment->id) }}"
-                           class="text-blue-600 hover:underline">
-                            View
-                        </a>
+<tbody>
 
-                        <a href="{{ route('payments.edit',$payment->id) }}"
-                           class="text-green-600 hover:underline">
-                            Edit
-                        </a>
+@forelse($payments as $payment)
 
-                        <form action="{{ route('payments.destroy',$payment->id) }}"
-                              method="POST">
-                            @csrf
-                            @method('DELETE')
+<tr>
 
-                            <button class="text-red-600 hover:underline">
-                                Delete
-                            </button>
-                        </form>
+<td>{{ $payment->id }}</td>
 
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
+<td>
+{{ $payment->trainee->name ?? '-' }}
+</td>
 
-        </table>
+<td>
+{{ $payment->course->title ?? '-' }}
+</td>
 
-    </div>
+<td>
+{{ number_format($payment->amount) }}
+</td>
 
-    <div class="mt-6">
-        {{ $payments->links() }}
-    </div>
+<td>
+{{ $payment->created_at->format('Y-m-d') }}
+</td>
 
+<td class="d-flex justify-content-center gap-2">
+
+<a href="{{ route('payments.show',$payment->id) }}"
+class="btn btn-sm btn-info">
+مشاهده
+</a>
+
+<a href="{{ route('payments.edit',$payment->id) }}"
+class="btn btn-sm btn-warning">
+ویرایش
+</a>
+
+<form action="{{ route('payments.destroy',$payment->id) }}"
+method="POST">
+@csrf
+@method('DELETE')
+
+<button class="btn btn-sm btn-danger"
+onclick="return confirm('حذف شود؟')">
+حذف
+</button>
+
+</form>
+
+</td>
+
+</tr>
+
+@empty
+
+<tr>
+<td colspan="6" class="text-muted py-4">
+پرداختی ثبت نشده
+</td>
+</tr>
+
+@endforelse
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-4">
+{{ $payments->links() }}
 </div>
 
 @endsection
