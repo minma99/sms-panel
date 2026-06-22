@@ -1,0 +1,46 @@
+@extends('superadmin.layouts.main')
+
+@section('title','افزودن دوره')
+@section('page_title','افزودن دوره')
+
+@section('content')
+
+<div class="card">
+<div class="card-body">
+
+<form action="{{ route('courses.store') }}" method="POST">
+@csrf
+
+<div class="row g-3">
+
+<div class="col-md-6">
+<label>عنوان دوره</label>
+<input type="text" name="title" class="form-control" value="{{ old('title') }}">
+</div>
+
+<div class="col-md-6">
+<label>ظرفیت</label>
+<input type="number" name="capacity" class="form-control" value="{{ old('capacity') }}">
+</div>
+
+<div class="col-md-6">
+<label>تاریخ شروع (شمسی)</label>
+<input type="text" name="start_date_shamsi" class="form-control">
+</div>
+
+<div class="col-md-6">
+<label>تاریخ پایان (شمسی)</label>
+<input type="text" name="end_date_shamsi" class="form-control">
+</div>
+
+</div>
+
+<button class="btn btn-success mt-3">ثبت</button>
+<a href="{{ route('courses.index') }}" class="btn btn-secondary mt-3">بازگشت</a>
+
+</form>
+
+</div>
+</div>
+
+@endsection
