@@ -16,11 +16,21 @@ class Payment extends Model
         'tracking_code',
         'payment_date',
         'payment_date_shamsi',
-        'note',
+        'note'
+    ];
+
+    protected $casts = [
+        'payment_date' => 'date',
+        'amount' => 'integer'
     ];
 
     public function trainee(): BelongsTo
     {
         return $this->belongsTo(Trainee::class);
+    }
+
+    public function getAmountFormattedAttribute(): string
+    {
+        return number_format($this->amount);
     }
 }

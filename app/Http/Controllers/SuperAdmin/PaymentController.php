@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
+
     public function index()
     {
         $payments = Payment::with('trainee')
@@ -27,16 +28,83 @@ class PaymentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
+
             'trainee_id' => 'required|exists:trainees,id',
-            'amount' => 'required|numeric',
-            'payment_method' => 'nullable|string',
-            'note' => 'nullable|string',
+
+            'amount' => 'required|numeric|min:0',
+
+            'payment_type' => 'nullable|in:full,installment',
+
+            'payment_method' => 'nullable|in:cash,card,online',
+
+            'tracking_code' => 'nullable|string|max:255',
+
+            'payment_date' => 'nullable|date',
+
+            'payment_date_shamsi' => 'nullable|string|max:50',
+
+            'remaining_after_payment' => 'nullable|numeric|min:0',
+
+            'note' => 'nullable|string'
+
         ]);
 
-        Payment::create($request->all());
+        Payment::create($data);
 
-        return redirect()->route('payments.index');
+        return redirect()
+            ->route('payments.index')
+            ->with('success','پرداخت ثبت شد');
+    }
+
+    public function show($id)
+    {
+        $payment = Payment::with('trainee')->findOrFail($id);
+
+        return view('superadmin.payments.show',compact('payment'));
+    }
+
+    public function edit($id)
+    {
+        $payment = Payment::findOrFail($id);
+
+        $trainees = Trainee::all();
+
+        return view('superadmin.payments.edit',
+            compact('payment','trainees'));
+    }
+
+    public function update(Request $request,$id)
+    {
+        $payment = Payment::findOrFail($id);
+
+        $data = $request->validate([
+
+            'trainee_id'=>'required|exists:trainees,id',
+
+            'amount'=>'required|numeric|min:0',
+
+            'payment_type'=>'nullable|in:full,installment',
+
+            'payment_method'=>'nullable|in:cash,card,online',
+
+            'tracking_code'=>'nullable|string|max:255',
+
+            'payment_date'=>'nullable|date',
+
+            'payment_date_shamsi'=>'nullable|string|max:50',
+
+            'remaining_after_payment'=>'nullable|numeric|min:0',
+
+            'note'=>'nullable|string'
+
+        ]);
+
+        $payment->update($data);
+
+        return redirect()
+            ->route('payments.index')
+            ->with('success','پرداخت بروزرسانی شد');
     }
 
     public function destroy($id)
@@ -45,6 +113,8 @@ class PaymentController extends Controller
 
         $payment->delete();
 
-        return redirect()->route('payments.index');
+        return redirect()
+            ->route('payments.index')
+            ->with('success','پرداخت حذف شد');
     }
 }

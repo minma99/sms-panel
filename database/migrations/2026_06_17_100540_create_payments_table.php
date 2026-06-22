@@ -6,47 +6,42 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-       Schema::create('payments', function (Blueprint $table) {
-    $table->id();
+        Schema::create('payments', function (Blueprint $table) {
 
-    $table->foreignId('trainee_id')
-          ->constrained()
-          ->cascadeOnDelete();
+            $table->id();
 
-    // مبلغ این پرداخت
-    $table->unsignedBigInteger('amount');
+            $table->foreignId('trainee_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-    // باقی مانده بعد از این پرداخت
-    $table->unsignedBigInteger('remaining_after_payment')->nullable();
+            $table->unsignedBigInteger('amount');
 
-    // نوع پرداخت
-    $table->enum('payment_type', ['full', 'installment'])
-          ->default('installment');
+            $table->unsignedBigInteger('remaining_after_payment')->nullable();
 
-    // روش پرداخت
-    $table->enum('payment_method', ['cash','card','online'])
-          ->nullable();
+            $table->enum('payment_type',['full','installment'])
+                ->default('installment');
 
-    $table->string('tracking_code')->nullable();
+            $table->enum('payment_method',['cash','card','online'])
+                ->nullable();
 
-    $table->date('payment_date')->nullable();
-    $table->string('payment_date_shamsi')->nullable();
+            $table->string('tracking_code')->nullable();
 
-    $table->text('note')->nullable();
+            $table->date('payment_date')->nullable();
 
-    $table->timestamps();
-});
+            $table->string('payment_date_shamsi')->nullable();
 
+            $table->text('note')->nullable();
+
+            $table->timestamps();
+
+            $table->index('trainee_id');
+            $table->index('payment_date');
+
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('payments');

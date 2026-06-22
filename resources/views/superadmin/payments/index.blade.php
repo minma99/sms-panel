@@ -25,8 +25,8 @@
 <tr>
 <th>ID</th>
 <th>کارآموز</th>
-<th>دوره</th>
 <th>مبلغ</th>
+<th>روش پرداخت</th>
 <th>تاریخ</th>
 <th width="180">عملیات</th>
 </tr>
@@ -40,21 +40,13 @@
 
 <td>{{ $payment->id }}</td>
 
-<td>
-{{ $payment->trainee->name ?? '-' }}
-</td>
+<td>{{ $payment->trainee->name ?? '-' }}</td>
 
-<td>
-{{ $payment->course->title ?? '-' }}
-</td>
+<td>{{ number_format($payment->amount) }}</td>
 
-<td>
-{{ number_format($payment->amount) }}
-</td>
+<td>{{ $payment->payment_method ?? '-' }}</td>
 
-<td>
-{{ $payment->created_at->format('Y-m-d') }}
-</td>
+<td>{{ $payment->created_at->format('Y-m-d') }}</td>
 
 <td class="d-flex justify-content-center gap-2">
 
@@ -68,8 +60,7 @@ class="btn btn-sm btn-warning">
 ویرایش
 </a>
 
-<form action="{{ route('payments.destroy',$payment->id) }}"
-method="POST">
+<form action="{{ route('payments.destroy',$payment->id) }}" method="POST">
 @csrf
 @method('DELETE')
 
