@@ -1,11 +1,16 @@
 <?php 
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\CourseController;
 use App\Http\Controllers\SuperAdmin\PaymentController;
 use App\Http\Controllers\SuperAdmin\TraineeController;
 use App\Http\Controllers\SuperAdmin\UserController;
+
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+
 use App\Http\Controllers\Auth\SuperAdminAuthController;
 
 /*
@@ -42,5 +47,24 @@ Route::prefix('superadmin')
     Route::resource('trainees', TraineeController::class);
     Route::resource('payments', PaymentController::class);
     Route::resource('users', UserController::class);
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Admin Panel
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth','role:admin'])
+    ->group(function () {
+
+    Route::get('/', [AdminDashboardController::class,'index'])
+        ->name('dashboard');
+
+    Route::resource('courses', AdminCourseController::class);
 
 });
