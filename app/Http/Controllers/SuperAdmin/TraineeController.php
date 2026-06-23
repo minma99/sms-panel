@@ -12,7 +12,7 @@ class TraineeController extends Controller
 {
     public function index()
     {
-        $trainees = Trainee::with('course')->latest()->paginate(10);
+        $trainees = Trainee::with(['course', 'payments'])->latest()->paginate(10);
 
         return view('superadmin.trainees.index', compact('trainees'));
     }

@@ -21,7 +21,8 @@ class Payment extends Model
 
     protected $casts = [
         'payment_date' => 'date',
-        'amount' => 'integer'
+        'amount' => 'integer',
+        'remaining_after_payment' => 'integer',
     ];
 
     public function trainee(): BelongsTo

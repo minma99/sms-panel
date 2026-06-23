@@ -7,6 +7,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
 <style>
+
 body{
 background:#f5f7fb;
 font-family:tahoma;
@@ -43,33 +44,6 @@ background:#3b82f6;
 color:white;
 }
 
-.sidebar-sublink{
-display:block;
-color:#cbd5e1;
-padding:8px 15px;
-padding-right:30px;
-text-decoration:none;
-font-size:14px;
-}
-
-.sidebar-sublink:hover{
-background:#1f2937;
-color:white;
-}
-
-.sidebar-sublink.active{
-color:#fff;
-font-weight:bold;
-}
-
-.arrow{
-transition:.3s;
-}
-
-.arrow.rotate{
-transform:rotate(180deg);
-}
-
 .content{
 margin-right:250px;
 padding:20px;
@@ -82,7 +56,6 @@ flex-direction:column;
 background:white;
 padding:15px 20px;
 border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,.05);
 margin-bottom:20px;
 display:flex;
 justify-content:space-between;
@@ -97,29 +70,17 @@ font-size:14px;
 color:#888;
 }
 
-@media (max-width:992px){
-.sidebar{
-display:none;
-}
-
-.content{
-margin-right:0;
-}
-}
 </style>
+
 </head>
 
 <body>
 
-@php
-$coursesOpen = request()->routeIs('admin.courses.*');
-$paymentsOpen = request()->routeIs('admin.payments.*');
-@endphp
 
+<div class="sidebar">
 
-<div class="sidebar d-none d-lg-block">
+<h5 class="mb-4 text-white">پنل ادمین</h5>
 
-<h5 class="text-white mb-4">پنل ادمین</h5>
 
 <a href="{{ route('admin.dashboard') }}"
 class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -127,61 +88,33 @@ class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
 </a>
 
 
-<a href="#coursesMenu"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between align-items-center {{ $coursesOpen ? 'active' : '' }}">
-
-<span>دوره‌ها</span>
-<span class="arrow {{ $coursesOpen ? 'rotate' : '' }}">⌄</span>
-
-</a>
-
-<div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMenu">
-
 <a href="{{ route('admin.courses.index') }}"
-class="sidebar-sublink {{ request()->routeIs('admin.courses.index') ? 'active' : '' }}">
-لیست دوره‌ها
+class="sidebar-link {{ request()->routeIs('admin.courses.*') ? 'active' : '' }}">
+دوره‌ها
 </a>
 
-<a href="{{ route('admin.courses.create') }}"
-class="sidebar-sublink {{ request()->routeIs('admin.courses.create') ? 'active' : '' }}">
-ایجاد دوره
+
+<a href="{{ route('admin.trainees.index') }}"
+class="sidebar-link {{ request()->routeIs('admin.trainees.*') ? 'active' : '' }}">
+کارآموزان
 </a>
 
-</div>
-
-
-<a href="#paymentsMenu"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between align-items-center {{ $paymentsOpen ? 'active' : '' }}">
-
-<span>پرداخت‌ها</span>
-<span class="arrow {{ $paymentsOpen ? 'rotate' : '' }}">⌄</span>
-
-</a>
-
-<div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMenu">
 
 <a href="{{ route('admin.payments.index') }}"
-class="sidebar-sublink {{ request()->routeIs('admin.payments.index') ? 'active' : '' }}">
-لیست پرداخت‌ها
+class="sidebar-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
+پرداخت‌ها
 </a>
 
-<a href="{{ route('admin.payments.create') }}"
-class="sidebar-sublink {{ request()->routeIs('admin.payments.create') ? 'active' : '' }}">
-ثبت پرداخت
-</a>
-
-</div>
 
 </div>
 
 
 <div class="content">
 
+
 <div class="header">
 
-<h5 class="mb-0">@yield('page_title')</h5>
+<h5>@yield('page_title')</h5>
 
 <div>
 
@@ -197,7 +130,9 @@ class="btn btn-sm btn-danger">
 action="{{ route('superadmin.logout') }}"
 method="POST"
 class="d-none">
+
 @csrf
+
 </form>
 
 </div>
@@ -206,13 +141,18 @@ class="d-none">
 
 
 <div class="flex-grow-1">
+
 @yield('content')
+
 </div>
 
 
 <div class="footer">
+
 © {{ date('Y') }} Admin Panel
+
 </div>
+
 
 </div>
 

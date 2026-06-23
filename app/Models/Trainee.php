@@ -33,6 +33,14 @@ class Trainee extends Model
         'note',
     ];
 
+    protected $casts = [
+        'birth_date' => 'date',
+        'exam_date' => 'date',
+        'total_fee' => 'integer',
+        'discount_percent' => 'integer',
+        'exam_fee' => 'integer',
+    ];
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
@@ -46,5 +54,30 @@ class Trainee extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
+    public function getDiscountAmountAttribute(): int
+    {
+        return (int)(($this->total_fee * $this->discount_percent) / 100);
+    }
+
+    public function getFinalFeeAttribute(): int
+    {
+        return (int)($this->total_fee - $this->discount_amount);
+    }
+
+    public function getPaidAmountAttribute(): int
+    {
+        return (int)$this->payments()->sum('amount');
+    }
+
+    public function getRemainingAmountAttribute(): int
+    {
+        return max(0, (int)($this->final_fee - $this->paid_amount));
     }
 }
