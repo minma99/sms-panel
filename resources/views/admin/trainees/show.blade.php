@@ -5,6 +5,13 @@
 
 @section('content')
 
+@php
+$discount = ($trainee->total_fee * $trainee->discount_percent) / 100;
+$final_fee = $trainee->total_fee - $discount;
+$paid = $trainee->payments->sum('amount');
+$remaining = $final_fee - $paid;
+@endphp
+
 <div class="card shadow-sm">
 <div class="card-body">
 
@@ -40,8 +47,37 @@
 </tr>
 
 <tr>
-<th>شهریه</th>
+<th>شهریه کل</th>
 <td>{{ number_format($trainee->total_fee) }}</td>
+</tr>
+
+<tr>
+<th>درصد تخفیف</th>
+<td>{{ $trainee->discount_percent }} %</td>
+</tr>
+
+<tr>
+<th>مبلغ تخفیف</th>
+<td>{{ number_format($discount) }}</td>
+</tr>
+
+<tr>
+<th>شهریه نهایی</th>
+<td>{{ number_format($final_fee) }}</td>
+</tr>
+
+<tr>
+<th>مجموع پرداخت</th>
+<td class="text-success">
+{{ number_format($paid) }}
+</td>
+</tr>
+
+<tr>
+<th>باقی مانده</th>
+<td class="text-danger">
+{{ number_format($remaining) }}
+</td>
 </tr>
 
 </table>

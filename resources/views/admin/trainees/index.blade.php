@@ -21,9 +21,10 @@
 <tr>
 <th>ID</th>
 <th>نام</th>
-<th>کد ملی</th>
-<th>تلفن</th>
 <th>دوره</th>
+<th>شهریه</th>
+<th>پرداخت شده</th>
+<th>باقی مانده</th>
 <th>عملیات</th>
 </tr>
 </thead>
@@ -31,6 +32,13 @@
 <tbody>
 
 @foreach($trainees as $trainee)
+
+@php
+$discount = ($trainee->total_fee * $trainee->discount_percent) / 100;
+$final_fee = $trainee->total_fee - $discount;
+$paid = $trainee->payments->sum('amount');
+$remaining = $final_fee - $paid;
+@endphp
 
 <tr>
 
@@ -40,11 +48,17 @@
 {{ $trainee->first_name }} {{ $trainee->last_name }}
 </td>
 
-<td>{{ $trainee->national_code }}</td>
-
-<td>{{ $trainee->phone }}</td>
-
 <td>{{ $trainee->course->title ?? '-' }}</td>
+
+<td>{{ number_format($final_fee) }}</td>
+
+<td class="text-success">
+{{ number_format($paid) }}
+</td>
+
+<td class="text-danger">
+{{ number_format($remaining) }}
+</td>
 
 <td>
 
@@ -80,5 +94,7 @@ class="d-inline">
 </tbody>
 
 </table>
+
+{{ $trainees->links() }}
 
 @endsection
