@@ -50,6 +50,8 @@ Route::prefix('superadmin')
     Route::resource('trainees', TraineeController::class);
     Route::resource('payments', PaymentController::class);
     Route::resource('users', UserController::class);
+    Route::get('/reports/download', [App\Http\Controllers\SuperAdmin\ReportController::class, 'downloadPdf'])
+        ->name('reports.download');
 
 });
 

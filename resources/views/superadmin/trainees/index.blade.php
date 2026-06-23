@@ -8,6 +8,10 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
 
 <h4>همه کارآموزان</h4>
+<!-- دکمه گزارش -->
+        <a href="{{ route('superadmin.reports.download') }}" class="btn btn-success">
+            <i class="fa fa-download"></i> دانلود گزارش PDF
+        </a>
 
 <a href="{{ route('trainees.create') }}" class="btn btn-primary">
 افزودن کارآموز
