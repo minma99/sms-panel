@@ -89,3 +89,12 @@ Route::post('/send-otp',[OtpLoginController::class,'sendOtp'])
 
 Route::post('/verify-otp',[OtpLoginController::class,'verifyOtp'])
     ->middleware('throttle:10,1');
+
+
+
+
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
+
+Route::get('/dashboard', [UserDashboardController::class,'index'])
+    ->middleware('auth')
+    ->name('dashboard');
