@@ -12,10 +12,12 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 
 use App\Http\Controllers\Auth\SuperAdminAuthController;
+use App\Http\Controllers\Auth\OtpLoginController;
+
 
 /*
 |--------------------------------------------------------------------------
-| SuperAdmin Auth
+| SuperAdmin Auth (بدون OTP)
 |--------------------------------------------------------------------------
 */
 
@@ -37,6 +39,7 @@ Route::post('/superadmin/logout', [SuperAdminAuthController::class, 'logout'])
 */
 
 Route::prefix('superadmin')
+    ->name('superadmin.')
     ->middleware(['auth','role:super_admin'])
     ->group(function () {
 
@@ -66,11 +69,23 @@ Route::prefix('admin')
         ->name('dashboard');
 
     Route::resource('courses', AdminCourseController::class);
-
     Route::resource('payments', \App\Http\Controllers\Admin\PaymentController::class);
-
     Route::resource('trainees', \App\Http\Controllers\Admin\TraineeController::class);
 
 });
 
 
+/*
+|--------------------------------------------------------------------------
+| OTP Login (برای admin و user)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/login',[OtpLoginController::class,'showLogin'])
+    ->name('login');
+
+Route::post('/send-otp',[OtpLoginController::class,'sendOtp'])
+    ->middleware('throttle:5,1');
+
+Route::post('/verify-otp',[OtpLoginController::class,'verifyOtp'])
+    ->middleware('throttle:10,1');
