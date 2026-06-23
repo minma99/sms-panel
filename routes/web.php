@@ -66,5 +66,7 @@ Route::prefix('admin')
         ->name('dashboard');
 
     Route::resource('courses', AdminCourseController::class);
+    Route::resource('payments', \App\Http\Controllers\Admin\PaymentController::class);
 
 });
+
