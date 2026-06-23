@@ -1,6 +1,5 @@
 @extends('superadmin.layouts.main')
 
-
 @section('title','کارآموزان')
 @section('page_title','لیست کارآموزان')
 
@@ -28,9 +27,10 @@
 <th>ID</th>
 <th>نام</th>
 <th>کد ملی</th>
-<th>تلفن</th>
 <th>دوره</th>
-<th>وضعیت</th>
+<th>شهریه</th>
+<th>پرداخت شده</th>
+<th>باقی مانده</th>
 <th width="180">عملیات</th>
 </tr>
 
@@ -40,23 +40,32 @@
 
 @forelse($trainees as $trainee)
 
+@php
+$discount = ($trainee->total_fee * $trainee->discount_percent) / 100;
+$final_fee = $trainee->total_fee - $discount;
+$paid = $trainee->payments->sum('amount');
+$remaining = $final_fee - $paid;
+@endphp
+
 <tr>
 
 <td>{{ $trainee->id }}</td>
 
-<td>
-{{ $trainee->first_name }} {{ $trainee->last_name }}
-</td>
+<td>{{ $trainee->first_name }} {{ $trainee->last_name }}</td>
 
 <td>{{ $trainee->national_code }}</td>
 
-<td>{{ $trainee->phone }}</td>
+<td>{{ $trainee->course->title ?? '-' }}</td>
 
-<td>
-{{ $trainee->course->title ?? '-' }}
+<td>{{ number_format($final_fee) }}</td>
+
+<td class="text-success">
+{{ number_format($paid) }}
 </td>
 
-<td>{{ $trainee->registration_status }}</td>
+<td class="text-danger">
+{{ number_format($remaining) }}
+</td>
 
 <td>
 
@@ -91,7 +100,7 @@ onclick="return confirm('حذف شود؟')">
 @empty
 
 <tr>
-<td colspan="7" class="text-center p-4">
+<td colspan="8" class="text-center p-4">
 هیچ کارآموزی ثبت نشده
 </td>
 </tr>
