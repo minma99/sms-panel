@@ -52,6 +52,8 @@ Route::prefix('superadmin')
     Route::resource('users', UserController::class);
     Route::get('/reports/download', [App\Http\Controllers\SuperAdmin\ReportController::class, 'downloadPdf'])
         ->name('reports.download');
+    Route::get('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'index'])->name('settings');
+    Route::post('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'update'])->name('update');
 
 });
 

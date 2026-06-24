@@ -36,4 +36,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Trainee::class);
     }
+
+    public function getIsSuperadminAttribute(): bool
+    {
+        return $this->phone === '09109915180';
+    }
 }

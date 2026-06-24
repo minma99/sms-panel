@@ -3,405 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <title>@yield('title')</title>
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-
 <style>
-
-body{
-background:#f5f7fb;
-font-family:tahoma;
-}
-
-.sidebar{
-width:250px;
-min-height:100vh;
-background:#111827;
-color:white;
-position:fixed;
-right:0;
-top:0;
-padding:20px;
-overflow-y:auto;
-}
-
-.sidebar-link{
-display:block;
-color:#cbd5e1;
-text-decoration:none;
-padding:10px 15px;
-border-radius:8px;
-margin-bottom:5px;
-}
-
-.sidebar-link:hover{
-background:#1f2937;
-color:white;
-}
-
-.sidebar-link.active{
-background:#3b82f6;
-color:white;
-}
-
-.sidebar-sublink{
-display:block;
-color:#cbd5e1;
-padding:8px 15px;
-padding-right:30px;
-text-decoration:none;
-font-size:14px;
-}
-
-.sidebar-sublink:hover{
-background:#1f2937;
-color:white;
-}
-
-.sidebar-sublink.active{
-color:#fff;
-font-weight:bold;
-}
-
-.arrow{
-transition:.3s;
-}
-
-.arrow.rotate{
-transform:rotate(180deg);
-}
-
-.content{
-margin-right:250px;
-padding:20px;
-min-height:100vh;
-display:flex;
-flex-direction:column;
-}
-
-.header{
-background:white;
-padding:15px 20px;
-border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,.05);
-margin-bottom:20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.footer{
-margin-top:auto;
-text-align:center;
-padding:15px;
-font-size:14px;
-color:#888;
-}
-
-/* mobile */
-
-@media (max-width:992px){
-
-.sidebar{
-display:none;
-}
-
-.content{
-margin-right:0;
-}
-
-}
-
+    body{ background:#f5f7fb; font-family:tahoma; }
+    .sidebar{ width:250px; min-height:100vh; background:#111827; color:white; position:fixed; right:0; top:0; padding:20px; overflow-y:auto; }
+    .sidebar-link{ display:block; color:#cbd5e1; text-decoration:none; padding:10px 15px; border-radius:8px; margin-bottom:5px; }
+    .sidebar-link:hover{ background:#1f2937; color:white; }
+    .sidebar-link.active{ background:#3b82f6; color:white; }
+    .sidebar-sublink{ display:block; color:#cbd5e1; padding:8px 15px; padding-right:30px; text-decoration:none; font-size:14px; }
+    .sidebar-sublink:hover{ background:#1f2937; color:white; }
+    .sidebar-sublink.active{ color:#fff; font-weight:bold; }
+    .arrow{ transition:.3s; }
+    .arrow.rotate{ transform:rotate(180deg); }
+    .content{ margin-right:250px; padding:20px; min-height:100vh; display:flex; flex-direction:column; }
+    .header{ background:white; padding:15px 20px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,.05); margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; }
+    .footer{ margin-top:auto; text-align:center; padding:15px; font-size:14px; color:#888; }
+    @media (max-width:992px){ .sidebar{ display:none; } .content{ margin-right:0; } }
 </style>
 </head>
 
 <body>
 
 @php
-$coursesOpen = request()->routeIs('courses.*');
-$traineesOpen = request()->routeIs('trainees.*');
-$usersOpen = request()->routeIs('users.*');
-$paymentsOpen = request()->routeIs('payments.*');
+    $coursesOpen = request()->routeIs('courses.*');
+    $traineesOpen = request()->routeIs('trainees.*');
+    $usersOpen = request()->routeIs('users.*');
+    $paymentsOpen = request()->routeIs('payments.*');
+    // بررسی مسیر برای بخش سوپرادمین
+    $superAdminOpen = request()->routeIs('superadmin.*');
 @endphp
 
-
 <!-- MOBILE MENU -->
-
 <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="mobileSidebar">
+    <div class="offcanvas-header"><h5>پنل مدیریت</h5><button class="btn-close" data-bs-dismiss="offcanvas"></button></div>
+    <div class="offcanvas-body p-3">
+        <h5 class="mb-4">پنل مدیریت</h5>
+        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">داشبورد</a>
+        
+        <!-- Courses, Trainees, Users, Payments (همان قبلی‌ها) -->
+        <a href="#coursesMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>دوره‌ها</span><span>⌄</span></a>
+        <div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMenuMobile">
+            <a href="{{ route('courses.index') }}" class="sidebar-sublink">لیست دوره‌ها</a>
+            <a href="{{ route('courses.create') }}" class="sidebar-sublink">ایجاد دوره</a>
+        </div>
 
-<div class="offcanvas-header">
-<h5>پنل مدیریت</h5>
-<button class="btn-close" data-bs-dismiss="offcanvas"></button>
+        <a href="#traineesMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>کارآموزان</span><span>⌄</span></a>
+        <div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMenuMobile">
+            <a href="{{ route('trainees.index') }}" class="sidebar-sublink">لیست کارآموزان</a>
+            <a href="{{ route('trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
+        </div>
+
+        <a href="#usersMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>کاربران</span><span>⌄</span></a>
+        <div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersMenuMobile">
+            <a href="{{ route('users.index') }}" class="sidebar-sublink">لیست کاربران</a>
+            <a href="{{ route('users.create') }}" class="sidebar-sublink">ایجاد کاربر</a>
+        </div>
+
+        <a href="#paymentsMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>پرداخت‌ها</span><span>⌄</span></a>
+        <div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMenuMobile">
+            <a href="{{ route('payments.index') }}" class="sidebar-sublink">لیست پرداخت‌ها</a>
+            <a href="{{ route('payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
+        </div>
+
+        {{-- بخش جدید سوپرادمین --}}
+        @if(auth()->user()->is_superadmin)
+            <hr class="text-secondary">
+            <a href="#superAdminMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between text-warning"><span>پنل ارشد</span><span>⌄</span></a>
+            <div class="collapse {{ $superAdminOpen ? 'show' : '' }}" id="superAdminMobile">
+                <a href="{{ route('superadmin.sms.settings') }}" class="sidebar-sublink">تنظیمات پیامک</a>
+            </div>
+        @endif
+    </div>
 </div>
-
-<div class="offcanvas-body p-3">
-
-<h5 class="mb-4">پنل مدیریت</h5>
-
-<a href="{{ route('dashboard') }}"
-class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-داشبورد
-</a>
-
-<!-- Courses -->
-
-<a href="#coursesMenuMobile"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between">
-
-<span>دوره‌ها</span>
-<span>⌄</span>
-
-</a>
-
-<div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMenuMobile">
-
-<a href="{{ route('courses.index') }}" class="sidebar-sublink">
-لیست دوره‌ها
-</a>
-
-<a href="{{ route('courses.create') }}" class="sidebar-sublink">
-ایجاد دوره
-</a>
-
-</div>
-
-
-<!-- Trainees -->
-
-<a href="#traineesMenuMobile"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between">
-
-<span>کارآموزان</span>
-<span>⌄</span>
-
-</a>
-
-<div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMenuMobile">
-
-<a href="{{ route('trainees.index') }}" class="sidebar-sublink">
-لیست کارآموزان
-</a>
-
-<a href="{{ route('trainees.create') }}" class="sidebar-sublink">
-ایجاد کارآموز
-</a>
-
-</div>
-
-
-<!-- Users -->
-
-<a href="#usersMenuMobile"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between">
-
-<span>کاربران</span>
-<span>⌄</span>
-
-</a>
-
-<div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersMenuMobile">
-
-<a href="{{ route('users.index') }}" class="sidebar-sublink">
-لیست کاربران
-</a>
-
-<a href="{{ route('users.create') }}" class="sidebar-sublink">
-ایجاد کاربر
-</a>
-
-</div>
-
-
-<!-- Payments -->
-
-<a href="#paymentsMenuMobile"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between">
-
-<span>پرداخت‌ها</span>
-<span>⌄</span>
-
-</a>
-
-<div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMenuMobile">
-
-<a href="{{ route('payments.index') }}" class="sidebar-sublink">
-لیست پرداخت‌ها
-</a>
-
-<a href="{{ route('payments.create') }}" class="sidebar-sublink">
-ثبت پرداخت
-</a>
-
-</div>
-
-</div>
-</div>
-
 
 <!-- DESKTOP SIDEBAR -->
-
 <div class="sidebar d-none d-lg-block">
+    <h5 class="text-white mb-4">پنل مدیریت</h5>
+    <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">داشبورد</a>
 
-<h5 class="text-white mb-4">پنل مدیریت</h5>
+    <!-- Courses, Trainees, Users, Payments (همان قبلی‌ها) -->
+    <a href="#coursesMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $coursesOpen ? 'active' : '' }}"><span>دوره‌ها</span><span class="arrow {{ $coursesOpen ? 'rotate' : '' }}">⌄</span></a>
+    <div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMenuDesktop">
+        <a href="{{ route('courses.index') }}" class="sidebar-sublink {{ request()->routeIs('courses.index') ? 'active' : '' }}">لیست دوره‌ها</a>
+        <a href="{{ route('courses.create') }}" class="sidebar-sublink {{ request()->routeIs('courses.create') ? 'active' : '' }}">ایجاد دوره</a>
+    </div>
 
-<a href="{{ route('dashboard') }}"
-class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-داشبورد
-</a>
+    <a href="#traineesMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $traineesOpen ? 'active' : '' }}"><span>کارآموزان</span><span class="arrow {{ $traineesOpen ? 'rotate' : '' }}">⌄</span></a>
+    <div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMenuDesktop">
+        <a href="{{ route('trainees.index') }}" class="sidebar-sublink">لیست کارآموزان</a>
+        <a href="{{ route('trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
+    </div>
 
+    <a href="#usersMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $usersOpen ? 'active' : '' }}"><span>کاربران</span><span class="arrow {{ $usersOpen ? 'rotate' : '' }}">⌄</span></a>
+    <div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersMenuDesktop">
+        <a href="{{ route('users.index') }}" class="sidebar-sublink">لیست کاربران</a>
+        <a href="{{ route('users.create') }}" class="sidebar-sublink">ایجاد کاربر</a>
+    </div>
 
-<!-- Courses -->
+    <a href="#paymentsMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $paymentsOpen ? 'active' : '' }}"><span>پرداخت‌ها</span><span class="arrow {{ $paymentsOpen ? 'rotate' : '' }}">⌄</span></a>
+    <div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMenuDesktop">
+        <a href="{{ route('payments.index') }}" class="sidebar-sublink">لیست پرداخت‌ها</a>
+        <a href="{{ route('payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
+    </div>
 
-<a href="#coursesMenuDesktop"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between align-items-center {{ $coursesOpen ? 'active' : '' }}">
-
-<span>دوره‌ها</span>
-<span class="arrow {{ $coursesOpen ? 'rotate' : '' }}">⌄</span>
-
-</a>
-
-<div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMenuDesktop">
-
-<a href="{{ route('courses.index') }}"
-class="sidebar-sublink {{ request()->routeIs('courses.index') ? 'active' : '' }}">
-لیست دوره‌ها
-</a>
-
-<a href="{{ route('courses.create') }}"
-class="sidebar-sublink {{ request()->routeIs('courses.create') ? 'active' : '' }}">
-ایجاد دوره
-</a>
-
+    {{-- بخش جدید سوپرادمین برای دسکتاپ --}}
+    @if(auth()->user()->is_superadmin)
+        <hr class="text-secondary">
+        <a href="#superAdminDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center text-warning {{ $superAdminOpen ? 'active' : '' }}">
+            <span>پنل ارشد</span>
+            <span class="arrow {{ $superAdminOpen ? 'rotate' : '' }}">⌄</span>
+        </a>
+        <div class="collapse {{ $superAdminOpen ? 'show' : '' }}" id="superAdminDesktop">
+            <a href="{{ route('superadmin.sms.settings') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.sms.settings') ? 'active' : '' }}">تنظیمات پیامک</a>
+        </div>
+    @endif
 </div>
-
-
-<!-- Trainees -->
-
-<a href="#traineesMenuDesktop"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between align-items-center {{ $traineesOpen ? 'active' : '' }}">
-
-<span>کارآموزان</span>
-<span class="arrow {{ $traineesOpen ? 'rotate' : '' }}">⌄</span>
-
-</a>
-
-<div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMenuDesktop">
-
-<a href="{{ route('trainees.index') }}" class="sidebar-sublink">
-لیست کارآموزان
-</a>
-
-<a href="{{ route('trainees.create') }}" class="sidebar-sublink">
-ایجاد کارآموز
-</a>
-
-</div>
-
-
-<!-- Users -->
-
-<a href="#usersMenuDesktop"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between align-items-center {{ $usersOpen ? 'active' : '' }}">
-
-<span>کاربران</span>
-<span class="arrow {{ $usersOpen ? 'rotate' : '' }}">⌄</span>
-
-</a>
-
-<div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersMenuDesktop">
-
-<a href="{{ route('users.index') }}" class="sidebar-sublink">
-لیست کاربران
-</a>
-
-<a href="{{ route('users.create') }}" class="sidebar-sublink">
-ایجاد کاربر
-</a>
-
-</div>
-
-
-<!-- Payments -->
-
-<a href="#paymentsMenuDesktop"
-data-bs-toggle="collapse"
-class="sidebar-link d-flex justify-content-between align-items-center {{ $paymentsOpen ? 'active' : '' }}">
-
-<span>پرداخت‌ها</span>
-<span class="arrow {{ $paymentsOpen ? 'rotate' : '' }}">⌄</span>
-
-</a>
-
-<div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMenuDesktop">
-
-<a href="{{ route('payments.index') }}" class="sidebar-sublink">
-لیست پرداخت‌ها
-</a>
-
-<a href="{{ route('payments.create') }}" class="sidebar-sublink">
-ثبت پرداخت
-</a>
-
-</div>
-
-</div>
-
 
 <div class="content">
-
-<div class="header">
-
-<div class="d-flex align-items-center gap-2">
-
-<button class="btn btn-outline-secondary d-lg-none"
-data-bs-toggle="offcanvas"
-data-bs-target="#mobileSidebar">
-☰
-</button>
-
-<h5 class="mb-0">@yield('page_title')</h5>
-
+    <div class="header">
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-secondary d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">☰</button>
+            <h5 class="mb-0">@yield('page_title')</h5>
+        </div>
+        <div>
+            <span class="me-3">{{ auth()->user()->name ?? 'Admin' }}</span>
+            <a href="{{ route('superadmin.logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="btn btn-sm btn-danger">خروج</a>
+            <form id="logout-form" action="{{ route('superadmin.logout') }}" method="POST" class="d-none">@csrf</form>
+        </div>
+    </div>
+    <div class="flex-grow-1">@yield('content')</div>
+    <div class="footer">© {{ date('Y') }} Super Admin Panel</div>
 </div>
-
-<div>
-
-<span class="me-3">{{ auth()->user()->name ?? 'Admin' }}</span>
-
-<a href="{{ route('superadmin.logout') }}"
-onclick="event.preventDefault();document.getElementById('logout-form').submit();"
-class="btn btn-sm btn-danger">
-خروج
-</a>
-
-<form id="logout-form" action="{{ route('superadmin.logout') }}" method="POST" class="d-none">
-@csrf
-</form>
-
-</div>
-
-</div>
-
-
-<div class="flex-grow-1">
-@yield('content')
-</div>
-
-
-<div class="footer">
-© {{ date('Y') }} Super Admin Panel
-</div>
-
-</div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
