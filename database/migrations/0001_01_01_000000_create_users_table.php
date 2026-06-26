@@ -21,6 +21,8 @@ return new class extends Migration
 
             $table->enum('role', ['super_admin', 'admin'])->default('admin');
 
+            $table->foreignId('trainee_id')->nullable()->constrained()->nullOnDelete();
+
             $table->rememberToken();
             $table->timestamps();
         });

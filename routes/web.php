@@ -15,6 +15,12 @@ use App\Http\Controllers\Auth\SuperAdminAuthController;
 use App\Http\Controllers\Auth\OtpLoginController;
 
 
+
+
+Route::get('/', function () {
+    return view('welcome_new'); // نام ویو جدید
+});
+
 /*
 |--------------------------------------------------------------------------
 | SuperAdmin Auth (بدون OTP)
