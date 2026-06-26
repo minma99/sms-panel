@@ -19,9 +19,12 @@ return new class extends Migration
             $table->string('otp')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
 
-            $table->enum('role', ['super_admin', 'admin'])->default('admin');
+            $table->enum('role', ['super_admin', 'admin', 'trainee'])->default('admin');
 
-            $table->foreignId('trainee_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('trainee_id')
+                ->nullable()
+                ->constrained('trainees')
+                ->nullOnDelete();
 
             $table->rememberToken();
             $table->timestamps();

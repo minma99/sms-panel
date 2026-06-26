@@ -10,12 +10,12 @@ use App\Models\SmsSetting;
 use App\Models\Trainee;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // SMS Setting
         SmsSetting::factory()->create([
             'sms_enabled' => true,
             'auto_sms_enabled' => true,
@@ -26,27 +26,34 @@ class DatabaseSeeder extends Seeder
             'base_url' => 'https://example.com/api',
         ]);
 
-        // Super Admin
-        User::factory()->superAdmin()->create([
+        User::factory()->create([
             'name' => 'Super Admin',
-            'password' => 'password',
+            'phone' => '09109915180',
+            'password' => Hash::make('password'),
+            'role' => 'super_admin',
         ]);
 
-        // Admins
         User::factory()->count(3)->create([
             'role' => 'admin',
         ]);
 
-        // Courses
         Course::factory()->count(10)->create();
 
-        // Trainees
-        Trainee::factory()->count(50)->create();
+        $trainees = Trainee::factory()->count(50)->create();
 
-        // Payments for trainees
-        Trainee::all()->each(function ($trainee) {
+        $trainees->each(function ($trainee) {
+            User::factory()->create([
+                'name' => $trainee->full_name,
+                'phone' => $trainee->phone,
+                'password' => Hash::make('password'),
+                'role' => 'trainee',
+                'trainee_id' => $trainee->id,
+            ]);
+        });
+
+        $trainees->each(function ($trainee) {
             $paymentCount = rand(0, 3);
-            $remaining = $trainee->final_fee;
+            $remaining = (int) $trainee->final_fee;
 
             for ($i = 0; $i < $paymentCount; $i++) {
                 if ($remaining <= 0) {
@@ -55,13 +62,7 @@ class DatabaseSeeder extends Seeder
 
                 $min = min(100000, $remaining);
                 $max = min($remaining, 3000000);
-
-                if ($min > $max) {
-                    $amount = $remaining;
-                } else {
-                    $amount = rand($min, $max);
-                }
-
+                $amount = $min > $max ? $remaining : rand($min, $max);
                 $remainingAfterPayment = max(0, $remaining - $amount);
 
                 Payment::create([
@@ -80,10 +81,7 @@ class DatabaseSeeder extends Seeder
             }
         });
 
-        // OTPs
         Otp::factory()->count(10)->create();
-
-        // SMS Logs
         SmsLog::factory()->count(20)->create();
     }
 }

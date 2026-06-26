@@ -39,6 +39,6 @@ class User extends Authenticatable
 
     public function getIsSuperadminAttribute(): bool
     {
-        return $this->phone === '09109915180';
+        return $this->role === 'super_admin';
     }
 }
