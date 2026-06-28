@@ -1,103 +1,78 @@
 @extends('superadmin.layouts.main')
 
-
-@section('title','Edit Course')
-
-@section('page_title','Edit Course')
+@section('title','ویرایش دوره')
+@section('page_title','ویرایش دوره')
 
 @section('content')
 
-<div class="bg-white p-6 rounded-xl shadow max-w-3xl">
+<div class="card">
+<div class="card-body">
 
-<form action="{{ route('courses.update',$course->id) }}" method="POST">
+@if ($errors->any())
+<div class="alert alert-danger">
+<ul class="mb-0">
+@foreach ($errors->all() as $error)
+<li>{{ $error }}</li>
+@endforeach
+</ul>
+</div>
+@endif
 
+<form action="{{ route('superadmin.courses.update',$course->id) }}" method="POST">
 @csrf
 @method('PUT')
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="row g-3">
 
-<div>
-<label class="block text-sm text-gray-600 mb-1">Course Title</label>
-<input type="text" name="title"
-value="{{ old('title',$course->title) }}"
-class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
-
-@error('title')
-<p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-@enderror
+<div class="col-md-6">
+<label>عنوان دوره</label>
+<input type="text" name="title" class="form-control"
+value="{{ old('title',$course->title) }}">
 </div>
 
-
-<div>
-<label class="block text-sm text-gray-600 mb-1">Capacity</label>
-<input type="number" name="capacity"
-value="{{ old('capacity',$course->capacity) }}"
-class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
-
-@error('capacity')
-<p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-@enderror
+<div class="col-md-6">
+<label>قیمت</label>
+<input type="number" name="price" class="form-control"
+value="{{ old('price',$course->price) }}">
 </div>
 
-
-<div>
-<label class="block text-sm text-gray-600 mb-1">Start Date (Gregorian)</label>
-<input type="date" name="start_date_gregorian"
-value="{{ old('start_date_gregorian',$course->start_date_gregorian) }}"
-class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
-
-@error('start_date_gregorian')
-<p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-@enderror
+<div class="col-md-6">
+<label>مدت دوره</label>
+<input type="number" name="duration" class="form-control"
+value="{{ old('duration',$course->duration) }}">
 </div>
 
-
-<div>
-<label class="block text-sm text-gray-600 mb-1">End Date (Gregorian)</label>
-<input type="date" name="end_date_gregorian"
-value="{{ old('end_date_gregorian',$course->end_date_gregorian) }}"
-class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
-
-@error('end_date_gregorian')
-<p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-@enderror
+<div class="col-md-6">
+<label>ظرفیت</label>
+<input type="number" name="capacity" class="form-control"
+value="{{ old('capacity',$course->capacity) }}">
 </div>
 
-
-<div>
-<label class="block text-sm text-gray-600 mb-1">Start Date (Shamsi)</label>
-<input type="text" name="start_date_shamsi"
-value="{{ old('start_date_shamsi',$course->start_date_shamsi) }}"
-class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
+<div class="col-md-6">
+<label>تاریخ شروع</label>
+<input type="date" name="start_date" class="form-control"
+value="{{ old('start_date',$course->start_date) }}">
 </div>
 
+<div class="col-md-6">
+<label>تاریخ پایان</label>
+<input type="date" name="end_date" class="form-control"
+value="{{ old('end_date',$course->end_date) }}">
+</div>
 
-<div>
-<label class="block text-sm text-gray-600 mb-1">End Date (Shamsi)</label>
-<input type="text" name="end_date_shamsi"
-value="{{ old('end_date_shamsi',$course->end_date_shamsi) }}"
-class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:border-blue-300">
+<div class="col-md-12">
+<label>توضیحات</label>
+<textarea name="description" class="form-control">{{ old('description',$course->description) }}</textarea>
 </div>
 
 </div>
 
-
-<div class="mt-6 flex gap-3">
-
-<button type="submit"
-class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
-Update Course
-</button>
-
-<a href="{{ route('super_admin.courses.index') }}"
-class="bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400">
-Cancel
-</a>
-
-</div>
+<button class="btn btn-primary mt-3">بروزرسانی</button>
+<a href="{{ route('superadmin.courses.index') }}" class="btn btn-secondary mt-3">بازگشت</a>
 
 </form>
 
+</div>
 </div>
 
 @endsection

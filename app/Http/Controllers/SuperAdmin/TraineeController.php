@@ -77,7 +77,7 @@ class TraineeController extends Controller
             ]);
         }
 
-        return redirect()->route('trainees.index')->with('success', 'Trainee created successfully.');
+        return redirect()->route('superadmin.trainees.index')->with('success', 'Trainee created successfully.');
     }
 
     public function show(string $id)
@@ -155,7 +155,7 @@ class TraineeController extends Controller
             ]);
         }
 
-        return redirect()->route('trainees.index')->with('success', 'Trainee updated successfully.');
+        return redirect()->route('superadmin.trainees.index')->with('success', 'Trainee updated successfully.');
     }
 
     public function destroy(string $id)
@@ -177,6 +177,6 @@ class TraineeController extends Controller
 
         $trainee->delete();
 
-        return redirect()->route('trainees.index')->with('success', 'Trainee deleted successfully.');
+        return redirect()->route('superadmin.trainees.index')->with('success', 'Trainee deleted successfully.');
     }
 }

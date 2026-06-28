@@ -33,7 +33,7 @@ class CourseController extends Controller
 
         Course::create($request->all());
 
-        return redirect()->route('courses.index');
+        return redirect()->route('superadmin.courses.index');
     }
 
     public function show(string $id)
@@ -64,7 +64,7 @@ class CourseController extends Controller
 
         $course->update($request->all());
 
-        return redirect()->route('courses.index');
+        return redirect()->route('superadmin.courses.index');
     }
 
     public function destroy(string $id)
@@ -72,6 +72,6 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
         $course->delete();
 
-        return redirect()->route('courses.index');
+        return redirect()->route('superadmin.courses.index');
     }
 }

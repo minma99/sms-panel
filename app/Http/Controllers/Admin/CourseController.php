@@ -12,7 +12,7 @@ class CourseController extends Controller
     {
         $courses = Course::latest()->paginate(10);
 
-        return view('admin.courses.index', compact('courses'));
+        return view('admin.superadmin.courses.index', compact('courses'));
     }
 
     public function create()
@@ -34,7 +34,7 @@ class CourseController extends Controller
         Course::create($data);
 
         return redirect()
-            ->route('courses.index')
+            ->route('superadmin.courses.index')
             ->with('success','Course created successfully');
     }
 
@@ -68,7 +68,7 @@ class CourseController extends Controller
         $course->update($data);
 
         return redirect()
-            ->route('courses.index')
+            ->route('superadmin.courses.index')
             ->with('success','Course updated successfully');
     }
 
@@ -79,7 +79,7 @@ class CourseController extends Controller
         $course->delete();
 
         return redirect()
-            ->route('courses.index')
+            ->route('superadmin.courses.index')
             ->with('success','Course deleted successfully');
     }
 }

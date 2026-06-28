@@ -6,41 +6,83 @@
 @section('content')
 
 <div class="card">
-<div class="card-body">
+    <div class="card-body">
 
-<form action="{{ route('courses.store') }}" method="POST">
-@csrf
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-<div class="row g-3">
+        <form action="{{ route('superadmin.courses.store') }}" method="POST">
+            @csrf
 
-<div class="col-md-6">
-<label>عنوان دوره</label>
-<input type="text" name="title" class="form-control" value="{{ old('title') }}">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label">عنوان دوره</label>
+                    <input type="text" name="title" class="form-control" value="{{ old('title') }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">قیمت</label>
+                    <input
+                        type="text"
+                        id="price"
+                        name="price"
+                        class="form-control"
+                        value="{{ old('price') }}"
+                        placeholder="مثلاً 1,500,000">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">ظرفیت</label>
+                    <input type="number" name="capacity" class="form-control" value="{{ old('capacity') }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">تاریخ شروع</label>
+                    <input type="date" name="start_date" class="form-control" value="{{ old('start_date') }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">تاریخ پایان</label>
+                    <input type="date" name="end_date" class="form-control" value="{{ old('end_date') }}">
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">توضیحات</label>
+                    <textarea name="description" class="form-control" rows="4">{{ old('description') }}</textarea>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-success mt-3">ثبت</button>
+            <a href="{{ route('superadmin.courses.index') }}" class="btn btn-secondary mt-3">بازگشت</a>
+        </form>
+
+    </div>
 </div>
 
-<div class="col-md-6">
-<label>ظرفیت</label>
-<input type="number" name="capacity" class="form-control" value="{{ old('capacity') }}">
-</div>
+<script>
+    const priceInput = document.getElementById('price');
 
-<div class="col-md-6">
-<label>تاریخ شروع (شمسی)</label>
-<input type="text" name="start_date_shamsi" class="form-control">
-</div>
+    priceInput.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/,/g, '').replace(/\D/g, '');
+        if (value) {
+            e.target.value = Number(value).toLocaleString('en-US');
+        } else {
+            e.target.value = '';
+        }
+    });
 
-<div class="col-md-6">
-<label>تاریخ پایان (شمسی)</label>
-<input type="text" name="end_date_shamsi" class="form-control">
-</div>
-
-</div>
-
-<button class="btn btn-success mt-3">ثبت</button>
-<a href="{{ route('courses.index') }}" class="btn btn-secondary mt-3">بازگشت</a>
-
-</form>
-
-</div>
-</div>
+    document.querySelector('form').addEventListener('submit', function () {
+        priceInput.value = priceInput.value.replace(/,/g, '');
+    });
+</script>
 
 @endsection

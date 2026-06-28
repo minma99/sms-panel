@@ -87,7 +87,7 @@ class="btn btn-warning">
 ویرایش
 </a>
 
-<a href="{{ route('trainees.index') }}"
+<a href="{{ route('superadmin.trainees.index') }}"
 class="btn btn-secondary">
 بازگشت
 </a>

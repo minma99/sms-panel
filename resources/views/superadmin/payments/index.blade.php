@@ -10,7 +10,7 @@
 <div class="card-header d-flex justify-content-between align-items-center">
 <h5 class="mb-0">پرداخت‌ها</h5>
 
-<a href="{{ route('payments.create') }}" class="btn btn-primary">
+<a href="{{ route('superadmin.payments.create') }}" class="btn btn-primary">
 ثبت پرداخت
 </a>
 </div>
@@ -25,7 +25,9 @@
 <tr>
 <th>ID</th>
 <th>کارآموز</th>
-<th>مبلغ</th>
+<th>مبلغ پرداخت</th>
+<th>تخفیف</th>
+<th>باقی‌مانده</th>
 <th>روش پرداخت</th>
 <th>تاریخ</th>
 <th width="180">عملیات</th>
@@ -40,9 +42,13 @@
 
 <td>{{ $payment->id }}</td>
 
-<td>{{ $payment->trainee->name ?? '-' }}</td>
+<td>{{ $payment->trainee->full_name ?? '-' }}</td>
 
 <td>{{ number_format($payment->amount) }}</td>
+
+<td>{{ number_format($payment->trainee->discount_amount ?? 0) }}</td>
+
+<td>{{ number_format($payment->trainee->remaining_amount ?? 0) }}</td>
 
 <td>{{ $payment->payment_method ?? '-' }}</td>
 
@@ -50,21 +56,21 @@
 
 <td class="d-flex justify-content-center gap-2">
 
-<a href="{{ route('payments.show',$payment->id) }}"
+<a href="{{ route('superadmin.payments.show',$payment->id) }}"
 class="btn btn-sm btn-info">
 مشاهده
 </a>
 
-<a href="{{ route('payments.edit',$payment->id) }}"
+<a href="{{ route('superadmin.payments.edit',$payment->id) }}"
 class="btn btn-sm btn-warning">
 ویرایش
 </a>
 
-<form action="{{ route('payments.destroy',$payment->id) }}" method="POST">
+<form action="{{ route('superadmin.payments.destroy',$payment->id) }}" method="POST" style="display:inline;">
 @csrf
 @method('DELETE')
 
-<button class="btn btn-sm btn-danger"
+<button type="submit" class="btn btn-sm btn-danger"
 onclick="return confirm('حذف شود؟')">
 حذف
 </button>
@@ -78,7 +84,7 @@ onclick="return confirm('حذف شود؟')">
 @empty
 
 <tr>
-<td colspan="6" class="text-muted py-4">
+<td colspan="8" class="text-muted py-4">
 پرداختی ثبت نشده
 </td>
 </tr>

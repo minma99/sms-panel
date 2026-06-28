@@ -28,7 +28,8 @@ class SuperAdminAuthController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->route('dashboard');
+            // اصلاح مهم
+            return redirect()->route('superadmin.dashboard');
         }
 
         return back()->withErrors([

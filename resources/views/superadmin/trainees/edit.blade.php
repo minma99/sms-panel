@@ -9,7 +9,7 @@
 <div class="card shadow-sm">
 <div class="card-body">
 
-<form action="{{ route('trainees.update',$trainee->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('superadmin.trainees.update',$trainee->id) }}" method="POST" enctype="multipart/form-data">
 
 @csrf
 @method('PUT')

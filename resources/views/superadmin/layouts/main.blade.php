@@ -43,26 +43,26 @@
         <!-- Courses, Trainees, Users, Payments (همان قبلی‌ها) -->
         <a href="#coursesMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>دوره‌ها</span><span>⌄</span></a>
         <div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMenuMobile">
-            <a href="{{ route('courses.index') }}" class="sidebar-sublink">لیست دوره‌ها</a>
-            <a href="{{ route('courses.create') }}" class="sidebar-sublink">ایجاد دوره</a>
+            <a href="{{ route('superadmin.courses.index') }}" class="sidebar-sublink">لیست دوره‌ها</a>
+            <a href="{{ route('superadmin.courses.create') }}" class="sidebar-sublink">ایجاد دوره</a>
         </div>
 
         <a href="#traineesMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>کارآموزان</span><span>⌄</span></a>
         <div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMenuMobile">
-            <a href="{{ route('trainees.index') }}" class="sidebar-sublink">لیست کارآموزان</a>
-            <a href="{{ route('trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
+            <a href="{{ route('superadmin.trainees.index') }}" class="sidebar-sublink">لیست کارآموزان</a>
+            <a href="{{ route('superadmin.trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
         </div>
 
         <a href="#usersMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>کاربران</span><span>⌄</span></a>
         <div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersMenuMobile">
-            <a href="{{ route('users.index') }}" class="sidebar-sublink">لیست کاربران</a>
-            <a href="{{ route('users.create') }}" class="sidebar-sublink">ایجاد کاربر</a>
+            <a href="{{ route('superadmin.users.index') }}" class="sidebar-sublink">لیست کاربران</a>
+            <a href="{{ route('superadmin.users.create') }}" class="sidebar-sublink">ایجاد کاربر</a>
         </div>
 
         <a href="#paymentsMenuMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between"><span>پرداخت‌ها</span><span>⌄</span></a>
         <div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMenuMobile">
-            <a href="{{ route('payments.index') }}" class="sidebar-sublink">لیست پرداخت‌ها</a>
-            <a href="{{ route('payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
+            <a href="{{ route('superadmin.payments.index') }}" class="sidebar-sublink">لیست پرداخت‌ها</a>
+            <a href="{{ route('superadmin.payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
         </div>
 
         {{-- بخش جدید سوپرادمین --}}
@@ -70,7 +70,7 @@
             <hr class="text-secondary">
             <a href="#superAdminMobile" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between text-warning"><span>پنل ارشد</span><span>⌄</span></a>
             <div class="collapse {{ $superAdminOpen ? 'show' : '' }}" id="superAdminMobile">
-                <a href="{{ route('superadmin.sms.settings') }}" class="sidebar-sublink">تنظیمات پیامک</a>
+                <a href="{{ route('superadmin.settings') }}" class="sidebar-sublink">تنظیمات پیامک</a>
             </div>
         @endif
     </div>
@@ -84,26 +84,26 @@
     <!-- Courses, Trainees, Users, Payments (همان قبلی‌ها) -->
     <a href="#coursesMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $coursesOpen ? 'active' : '' }}"><span>دوره‌ها</span><span class="arrow {{ $coursesOpen ? 'rotate' : '' }}">⌄</span></a>
     <div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMenuDesktop">
-        <a href="{{ route('courses.index') }}" class="sidebar-sublink {{ request()->routeIs('courses.index') ? 'active' : '' }}">لیست دوره‌ها</a>
-        <a href="{{ route('courses.create') }}" class="sidebar-sublink {{ request()->routeIs('courses.create') ? 'active' : '' }}">ایجاد دوره</a>
+        <a href="{{ route('superadmin.courses.index') }}" class="sidebar-sublink {{ request()->routeIs('courses.index') ? 'active' : '' }}">لیست دوره‌ها</a>
+        <a href="{{ route('superadmin.courses.create') }}" class="sidebar-sublink {{ request()->routeIs('courses.create') ? 'active' : '' }}">ایجاد دوره</a>
     </div>
 
     <a href="#traineesMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $traineesOpen ? 'active' : '' }}"><span>کارآموزان</span><span class="arrow {{ $traineesOpen ? 'rotate' : '' }}">⌄</span></a>
     <div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMenuDesktop">
-        <a href="{{ route('trainees.index') }}" class="sidebar-sublink">لیست کارآموزان</a>
-        <a href="{{ route('trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
+        <a href="{{ route('superadmin.trainees.index') }}" class="sidebar-sublink">لیست کارآموزان</a>
+        <a href="{{ route('superadmin.trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
     </div>
 
     <a href="#usersMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $usersOpen ? 'active' : '' }}"><span>کاربران</span><span class="arrow {{ $usersOpen ? 'rotate' : '' }}">⌄</span></a>
     <div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersMenuDesktop">
-        <a href="{{ route('users.index') }}" class="sidebar-sublink">لیست کاربران</a>
-        <a href="{{ route('users.create') }}" class="sidebar-sublink">ایجاد کاربر</a>
+        <a href="{{ route('superadmin.users.index') }}" class="sidebar-sublink">لیست کاربران</a>
+        <a href="{{ route('superadmin.users.create') }}" class="sidebar-sublink">ایجاد کاربر</a>
     </div>
 
     <a href="#paymentsMenuDesktop" data-bs-toggle="collapse" class="sidebar-link d-flex justify-content-between align-items-center {{ $paymentsOpen ? 'active' : '' }}"><span>پرداخت‌ها</span><span class="arrow {{ $paymentsOpen ? 'rotate' : '' }}">⌄</span></a>
     <div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMenuDesktop">
-        <a href="{{ route('payments.index') }}" class="sidebar-sublink">لیست پرداخت‌ها</a>
-        <a href="{{ route('payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
+        <a href="{{ route('superadmin.payments.index') }}" class="sidebar-sublink">لیست پرداخت‌ها</a>
+        <a href="{{ route('superadmin.payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
     </div>
 
     {{-- بخش جدید سوپرادمین برای دسکتاپ --}}
@@ -114,7 +114,7 @@
             <span class="arrow {{ $superAdminOpen ? 'rotate' : '' }}">⌄</span>
         </a>
         <div class="collapse {{ $superAdminOpen ? 'show' : '' }}" id="superAdminDesktop">
-            <a href="{{ route('superadmin.sms.settings') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.sms.settings') ? 'active' : '' }}">تنظیمات پیامک</a>
+            <a href="{{ route('superadmin.settings') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.settings') ? 'active' : '' }}">تنظیمات پیامک</a>
         </div>
     @endif
 </div>

@@ -1,93 +1,103 @@
 @extends('superadmin.layouts.main')
 
 @section('title','دوره‌ها')
-
 @section('page_title','مدیریت دوره‌ها')
 
 @section('content')
 
-<div class="bg-white rounded shadow">
+<div class="card">
 
-    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+<div class="card-header d-flex justify-content-between align-items-center">
+<h5 class="mb-0">لیست دوره‌ها</h5>
 
-        <h5 class="mb-0">لیست دوره‌ها</h5>
+<a href="{{ route('superadmin.courses.create') }}" class="btn btn-primary">
+افزودن دوره
+</a>
+</div>
 
-        <a href="{{ route('courses.create') }}"
-           class="btn btn-primary">
-            افزودن دوره
-        </a>
+<div class="card-body p-0">
 
-    </div>
+<table class="table table-striped mb-0">
 
-    <div class="table-responsive">
+<thead class="table-light">
+<tr>
+<th>عنوان</th>
+<th>قیمت</th>
+<th>مدت</th>
+<th>ظرفیت</th>
+<th>تاریخ شروع</th>
+<th>تاریخ پایان</th>
+<th width="180">عملیات</th>
+</tr>
+</thead>
 
-        <table class="table table-hover mb-0">
+<tbody>
 
-            <thead class="table-light">
-                <tr>
-                    <th>عنوان دوره</th>
-                    <th>ظرفیت</th>
-                    <th>تاریخ شروع</th>
-                    <th>تاریخ پایان</th>
-                    <th width="150">عملیات</th>
-                </tr>
-            </thead>
+@forelse($courses as $course)
 
-            <tbody>
+<tr>
 
-                @forelse($courses as $course)
+<td>{{ $course->title }}</td>
 
-                <tr>
+<td>{{ number_format($course->price) }}</td>
 
-                    <td>{{ $course->title }}</td>
+<td>{{ $course->duration }}</td>
 
-                    <td>{{ $course->capacity }}</td>
+<td>{{ $course->capacity }}</td>
 
-                    <td>{{ $course->start_date_gregorian }}</td>
+<td>{{ $course->start_date }}</td>
 
-                    <td>{{ $course->end_date_gregorian }}</td>
+<td>{{ $course->end_date }}</td>
 
-                    <td>
+<td>
 
-                        <a href="{{ route('courses.edit',$course->id) }}"
-                           class="btn btn-sm btn-warning">
-                            ویرایش
-                        </a>
+<div class="d-flex gap-2">
 
-                        <form action="{{ route('courses.destroy',$course->id) }}"
-                              method="POST"
-                              style="display:inline">
+<a href="{{ route('superadmin.courses.show',$course->id) }}"
+class="btn btn-sm btn-info">
+مشاهده
+</a>
 
-                            @csrf
-                            @method('DELETE')
+<a href="{{ route('superadmin.courses.edit',$course->id) }}"
+class="btn btn-sm btn-warning">
+ویرایش
+</a>
 
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('آیا از حذف این دوره مطمئن هستید؟')">
-                                حذف
-                            </button>
+<form action="{{ route('superadmin.courses.destroy',$course->id) }}"
+method="POST"
+onsubmit="return confirm('آیا از حذف این دوره مطمئن هستید؟')">
 
-                        </form>
+@csrf
+@method('DELETE')
 
-                    </td>
+<button type="submit" class="btn btn-sm btn-danger">
+حذف
+</button>
 
-                </tr>
+</form>
 
-                @empty
+</div>
 
-                <tr>
-                    <td colspan="5" class="text-center p-4 text-muted">
-                        هیچ دوره‌ای ثبت نشده است
-                    </td>
-                </tr>
+</td>
 
-                @endforelse
 
-            </tbody>
+</tr>
 
-        </table>
+@empty
 
-    </div>
+<tr>
+<td colspan="7" class="text-center p-4 text-muted">
+هیچ دوره‌ای ثبت نشده است
+</td>
+</tr>
 
+@endforelse
+
+</tbody>
+
+</table>
+
+</div>
 </div>
 
 @endsection

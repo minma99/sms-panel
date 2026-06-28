@@ -1,69 +1,71 @@
 @extends('superadmin.layouts.main')
 
-@section('title','Course Details')
-
-@section('page_title','Course Details')
+@section('title','جزئیات دوره')
+@section('page_title','جزئیات دوره')
 
 @section('content')
 
-<div class="bg-white p-6 rounded-xl shadow max-w-3xl">
+<div class="card">
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-<div>
-<p class="text-sm text-gray-500">Title</p>
-<p class="text-lg font-semibold text-gray-800">
-{{ $course->title }}
-</p>
+<div class="card-header">
+<h5 class="mb-0">اطلاعات دوره</h5>
 </div>
 
-<div>
-<p class="text-sm text-gray-500">Capacity</p>
-<p class="text-lg font-semibold text-gray-800">
-{{ $course->capacity }}
-</p>
+<div class="card-body">
+
+<div class="row g-4">
+
+<div class="col-md-6">
+<label class="text-muted">عنوان دوره</label>
+<div class="fw-bold">{{ $course->title }}</div>
 </div>
 
-<div>
-<p class="text-sm text-gray-500">Start Date (Gregorian)</p>
-<p class="text-lg text-gray-800">
-{{ $course->start_date_gregorian }}
-</p>
+<div class="col-md-6">
+<label class="text-muted">قیمت</label>
+<div class="fw-bold">{{ number_format($course->price) }}</div>
 </div>
 
-<div>
-<p class="text-sm text-gray-500">End Date (Gregorian)</p>
-<p class="text-lg text-gray-800">
-{{ $course->end_date_gregorian }}
-</p>
+<div class="col-md-6">
+<label class="text-muted">مدت دوره</label>
+<div class="fw-bold">{{ $course->duration }}</div>
 </div>
 
-<div>
-<p class="text-sm text-gray-500">Start Date (Shamsi)</p>
-<p class="text-lg text-gray-800">
-{{ $course->start_date_shamsi }}
-</p>
+<div class="col-md-6">
+<label class="text-muted">ظرفیت</label>
+<div class="fw-bold">{{ $course->capacity }}</div>
 </div>
 
-<div>
-<p class="text-sm text-gray-500">End Date (Shamsi)</p>
-<p class="text-lg text-gray-800">
-{{ $course->end_date_shamsi }}
-</p>
+<div class="col-md-6">
+<label class="text-muted">تاریخ شروع</label>
+<div class="fw-bold">{{ $course->start_date }}</div>
+</div>
+
+<div class="col-md-6">
+<label class="text-muted">تاریخ پایان</label>
+<div class="fw-bold">{{ $course->end_date }}</div>
+</div>
+
+<div class="col-md-12">
+<label class="text-muted">توضیحات</label>
+<div class="fw-bold">
+{{ $course->description }}
+</div>
 </div>
 
 </div>
 
-<div class="mt-6 flex gap-3">
+</div>
 
-<a href="{{ route('super_admin.courses.index') }}"
-class="bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400">
-Back
+<div class="card-footer">
+
+<a href="{{ route('superadmin.courses.index') }}"
+class="btn btn-secondary">
+بازگشت
 </a>
 
-<a href="{{ route('super_admin.courses.edit',$course->id) }}"
-class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
-Edit
+<a href="{{ route('superadmin.courses.edit',$course->id) }}"
+class="btn btn-primary">
+ویرایش
 </a>
 
 </div>
