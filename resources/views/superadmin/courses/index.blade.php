@@ -45,9 +45,9 @@
 
 <td>{{ $course->capacity }}</td>
 
-<td>{{ $course->start_date }}</td>
+<td>{{ $course->start_date_shamsi }}</td>
+<td>{{ $course->end_date_shamsi }}</td>
 
-<td>{{ $course->end_date }}</td>
 
 <td>
 

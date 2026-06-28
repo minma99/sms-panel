@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Morilog\Jalali\Jalalian;
 
 class CourseController extends Controller
 {
@@ -26,12 +27,26 @@ class CourseController extends Controller
             'price' => 'required|numeric',
             'duration' => 'nullable|integer',
             'capacity' => 'nullable|integer',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
+            'start_date' => 'nullable|string',
+            'end_date' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 
-        Course::create($request->all());
+        $data = $request->all();
+
+        if ($request->start_date) {
+            $data['start_date'] = Jalalian::fromFormat('Y/m/d', $request->start_date)
+                ->toCarbon()
+                ->toDateString();
+        }
+
+        if ($request->end_date) {
+            $data['end_date'] = Jalalian::fromFormat('Y/m/d', $request->end_date)
+                ->toCarbon()
+                ->toDateString();
+        }
+
+        Course::create($data);
 
         return redirect()->route('superadmin.courses.index');
     }
@@ -57,12 +72,26 @@ class CourseController extends Controller
             'price' => 'required|numeric',
             'duration' => 'nullable|integer',
             'capacity' => 'nullable|integer',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
+            'start_date' => 'nullable|string',
+            'end_date' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 
-        $course->update($request->all());
+        $data = $request->all();
+
+        if ($request->start_date) {
+            $data['start_date'] = Jalalian::fromFormat('Y/m/d', $request->start_date)
+                ->toCarbon()
+                ->toDateString();
+        }
+
+        if ($request->end_date) {
+            $data['end_date'] = Jalalian::fromFormat('Y/m/d', $request->end_date)
+                ->toCarbon()
+                ->toDateString();
+        }
+
+        $course->update($data);
 
         return redirect()->route('superadmin.courses.index');
     }

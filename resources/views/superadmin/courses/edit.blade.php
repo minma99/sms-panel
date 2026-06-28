@@ -32,8 +32,9 @@ value="{{ old('title',$course->title) }}">
 
 <div class="col-md-6">
 <label>قیمت</label>
-<input type="number" name="price" class="form-control"
-value="{{ old('price',$course->price) }}">
+<input type="text" id="price" name="price"
+class="form-control"
+value="{{ old('price', number_format($course->price)) }}">
 </div>
 
 <div class="col-md-6">
@@ -50,14 +51,14 @@ value="{{ old('capacity',$course->capacity) }}">
 
 <div class="col-md-6">
 <label>تاریخ شروع</label>
-<input type="date" name="start_date" class="form-control"
-value="{{ old('start_date',$course->start_date) }}">
+<input type="text" name="start_date" class="form-control"
+value="{{ old('start_date',$course->start_date_shamsi) }}">
 </div>
 
 <div class="col-md-6">
 <label>تاریخ پایان</label>
-<input type="date" name="end_date" class="form-control"
-value="{{ old('end_date',$course->end_date) }}">
+<input type="text" name="end_date" class="form-control"
+value="{{ old('end_date',$course->end_date_shamsi) }}">
 </div>
 
 <div class="col-md-12">
@@ -74,5 +75,23 @@ value="{{ old('end_date',$course->end_date) }}">
 
 </div>
 </div>
+
+<script>
+const priceInput = document.getElementById('price');
+
+priceInput.addEventListener('input', function (e) {
+let value = e.target.value.replace(/,/g, '').replace(/\D/g, '');
+
+if (value) {
+e.target.value = Number(value).toLocaleString('en-US');
+} else {
+e.target.value = '';
+}
+});
+
+document.querySelector('form').addEventListener('submit', function () {
+priceInput.value = priceInput.value.replace(/,/g, '');
+});
+</script>
 
 @endsection
