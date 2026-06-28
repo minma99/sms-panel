@@ -5,26 +5,29 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Trainee;
-use App\Models\Course;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
     public function index()
     {
-        $payments = Payment::with(['trainee.course', 'trainee.payments'])
+        $payments = Payment::with(['trainee.course'])
             ->latest()
             ->paginate(10);
 
         return view('superadmin.payments.index', compact('payments'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $trainees = Trainee::all();
-        $courses = Course::all();
+        $trainees = Trainee::with('payments')->get();
 
-        return view('superadmin.payments.create', compact('trainees', 'courses'));
+        $selectedTrainee = $request->trainee_id;
+
+        return view('superadmin.payments.create', compact(
+            'trainees',
+            'selectedTrainee'
+        ));
     }
 
     public function store(Request $request)
@@ -36,16 +39,18 @@ class PaymentController extends Controller
         ]);
 
         Payment::create([
-            'trainee_id'  => $request->trainee_id,
-            'amount'      => $request->amount,
-            'payment_date'=> $request->payment_date ?? now(),
-            'status'      => $request->status ?? 'paid',
-            'payment_method' => $request->payment_method ?? null,
+            'trainee_id'   => $request->trainee_id,
+            'amount'       => $request->amount,
+            'payment_date' => $request->payment_date ?? now(),
+            'status'       => $request->status ?? 'paid',
+            'payment_method' => $request->payment_method,
+            'tracking_code' => $request->tracking_code,
+            'note' => $request->note,
         ]);
 
         return redirect()
             ->route('superadmin.payments.index')
-            ->with('success', 'پرداخت با موفقیت اضافه شد.');
+            ->with('success', 'پرداخت با موفقیت ثبت شد.');
     }
 
     public function show($id)
@@ -53,29 +58,15 @@ class PaymentController extends Controller
         $payment = Payment::with(['trainee.course', 'trainee.payments'])
             ->findOrFail($id);
 
-        $trainee = $payment->trainee;
-        $coursePrice = $trainee->course->price ?? 0;
-        $discountAmount = $trainee->discount_amount ?? 0;
-        $totalPaidAmount = $trainee->payments->sum('amount');
-        $finalFee = $coursePrice - $discountAmount;
-        $remainingAmount = max(0, $finalFee - $totalPaidAmount);
-
-        return view('superadmin.payments.show', compact(
-            'payment',
-            'coursePrice',
-            'discountAmount',
-            'totalPaidAmount',
-            'remainingAmount'
-        ));
+        return view('superadmin.payments.show', compact('payment'));
     }
 
     public function edit($id)
     {
         $payment = Payment::findOrFail($id);
         $trainees = Trainee::all();
-        $courses = Course::all();
 
-        return view('superadmin.payments.edit', compact('payment', 'trainees', 'courses'));
+        return view('superadmin.payments.edit', compact('payment', 'trainees'));
     }
 
     public function update(Request $request, $id)
@@ -89,16 +80,18 @@ class PaymentController extends Controller
         ]);
 
         $payment->update([
-            'trainee_id'  => $request->trainee_id,
-            'amount'      => $request->amount,
-            'payment_date'=> $request->payment_date ?? $payment->payment_date,
-            'status'      => $request->status ?? $payment->status,
-            'payment_method' => $request->payment_method ?? $payment->payment_method,
+            'trainee_id'   => $request->trainee_id,
+            'amount'       => $request->amount,
+            'payment_date' => $request->payment_date ?? $payment->payment_date,
+            'status'       => $request->status ?? $payment->status,
+            'payment_method' => $request->payment_method,
+            'tracking_code' => $request->tracking_code,
+            'note' => $request->note,
         ]);
 
         return redirect()
             ->route('superadmin.payments.index')
-            ->with('success', 'پرداخت با موفقیت به‌روزرسانی شد.');
+            ->with('success', 'پرداخت بروزرسانی شد.');
     }
 
     public function destroy($id)
@@ -107,6 +100,6 @@ class PaymentController extends Controller
 
         return redirect()
             ->route('superadmin.payments.index')
-            ->with('success', 'پرداخت با موفقیت حذف شد.');
+            ->with('success', 'پرداخت حذف شد.');
     }
 }

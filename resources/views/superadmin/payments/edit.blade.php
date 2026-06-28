@@ -22,17 +22,14 @@
 </label>
 
 <select name="trainee_id" class="form-select">
-
-@foreach($trainees as $trainee)
-
-<option value="{{ $trainee->id }}"
-{{ $payment->trainee_id == $trainee->id ? 'selected' : '' }}>
-{{ $trainee->name }}
-</option>
-
-@endforeach
-
+    @foreach($trainees as $trainee)
+        <option value="{{ $trainee->id }}"
+            {{ $payment->trainee_id == $trainee->id ? 'selected' : '' }}>
+            {{ $trainee->full_name }}
+        </option>
+    @endforeach
 </select>
+
 
 </div>
 

@@ -1,98 +1,66 @@
-@extends('superadmin.layouts.main')
+@extends('layouts.superadmin')
 
-@section('title','جزئیات کارآموز')
-@section('page_title','جزئیات کارآموز')
+@section('title', 'مشاهده کارآموز')
 
 @section('content')
+<div class="container mt-4">
 
-@php
-$discount = ($trainee->total_fee * $trainee->discount_percent) / 100;
-$final_fee = $trainee->total_fee - $discount;
-$paid = $trainee->payments->sum('amount');
-$remaining = $final_fee - $paid;
-@endphp
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                اطلاعات کارآموز
+            </h5>
+        </div>
 
-<div class="card shadow-sm">
-<div class="card-body">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4 fw-bold">نام و نام خانوادگی:</div>
+                <div class="col-md-8">
+                    {{ $trainee->full_name }}
+                </div>
+            </div>
 
-<h4 class="mb-4">
-{{ $trainee->first_name }} {{ $trainee->last_name }}
-</h4>
+            <div class="row mb-3">
+                <div class="col-md-4 fw-bold">کد ملی:</div>
+                <div class="col-md-8">
+                    {{ $trainee->national_code ?? '-' }}
+                </div>
+            </div>
 
-<table class="table table-bordered">
+            {{-- ✅ ستون جدید تلفن --}}
+            <div class="row mb-3">
+                <div class="col-md-4 fw-bold">تلفن:</div>
+                <div class="col-md-8">
+                    {{ $trainee->phone ?? '-' }}
+                </div>
+            </div>
 
-<tr>
-<th>نام پدر</th>
-<td>{{ $trainee->father_name }}</td>
-</tr>
+            <div class="row mb-3">
+                <div class="col-md-4 fw-bold">ایمیل:</div>
+                <div class="col-md-8">
+                    {{ $trainee->email ?? '-' }}
+                </div>
+            </div>
 
-<tr>
-<th>کد ملی</th>
-<td>{{ $trainee->national_code }}</td>
-</tr>
+            <div class="row mb-3">
+                <div class="col-md-4 fw-bold">تاریخ ثبت:</div>
+                <div class="col-md-8">
+                    {{ $trainee->created_at ? $trainee->created_at->format('Y/m/d H:i') : '-' }}
+                </div>
+            </div>
 
-<tr>
-<th>تلفن</th>
-<td>{{ $trainee->phone }}</td>
-</tr>
+        </div>
 
-<tr>
-<th>دوره</th>
-<td>{{ $trainee->course->title ?? '-' }}</td>
-</tr>
+        <div class="card-footer text-end">
+            <a href="{{ route('superadmin.trainees.index') }}" class="btn btn-secondary">
+                بازگشت
+            </a>
 
-<tr>
-<th>وضعیت ثبت نام</th>
-<td>{{ $trainee->registration_status }}</td>
-</tr>
-
-<tr>
-<th>شهریه کل</th>
-<td>{{ number_format($trainee->total_fee) }}</td>
-</tr>
-
-<tr>
-<th>درصد تخفیف</th>
-<td>{{ $trainee->discount_percent }} %</td>
-</tr>
-
-<tr>
-<th>مبلغ تخفیف</th>
-<td>{{ number_format($discount) }}</td>
-</tr>
-
-<tr>
-<th>شهریه نهایی</th>
-<td>{{ number_format($final_fee) }}</td>
-</tr>
-
-<tr>
-<th>مجموع پرداخت</th>
-<td class="text-success">
-{{ number_format($paid) }}
-</td>
-</tr>
-
-<tr>
-<th>باقی مانده</th>
-<td class="text-danger">
-{{ number_format($remaining) }}
-</td>
-</tr>
-
-</table>
-
-<a href="{{ route('trainees.edit',$trainee->id) }}"
-class="btn btn-warning">
-ویرایش
-</a>
-
-<a href="{{ route('superadmin.trainees.index') }}"
-class="btn btn-secondary">
-بازگشت
-</a>
+            <a href="{{ route('superadmin.trainees.edit', $trainee->id) }}" class="btn btn-warning">
+                ویرایش
+            </a>
+        </div>
+    </div>
 
 </div>
-</div>
-
 @endsection

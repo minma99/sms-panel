@@ -21,14 +21,17 @@
                             <div class="col-md-6">
                                 <label class="form-label">کارآموز</label>
                                 <select name="trainee_id" class="form-select" required>
-                                    <option value="">انتخاب کارآموز</option>
-                                    @foreach($trainees as $trainee)
-                                        <option value="{{ $trainee->id }}"
-                                            {{ old('trainee_id') == $trainee->id ? 'selected' : '' }}>
-                                            {{ $trainee->full_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+<option value="">انتخاب کارآموز</option>
+
+@foreach($trainees as $trainee)
+<option value="{{ $trainee->id }}"
+{{ old('trainee_id', $selectedTrainee ?? null) == $trainee->id ? 'selected' : '' }}>
+{{ $trainee->full_name }}
+</option>
+@endforeach
+
+</select>
+
                                 @error('trainee_id')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
