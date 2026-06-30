@@ -19,7 +19,7 @@
                 <div class="col-md-6">
                     <label class="form-label fw-bold">نام کارآموز</label>
                     <div class="form-control bg-light">
-                        {{ $payment->trainee->full_name ?? ($payment->trainee->first_name . ' ' . $payment->trainee->last_name ?? '-') }}
+                        {{ $payment->trainee->full_name ?? trim(($payment->trainee->first_name ?? '') . ' ' . ($payment->trainee->last_name ?? '')) ?: '-' }}
                     </div>
                 </div>
 

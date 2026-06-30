@@ -2,24 +2,24 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="card shadow">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">لیست پرداخت‌ها</h5>
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+            <h5 class="mb-0">لیست کلی پرداخت‌ها</h5>
             <a href="{{ route('superadmin.payments.create') }}" class="btn btn-sm btn-success">
-                <i class="fas fa-plus"></i> ثبت پرداخت جدید
+                <i class="fas fa-plus-circle"></i> ثبت پرداخت جدید
             </a>
         </div>
+
         <div class="card-body">
             {{-- پیام فیلتر --}}
             @if(request('trainee_id'))
                 <div class="alert alert-info d-flex justify-content-between align-items-center">
                     <span>
-                        <i class="fas fa-filter"></i>
-                        در حال نمایش پرداخت‌های:
-                        <strong>{{ $filteredTrainee->full_name ?? 'کارآموز انتخاب‌شده' }}</strong>
+                        <i class="fas fa-filter"></i> در حال نمایش پرداخت‌های کارآموز:
+                        <strong>{{ $filteredTrainee->full_name ?? 'انتخاب‌شده' }}</strong>
                     </span>
                     <a href="{{ route('superadmin.payments.index') }}" class="btn btn-sm btn-secondary">
-                        نمایش همه پرداخت‌ها
+                        <i class="fas fa-list"></i> نمایش همه پرداخت‌ها
                     </a>
                 </div>
             @endif
@@ -39,7 +39,7 @@
                             <th>نام کارآموز</th>
                             <th>دوره</th>
                             <th>مبلغ پرداختی</th>
-                            <th>تاریخ پرداخت (شمسی)</th>
+                            <th>تاریخ پرداخت</th>
                             <th>باقی‌مانده</th>
                             <th>توضیحات</th>
                             <th>تاریخ ثبت</th>
@@ -49,7 +49,7 @@
                     <tbody>
                         @forelse($payments as $payment)
                         <tr>
-                            <td>{{ $payment->id }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $payment->trainee->full_name ?? '—' }}</td>
                             <td>{{ $payment->trainee->course->title ?? '—' }}</td>
                             <td class="text-success fw-bold">{{ number_format($payment->amount) }} تومان</td>
@@ -59,12 +59,19 @@
                             <td>{{ \Morilog\Jalali\Jalalian::fromCarbon($payment->created_at)->format('Y/m/d') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
+                                    {{-- دکمه مشاهده جزئیات --}}
+                                    <a href="{{ route('superadmin.payments.show', $payment->id) }}" 
+                                       class="btn btn-sm btn-info text-white" title="مشاهده جزئیات">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    {{-- دکمه ویرایش --}}
                                     <a href="{{ route('superadmin.payments.edit', $payment->id) }}"
                                        class="btn btn-sm btn-warning text-white" title="ویرایش">
                                         <i class="fas fa-edit"></i>
                                     </a>
+                                    {{-- دکمه حذف --}}
                                     <form action="{{ route('superadmin.payments.destroy', $payment->id) }}"
-                                          method="POST"
+                                          method="POST" class="d-inline"
                                           onsubmit="return confirm('آیا از حذف این پرداخت مطمئن هستید؟')">
                                         @csrf
                                         @method('DELETE')
@@ -83,7 +90,11 @@
                     </tbody>
                 </table>
             </div>
-            {{ $payments->links() }}
+            
+            {{-- صفحه‌بندی --}}
+            <div class="d-flex justify-content-center mt-3">
+                {{ $payments->links() }}
+            </div>
         </div>
     </div>
 </div>
