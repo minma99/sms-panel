@@ -3,185 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>داشبورد کاربر</title>
+    <title>داشبورد کارآموز</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background: #f8f9fa;
-            font-family: tahoma, sans-serif;
-        }
-        .navbar-brand {
-            font-weight: bold;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
-            border-radius: 16px;
-        }
-        .card-header {
-            background: #0d6efd;
-            color: #fff;
-            border-radius: 16px 16px 0 0 !important;
-            font-weight: bold;
-        }
-        .info-label {
-            color: #6c757d;
-            font-size: 14px;
-        }
-        .info-value {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        footer {
-            margin-top: 40px;
-            padding: 20px 0;
-            color: #777;
-            text-align: center;
-            font-size: 14px;
-        }
+        body { background: #f4f7f6; font-family: Tahoma, sans-serif; }
+        .card { border: none; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .card-header { background: #2c3e50; color: #fff; border-radius: 15px 15px 0 0 !important; font-weight: bold; padding: 15px; }
+        .info-label { color: #7f8c8d; font-size: 0.85rem; }
+        .info-value { font-weight: 700; color: #2c3e50; }
+        .bg-gradient-blue { background: linear-gradient(45deg, #0d6efd, #0dcaf0); }
     </style>
 </head>
 <body>
 
-<!-- Header -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
-        <a class="navbar-brand" href="#">پنل کاربر</a>
-        <div class="ms-auto">
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button class="btn btn-outline-light btn-sm">خروج</button>
-            </form>
-        </div>
+        <a class="navbar-brand" href="#"><i class="fas fa-user-graduate"></i> پنل کاربری</a>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="btn btn-outline-danger btn-sm"><i class="fas fa-sign-out-alt"></i> خروج</button>
+        </form>
     </div>
 </nav>
 
-<div class="container py-4">
-
-    <div class="mb-4">
-        <h3 class="fw-bold">داشبورد کاربر</h3>
-        <p class="text-muted mb-0">اطلاعات ثبت‌نام، پرداخت‌ها و فایل‌های شما در این بخش نمایش داده می‌شود.</p>
-    </div>
-
+<div class="container py-5">
     @if(!$trainee)
-        <div class="alert alert-warning">
-            اطلاعات کارآموزی برای شما ثبت نشده است.
-        </div>
+        <div class="alert alert-warning text-center">اطلاعات پرونده شما یافت نشد. با پشتیبانی تماس بگیرید.</div>
     @else
-
-        <!-- اطلاعات کارآموز -->
-        <div class="card mb-4">
-            <div class="card-header">اطلاعات کارآموز</div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="info-label">نام و نام خانوادگی</div>
-                        <div class="info-value">{{ $trainee->first_name }} {{ $trainee->last_name }}</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-label">نام پدر</div>
-                        <div class="info-value">{{ $trainee->father_name }}</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-label">شماره موبایل</div>
-                        <div class="info-value">{{ $trainee->phone }}</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-label">دوره</div>
-                        <div class="info-value">{{ $trainee->course->title ?? '-' }}</div>
-                    </div>
+        <div class="row">
+            <!-- پروفایل -->
+            <div class="col-lg-4">
+                <div class="card mb-4 text-center p-3">
+                    @if($trainee->image)
+                        <img src="{{ asset('storage/'.$trainee->image) }}" class="rounded-circle mb-3 shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                    @else
+                        <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;"><i class="fas fa-user fa-3x text-muted"></i></div>
+                    @endif
+                    <h5>{{ $trainee->first_name }} {{ $trainee->last_name }}</h5>
+                    <span class="badge bg-primary">{{ $trainee->course->title ?? 'بدون دوره' }}</span>
                 </div>
             </div>
-        </div>
 
-        <!-- عکس -->
-        @if($trainee->image)
-        <div class="card mb-4">
-            <div class="card-header">عکس کارآموز</div>
-            <div class="card-body text-center">
-                <img src="{{ asset('storage/'.$trainee->image) }}" class="img-fluid rounded" style="max-width: 220px;">
-            </div>
-        </div>
-        @endif
-
-        <!-- فایل -->
-        @if($trainee->file)
-        <div class="card mb-4">
-            <div class="card-header">فایل شما</div>
-            <div class="card-body">
-                <a href="{{ asset('storage/'.$trainee->file) }}" class="btn btn-primary" download>
-                    دانلود فایل
-                </a>
-            </div>
-        </div>
-        @endif
-
-        <!-- مالی -->
-        <div class="card mb-4">
-            <div class="card-header">وضعیت مالی</div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="info-label">شهریه کل</div>
-                        <div class="info-value">{{ number_format($totalFee) }} تومان</div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="info-label">مبلغ تخفیف</div>
-                        <div class="info-value">{{ number_format($discount) }} تومان</div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="info-label">شهریه نهایی</div>
-                        <div class="info-value">{{ number_format($finalFee) }} تومان</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-label">پرداخت شده</div>
-                        <div class="info-value text-success">{{ number_format($paid) }} تومان</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-label">باقی مانده</div>
-                        <div class="info-value text-danger">{{ number_format($remaining) }} تومان</div>
+            <!-- وضعیت مالی -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header"><i class="fas fa-wallet"></i> وضعیت مالی</div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="info-label">شهریه کل</div>
+                                <div class="info-value text-dark">{{ number_format($trainee->total_fee) }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-label">تخفیف</div>
+                                <div class="info-value text-warning">{{ number_format($trainee->discount_amount) }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-label">پرداخت‌شده</div>
+                                <div class="info-value text-success">{{ number_format($trainee->paid_amount) }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-label">مانده بدهی</div>
+                                <div class="info-value text-danger">{{ number_format($trainee->remaining_amount) }}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- پرداخت‌ها -->
-        <div class="card">
-            <div class="card-header">پرداخت‌ها</div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>مبلغ</th>
-                                <th>تاریخ پرداخت</th>
-                                <th>روش پرداخت</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($trainee->payments as $payment)
+                <!-- تاریخچه پرداخت‌ها -->
+                <div class="card">
+                    <div class="card-header"><i class="fas fa-receipt"></i> لیست تراکنش‌ها</div>
+                    <div class="card-body">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <td>{{ number_format($payment->amount) }} تومان</td>
-                                    <td>{{ $payment->payment_date_shamsi ?? '-' }}</td>
-                                    <td>{{ $payment->payment_method ?? '-' }}</td>
+                                    <th>مبلغ</th>
+                                    <th>تاریخ</th>
+                                    <th>روش</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted">پرداختی ثبت نشده</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @forelse($trainee->payments as $payment)
+                                    <tr>
+                                        <td>{{ number_format($payment->amount) }} تومان</td>
+                                        <td>{{ $payment->payment_date_shamsi ?? '-' }}</td>
+                                        <td>{{ $payment->payment_method ?? 'نامشخص' }}</td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="3" class="text-center text-muted">تراکنشی ثبت نشده است</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-
     @endif
 </div>
-
-<footer>
-    © {{ date('Y') }} - تمامی حقوق محفوظ است
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

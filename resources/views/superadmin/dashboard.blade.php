@@ -1,171 +1,63 @@
 @extends('superadmin.layouts.main')
 
-@section('title','داشبورد')
-@section('page_title','داشبورد مدیریت')
+@section('title', 'داشبورد')
+@section('page_title', 'داشبورد مدیریت')
 
 @section('content')
-
+<!-- آمار کل -->
 <div class="row g-4 mb-4">
-
-<div class="col-md-3">
-<div class="card shadow-sm">
-<div class="card-body text-center">
-<h6 class="text-muted">تعداد دوره‌ها</h6>
-<h3>{{ $coursesCount }}</h3>
+    @foreach(['تعداد دوره‌ها' => $coursesCount, 'کارآموزان' => $traineesCount, 'کاربران' => $usersCount, 'جمع پرداخت‌ها' => number_format($paymentsSum)] as $label => $value)
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3">
+                <h6 class="text-muted">{{ $label }}</h6>
+                <h3>{{ $value }}</h3>
+            </div>
+        </div>
+    @endforeach
 </div>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="card shadow-sm">
-<div class="card-body text-center">
-<h6 class="text-muted">کارآموزان</h6>
-<h3>{{ $traineesCount }}</h3>
-</div>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="card shadow-sm">
-<div class="card-body text-center">
-<h6 class="text-muted">کاربران</h6>
-<h3>{{ $usersCount }}</h3>
-</div>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="card shadow-sm">
-<div class="card-body text-center">
-<h6 class="text-muted">پرداخت‌ها</h6>
-<h3>{{ number_format($paymentsSum) }}</h3>
-</div>
-</div>
-</div>
-
-</div>
-
 
 <div class="row">
-
-<div class="col-lg-6">
-
-<div class="card shadow-sm">
-
-<div class="card-header">
-کارآموزان اخیر
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header">کارآموزان اخیر</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>نام</th><th>دوره</th><th>وضعیت</th></tr></thead>
+                    <tbody>
+                        @foreach($recentTrainees as $trainee)
+                        <tr>
+                            <td>{{ $trainee->full_name }}</td>
+                            <td>{{ $trainee->course->title ?? '-' }}</td>
+                            <td><span class="badge bg-info">{{ $trainee->registration_status }}</span></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header">پرداخت‌های اخیر</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>کارآموز</th><th>مبلغ</th><th>وضعیت</th></tr></thead>
+                    <tbody>
+                        @foreach($recentPayments as $payment)
+                        <tr>
+                            <td>{{ $payment->trainee->full_name ?? 'نامشخص' }}</td>
+                            <td>{{ number_format($payment->amount) }}</td>
+                            <td>
+                                <span class="badge {{ $payment->status == 'completed' ? 'bg-success' : 'bg-warning' }}">
+                                    {{ $payment->status == 'completed' ? 'موفق' : 'در انتظار' }}
+                                </span>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div class="card-body">
-
-<table class="table table-bordered">
-
-<thead>
-<tr>
-<th>نام</th>
-<th>دوره</th>
-<th>موبایل</th>
-</tr>
-</thead>
-
-<tbody>
-
-@forelse($recentTrainees as $trainee)
-
-<tr>
-<td>{{ $trainee->first_name }} {{ $trainee->last_name }}</td>
-<td>{{ $trainee->course->title ?? '-' }}</td>
-<td dir="ltr">{{ $trainee->phone }}</td>
-</tr>
-
-@empty
-
-<tr>
-<td colspan="3" class="text-center">داده‌ای وجود ندارد</td>
-</tr>
-
-@endforelse
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="col-lg-6">
-
-<div class="card shadow-sm">
-
-<div class="card-header">
-پرداخت‌های اخیر
-</div>
-
-<div class="card-body">
-
-<table class="table table-bordered">
-
-<thead>
-<tr>
-<th>کارآموز</th>
-<th>مبلغ</th>
-<th>وضعیت</th>
-</tr>
-</thead>
-
-<tbody>
-
-@forelse($recentPayments as $payment)
-
-<tr>
-
-<td>
-{{ $payment->trainee->first_name ?? '-' }}
-{{ $payment->trainee->last_name ?? '' }}
-</td>
-
-<td>
-{{ number_format($payment->amount) }}
-</td>
-
-<td>
-
-@if($payment->status == 'completed')
-<span class="badge bg-success">موفق</span>
-@elseif($payment->status == 'pending')
-<span class="badge bg-warning text-dark">در انتظار</span>
-@else
-<span class="badge bg-danger">ناموفق</span>
-@endif
-
-</td>
-
-</tr>
-
-@empty
-
-<tr>
-<td colspan="3" class="text-center">
-پرداختی ثبت نشده
-</td>
-</tr>
-
-@endforelse
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 @endsection
