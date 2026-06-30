@@ -1,12 +1,19 @@
-<?php 
+<?php
 
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Controllers
+|--------------------------------------------------------------------------
+*/
 
 use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\CourseController;
 use App\Http\Controllers\SuperAdmin\PaymentController;
 use App\Http\Controllers\SuperAdmin\TraineeController;
 use App\Http\Controllers\SuperAdmin\UserController;
+use App\Http\Controllers\SuperAdmin\ReportController;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
@@ -14,12 +21,19 @@ use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Auth\SuperAdminAuthController;
 use App\Http\Controllers\Auth\OtpLoginController;
 
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
 
 
+/*
+|--------------------------------------------------------------------------
+| Welcome
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
-    return view('welcome_new'); // نام ویو جدید
+    return view('welcome_new');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -56,11 +70,15 @@ Route::prefix('superadmin')
     Route::resource('trainees', TraineeController::class);
     Route::resource('payments', PaymentController::class);
     Route::resource('users', UserController::class);
-    Route::get('/reports/download', [App\Http\Controllers\SuperAdmin\ReportController::class, 'downloadPdf'])
-        ->name('reports.download');
-    Route::get('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'index'])->name('settings');
-    Route::post('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'update'])->name('update');
 
+    Route::get('/reports/download', [ReportController::class, 'downloadPdf'])
+        ->name('reports.download');
+
+    Route::get('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'index'])
+        ->name('settings');
+
+    Route::post('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'update'])
+        ->name('update');
 });
 
 
@@ -81,7 +99,6 @@ Route::prefix('admin')
     Route::resource('courses', AdminCourseController::class);
     Route::resource('payments', \App\Http\Controllers\Admin\PaymentController::class);
     Route::resource('trainees', \App\Http\Controllers\Admin\TraineeController::class);
-
 });
 
 
@@ -101,10 +118,12 @@ Route::post('/verify-otp',[OtpLoginController::class,'verifyOtp'])
     ->middleware('throttle:10,1');
 
 
-
-
-use App\Http\Controllers\User\DashboardController as UserDashboardController;
+/*
+|--------------------------------------------------------------------------
+| User Dashboard
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/dashboard', [UserDashboardController::class,'index'])
     ->middleware('auth')
-    ->name('dashboard');
+    ->name('user.dashboard');

@@ -8,17 +8,21 @@
 
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
 
     <style>
+
         @if($vazirFont)
-            @font-face {
-                font-family: "Vazir";
-                src: url("{{ $vazirFont }}") format("truetype");
-                font-weight: normal;
-                font-style: normal;
-            }
+
+        @font-face {
+            font-family: "Vazir";
+            src: url("{{ $vazirFont }}") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+        }
+
         @endif
 
         * {
@@ -29,14 +33,14 @@
             font-family: "Vazir", "DejaVu Sans", sans-serif;
             direction: rtl;
             margin: 20px;
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 12px;
             color: #222;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border-bottom: 2px solid #333;
             padding-bottom: 10px;
         }
@@ -47,7 +51,7 @@
         }
 
         .header p {
-            margin: 0;
+            margin: 5px 0;
             font-size: 12px;
         }
 
@@ -56,7 +60,6 @@
             padding: 15px;
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
-            border-radius: 5px;
             line-height: 2;
         }
 
@@ -72,6 +75,7 @@
             padding: 8px;
             text-align: center;
             vertical-align: middle;
+            font-size: 11px;
         }
 
         th {
@@ -92,62 +96,189 @@
             padding: 20px;
             color: #777;
         }
+
     </style>
 </head>
 
 <body>
+
     <div class="header">
-        <h1>گزارش وضعیت مالی کارآموزان</h1>
-        <p>تاریخ تهیه: {{ $date ?? date('Y-m-d') }}</p>
+
+        <h1>
+
+            @if(($report_type ?? 'all') === 'monthly')
+
+                گزارش مالی ماهانه کارآموزان
+
+            @elseif(($report_type ?? 'all') === 'range')
+
+                گزارش مالی بازه‌ای کارآموزان
+
+            @else
+
+                گزارش وضعیت مالی کارآموزان
+
+            @endif
+
+        </h1>
+
+        <p>
+            تاریخ تهیه:
+            {{ $date ?? date('Y-m-d') }}
+        </p>
+
+        @if(($report_type ?? 'all') === 'monthly')
+
+            <p>
+                ماه گزارش:
+                {{ $year }}/{{ str_pad($month, 2, '0', STR_PAD_LEFT) }}
+            </p>
+
+        @endif
+
+        @if(($report_type ?? 'all') === 'range')
+
+            <p>
+                بازه گزارش:
+                از {{ $from_date }}
+                تا {{ $to_date }}
+            </p>
+
+        @endif
+
     </div>
 
     <div class="summary">
-        <strong>تعداد کل کارآموزان:</strong> {{ number_format($total_trainees ?? 0) }} |
-        <strong>کل شهریه:</strong> {{ number_format($total_fee ?? 0) }} |
-        <strong>مجموع پرداخت‌ها:</strong> {{ number_format($total_paid ?? 0) }} |
-        <strong>باقی‌مانده:</strong> {{ number_format($total_remaining ?? 0) }}
+
+        <strong>
+            تعداد کارآموزان:
+        </strong>
+
+        {{ number_format($total_trainees ?? 0) }}
+
+        |
+
+        <strong>
+            مجموع شهریه:
+        </strong>
+
+        {{ number_format($total_fee ?? 0) }}
+
+        |
+
+        <strong>
+            مجموع پرداخت‌ها:
+        </strong>
+
+        {{ number_format($total_paid ?? 0) }}
+
+        |
+
+        <strong>
+            باقی‌مانده:
+        </strong>
+
+        {{ number_format($total_remaining ?? 0) }}
+
     </div>
 
     <table>
+
         <thead>
+
             <tr>
+
                 <th>ردیف</th>
+
                 <th>نام کارآموز</th>
+
                 <th>کد ملی</th>
+
                 <th>دوره</th>
+
                 <th>شهریه نهایی</th>
+
                 <th>پرداخت</th>
+
                 <th>باقی‌مانده</th>
+
             </tr>
+
         </thead>
 
         <tbody>
+
             @forelse($trainees as $index => $trainee)
+
                 @php
-                    $totalFee = $trainee->total_fee ?? 0;
-                    $discountPercent = $trainee->discount_percent ?? 0;
-                    $finalFee = $totalFee - (($totalFee * $discountPercent) / 100);
-                    $paid = $trainee->payments->sum('amount');
-                    $remaining = $finalFee - $paid;
+
+                    $totalFee =
+                        $trainee->total_fee ?? 0;
+
+                    $discountPercent =
+                        $trainee->discount_percent ?? 0;
+
+                    $finalFee =
+                        $totalFee -
+                        (($totalFee * $discountPercent) / 100);
+
+                    $paid =
+                        $trainee->payments->sum('amount');
+
+                    $remaining =
+                        $finalFee - $paid;
+
                 @endphp
 
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $trainee->first_name }} {{ $trainee->last_name }}</td>
-                    <td>{{ $trainee->national_code ?? '-' }}</td>
-                    <td>{{ $trainee->course->title ?? '-' }}</td>
-                    <td>{{ number_format($finalFee) }}</td>
-                    <td class="text-success">{{ number_format($paid) }}</td>
-                    <td class="text-danger">{{ number_format($remaining) }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7" class="empty-message">
-                        هیچ کارآموزی برای نمایش وجود ندارد.
+
+                    <td>
+                        {{ $index + 1 }}
                     </td>
+
+                    <td>
+                        {{ $trainee->full_name ?? ($trainee->first_name . ' ' . $trainee->last_name) }}
+                    </td>
+
+                    <td>
+                        {{ $trainee->national_code ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ $trainee->course->title ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ number_format($finalFee) }}
+                    </td>
+
+                    <td class="text-success">
+                        {{ number_format($paid) }}
+                    </td>
+
+                    <td class="text-danger">
+                        {{ number_format($remaining) }}
+                    </td>
+
                 </tr>
+
+            @empty
+
+                <tr>
+
+                    <td colspan="7" class="empty-message">
+
+                        هیچ داده‌ای برای این گزارش وجود ندارد.
+
+                    </td>
+
+                </tr>
+
             @endforelse
+
         </tbody>
+
     </table>
+
 </body>
 </html>
