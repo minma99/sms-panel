@@ -42,6 +42,14 @@ class Trainee extends Model
         'exam_fee' => 'integer',
     ];
 
+    protected $appends = [
+        'full_name',
+        'discount_amount',
+        'final_fee',
+        'paid_amount',
+        'remaining_amount',
+    ];
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
@@ -59,7 +67,7 @@ class Trainee extends Model
 
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
     }
 
     public function getDiscountAmountAttribute(): int

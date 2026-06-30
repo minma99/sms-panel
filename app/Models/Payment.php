@@ -19,7 +19,7 @@ class Payment extends Model
         'tracking_code',
         'payment_date',
         'payment_date_shamsi',
-        'note'
+        'note',
     ];
 
     protected $casts = [

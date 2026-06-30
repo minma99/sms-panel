@@ -1,108 +1,90 @@
-@extends('superadmin.layouts.main')
-
-@section('title','لیست پرداخت‌ها')
-@section('page_title','لیست پرداخت‌ها')
+@extends('layouts.admin')
 
 @section('content')
+<div class="container-fluid">
+    <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">لیست پرداخت‌ها</h5>
+            <a href="{{ route('superadmin.payments.create') }}" class="btn btn-sm btn-success">
+                <i class="fas fa-plus"></i> ثبت پرداخت جدید
+            </a>
+        </div>
+        <div class="card-body">
+            {{-- پیام فیلتر --}}
+            @if(request('trainee_id'))
+                <div class="alert alert-info d-flex justify-content-between align-items-center">
+                    <span>
+                        <i class="fas fa-filter"></i>
+                        در حال نمایش پرداخت‌های:
+                        <strong>{{ $filteredTrainee->full_name ?? 'کارآموز انتخاب‌شده' }}</strong>
+                    </span>
+                    <a href="{{ route('superadmin.payments.index') }}" class="btn btn-sm btn-secondary">
+                        نمایش همه پرداخت‌ها
+                    </a>
+                </div>
+            @endif
 
-<div class="card shadow-sm">
+            {{-- پیام موفقیت --}}
+            @if(session('success'))
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                </div>
+            @endif
 
-<div class="card-header d-flex justify-content-between align-items-center">
-<h5 class="mb-0">پرداخت‌ها</h5>
-
-<a href="{{ route('superadmin.payments.create') }}" class="btn btn-primary">
-ثبت پرداخت
-</a>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>نام کارآموز</th>
+                            <th>دوره</th>
+                            <th>مبلغ پرداختی</th>
+                            <th>تاریخ پرداخت (شمسی)</th>
+                            <th>باقی‌مانده</th>
+                            <th>توضیحات</th>
+                            <th>تاریخ ثبت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($payments as $payment)
+                        <tr>
+                            <td>{{ $payment->id }}</td>
+                            <td>{{ $payment->trainee->full_name ?? '—' }}</td>
+                            <td>{{ $payment->trainee->course->title ?? '—' }}</td>
+                            <td class="text-success fw-bold">{{ number_format($payment->amount) }} تومان</td>
+                            <td>{{ $payment->payment_date_shamsi ?? '—' }}</td>
+                            <td class="text-danger">{{ number_format($payment->remaining_amount) }} تومان</td>
+                            <td>{{ $payment->description ?? '—' }}</td>
+                            <td>{{ \Morilog\Jalali\Jalalian::fromCarbon($payment->created_at)->format('Y/m/d') }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('superadmin.payments.edit', $payment->id) }}"
+                                       class="btn btn-sm btn-warning text-white" title="ویرایش">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('superadmin.payments.destroy', $payment->id) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('آیا از حذف این پرداخت مطمئن هستید؟')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="9" class="text-muted py-4">هیچ پرداختی ثبت نشده است.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            {{ $payments->links() }}
+        </div>
+    </div>
 </div>
-
-<div class="card-body p-0">
-
-<div class="table-responsive">
-
-<table class="table table-bordered table-hover text-center mb-0">
-
-<thead class="table-light">
-<tr>
-<th>ID</th>
-<th>کارآموز</th>
-<th>مبلغ پرداخت</th>
-<th>تخفیف</th>
-<th>باقی‌مانده</th>
-<th>روش پرداخت</th>
-<th>تاریخ</th>
-<th width="180">عملیات</th>
-</tr>
-</thead>
-
-<tbody>
-
-@forelse($payments as $payment)
-
-<tr>
-
-<td>{{ $payment->id }}</td>
-
-<td>{{ $payment->trainee->full_name ?? '-' }}</td>
-
-<td>{{ number_format($payment->amount) }}</td>
-
-<td>{{ number_format($payment->trainee->discount_amount ?? 0) }}</td>
-
-<td>{{ number_format($payment->trainee->remaining_amount ?? 0) }}</td>
-
-<td>{{ $payment->payment_method ?? '-' }}</td>
-
-<td>{{ $payment->created_at->format('Y-m-d') }}</td>
-
-<td class="d-flex justify-content-center gap-2">
-
-<a href="{{ route('superadmin.payments.show',$payment->id) }}"
-class="btn btn-sm btn-info">
-مشاهده
-</a>
-
-<a href="{{ route('superadmin.payments.edit',$payment->id) }}"
-class="btn btn-sm btn-warning">
-ویرایش
-</a>
-
-<form action="{{ route('superadmin.payments.destroy',$payment->id) }}" method="POST" style="display:inline;">
-@csrf
-@method('DELETE')
-
-<button type="submit" class="btn btn-sm btn-danger"
-onclick="return confirm('حذف شود؟')">
-حذف
-</button>
-
-</form>
-
-</td>
-
-</tr>
-
-@empty
-
-<tr>
-<td colspan="8" class="text-muted py-4">
-پرداختی ثبت نشده
-</td>
-</tr>
-
-@endforelse
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="mt-4">
-{{ $payments->links() }}
-</div>
-
 @endsection

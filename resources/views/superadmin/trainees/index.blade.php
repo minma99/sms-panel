@@ -1,142 +1,87 @@
-content = '''@extends('superadmin.layouts.main')
-
-@section('title','کارآموزان')
-@section('page_title','مدیریت کارآموزان')
+@extends('layouts.admin')
 
 @section('content')
+<div class="container-fluid">
+    {{-- نمایش پیام موفقیت (اختیاری) --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
-<div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center bg-white py-3">
-        <h5 class="mb-0">لیست همه کارآموزان</h5>
-        <div class="d-flex gap-2">
-            <a href="{{ route('superadmin.reports.download') }}" class="btn btn-outline-success">
-                <i class="fa fa-file-pdf-o"></i> دانلود گزارش PDF
-            </a>
-            <a href="{{ route('superadmin.trainees.create') }}" class="btn btn-primary">
-                <i class="fa fa-plus"></i> افزودن کارآموز
+    <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">لیست کارآموزان</h5>
+            <a href="{{ route('superadmin.trainees.create') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i> افزودن کارآموز
             </a>
         </div>
-    </div>
-
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>نام و نام خانوادگی</th>
-                        <th>کد ملی</th>
-                        <th>تلفن</th>
-                        <th>دوره</th>
-                        <th>شهریه کل</th>
-                        <th>تخفیف</th>
-                        <th>قابل پرداخت</th>
-                        <th>پرداخت شده</th>
-                        <th>باقی‌مانده</th>
-                        <th width="200">عملیات</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @forelse($trainees as $trainee)
-
-                        @php
-                            $discount_amount = ($trainee->total_fee * $trainee->discount_percent) / 100;
-                            $final_fee = $trainee->total_fee - $discount_amount;
-                            $paid = $trainee->payments->sum('amount');
-                            $remaining = $final_fee - $paid;
-                        @endphp
-
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <td class="fw-bold">
-                                {{ $trainee->first_name }} {{ $trainee->last_name }}
-                            </td>
-
-                            <td>{{ $trainee->national_code }}</td>
-
-                            <td>
-                                {{ $trainee->phone ?? '-' }}
-                            </td>
-
-                            <td>
-                                <span class="badge bg-light text-dark">
-                                    {{ $trainee->course->title ?? '-' }}
-                                </span>
-                            </td>
-
+                            <th>#</th>
+                            <th>نام و نام خانوادگی</th>
+                            <th>دوره</th>
+                            <th>شهریه کل</th>
+                            <th>تخفیف</th>
+                            <th>شهریه نهایی</th>
+                            <th>پرداخت شده</th>
+                            <th>باقی‌مانده</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($trainees as $trainee)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td> <!-- استفاده از loop برای شماره‌گذاری ردیف‌ها -->
+                            <td class="text-nowrap">{{ $trainee->full_name }}</td>
+                            <td>{{ $trainee->course->title ?? '—' }}</td>
                             <td>{{ number_format($trainee->total_fee) }}</td>
-
-                            <td class="text-secondary">
-                                {{ number_format($discount_amount) }}
-                                <small>({{ $trainee->discount_percent }}%)</small>
-                            </td>
-
-                            <td class="fw-bold">
-                                {{ number_format($final_fee) }}
-                            </td>
-
-                            <td class="text-success fw-bold">
-                                {{ number_format($paid) }}
-                            </td>
-
-                            <td class="text-danger fw-bold">
-                                {{ number_format($remaining) }}
-                            </td>
-
                             <td>
-                                <div class="d-flex gap-2">
-
-                                    <a href="{{ route('superadmin.trainees.show',$trainee->id) }}"
-                                       class="btn btn-sm btn-info text-white">
-                                       نمایش
+                                {{ number_format($trainee->discount_amount) }} 
+                                <small class="text-muted">({{ $trainee->discount_percent }}%)</small>
+                            </td>
+                            <td class="fw-bold">{{ number_format($trainee->final_fee) }}</td>
+                            <td class="text-success">{{ number_format($trainee->paid_amount) }}</td>
+                            <td class="text-danger fw-bold">{{ number_format($trainee->remaining_amount) }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ route('superadmin.trainees.show', $trainee->id) }}" 
+                                       class="btn btn-info text-white" title="نمایش">
+                                        <i class="fas fa-eye"></i>
                                     </a>
-
-                                    <a href="{{ route('superadmin.trainees.edit',$trainee->id) }}"
-                                       class="btn btn-sm btn-warning text-white">
-                                       ویرایش
+                                    <a href="{{ route('superadmin.trainees.edit', $trainee->id) }}" 
+                                       class="btn btn-warning text-white" title="ویرایش">
+                                        <i class="fas fa-edit"></i>
                                     </a>
-
-                                    <a href="{{ route('superadmin.payments.create',['trainee_id'=>$trainee->id]) }}"
-                                       class="btn btn-sm btn-success">
-                                       پرداخت
+                                    <a href="{{ route('superadmin.payments.create', ['trainee_id' => $trainee->id]) }}" 
+                                       class="btn btn-success" title="ثبت پرداخت">
+                                        <i class="fas fa-money-check-alt"></i>
                                     </a>
-
-                                    <form action="{{ route('superadmin.trainees.destroy',$trainee->id) }}"
-                                          method="POST"
-                                          onsubmit="return confirm('آیا مطمئن هستید؟')">
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            حذف
-                                        </button>
-
-                                    </form>
-
+                                    <a href="{{ route('superadmin.payments.index', ['trainee_id' => $trainee->id]) }}" 
+                                       class="btn btn-primary" title="لیست پرداخت‌ها">
+                                        <i class="fas fa-list"></i>
+                                    </a>
                                 </div>
                             </td>
-
                         </tr>
-
-                    @empty
-
+                        @empty
                         <tr>
-                            <td colspan="10" class="text-center p-5 text-muted">
-                                هیچ کارآموزی در سیستم ثبت نشده است.
-                            </td>
+                            <td colspan="9" class="text-muted py-4">هیچ کارآموزی یافت نشد.</td>
                         </tr>
-
-                    @endforelse
-                </tbody>
-
-            </table>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            {{-- صفحه بندی --}}
+            <div class="mt-3">
+                {{ $trainees->links() }}
+            </div>
         </div>
     </div>
 </div>
-
-<div class="mt-4 d-flex justify-content-center">
-    {{ $trainees->links() }}
-</div>
-
 @endsection
-'''
