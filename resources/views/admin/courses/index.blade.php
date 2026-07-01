@@ -109,23 +109,6 @@
 
                                         ویرایش
                                     </a>
-
-                                    {{-- Delete --}}
-                                    <form action="{{ route('admin.courses.destroy',$course->id) }}"
-                                          method="POST"
-                                          onsubmit="return confirm('آیا از حذف این دوره مطمئن هستید؟')">
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="submit"
-                                                class="btn btn-sm btn-danger">
-
-                                            حذف
-                                        </button>
-
-                                    </form>
-
                                 </div>
 
                             </td>
