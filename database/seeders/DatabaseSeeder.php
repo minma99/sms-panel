@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Course;
-use App\Models\Otp;
 use App\Models\Payment;
 use App\Models\SmsLog;
 use App\Models\SmsSetting;
@@ -26,23 +25,26 @@ class DatabaseSeeder extends Seeder
             'base_url' => 'https://example.com/api',
         ]);
 
-        User::factory()->create([
+        User::create([
             'name' => 'Super Admin',
             'phone' => '09109915180',
             'password' => Hash::make('password'),
             'role' => 'super_admin',
         ]);
 
-        User::factory()->count(3)->create([
-            'role' => 'admin',
-        ]);
+        User::factory()
+            ->count(3)
+            ->create([
+                'role' => 'admin'
+            ]);
 
         Course::factory()->count(10)->create();
 
         $trainees = Trainee::factory()->count(50)->create();
 
         $trainees->each(function ($trainee) {
-            User::factory()->create([
+
+            User::create([
                 'name' => $trainee->full_name,
                 'phone' => $trainee->phone,
                 'password' => Hash::make('password'),
@@ -52,25 +54,38 @@ class DatabaseSeeder extends Seeder
         });
 
         $trainees->each(function ($trainee) {
+
             $paymentCount = rand(0, 3);
             $remaining = (int) $trainee->final_fee;
 
             for ($i = 0; $i < $paymentCount; $i++) {
+
                 if ($remaining <= 0) {
                     break;
                 }
 
                 $min = min(100000, $remaining);
                 $max = min($remaining, 3000000);
-                $amount = $min > $max ? $remaining : rand($min, $max);
-                $remainingAfterPayment = max(0, $remaining - $amount);
+
+                $amount = $min > $max
+                    ? $remaining
+                    : rand($min, $max);
+
+                $remainingAfterPayment = max(
+                    0,
+                    $remaining - $amount
+                );
 
                 Payment::create([
                     'trainee_id' => $trainee->id,
                     'amount' => $amount,
                     'remaining_after_payment' => $remainingAfterPayment,
                     'payment_type' => $remainingAfterPayment == 0 ? 'full' : 'installment',
-                    'payment_method' => fake()->randomElement(['cash', 'card', 'online']),
+                    'payment_method' => fake()->randomElement([
+                        'cash',
+                        'card',
+                        'online'
+                    ]),
                     'tracking_code' => fake()->optional()->numerify('TRK######'),
                     'payment_date' => fake()->date(),
                     'payment_date_shamsi' => null,
@@ -81,7 +96,6 @@ class DatabaseSeeder extends Seeder
             }
         });
 
-        Otp::factory()->count(10)->create();
         SmsLog::factory()->count(20)->create();
     }
 }

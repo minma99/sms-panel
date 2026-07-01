@@ -430,68 +430,165 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.otp-input').on('keyup', function(e) {
-                if (this.value.length === 1) $(this).next('.otp-input').focus();
-                if (e.keyCode === 8) $(this).prev('.otp-input').focus();
-            });
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-            $('#btn-send').click(function() {
-                let mobile = $('#mobile').val();
+<script>
+$(function () {
 
-                if (mobile.length < 11) {
-                    $('#alert-msg').text('شماره موبایل اشتباه است').css('color', '#e74c3c');
+    $('.otp-input').on('keyup', function(e) {
+
+        if ($(this).val().length === 1) {
+            $(this).next('.otp-input').focus();
+        }
+
+        if (e.key === 'Backspace') {
+            $(this).prev('.otp-input').focus();
+        }
+    });
+
+    $('#btn-send').click(function () {
+
+        let phone = $('#mobile').val();
+
+        if (phone.length !== 11) {
+
+            $('#alert-msg')
+                .html('شماره موبایل معتبر نیست')
+                .css('color', 'red');
+
+            return;
+        }
+
+        $('#btn-send')
+            .prop('disabled', true)
+            .html('<i class="fas fa-spinner fa-spin"></i> در حال ارسال');
+
+        $.ajax({
+
+            url: '/send-otp',
+            type: 'POST',
+
+            data: {
+                phone: phone,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+
+            success: function (res) {
+
+                console.log(res);
+
+                if (!res.success) {
+
+                    $('#alert-msg')
+                        .html(res.message)
+                        .css('color', 'red');
+
+                    $('#btn-send')
+                        .prop('disabled', false)
+                        .html('ارسال کد تایید <i class="fas fa-arrow-left ms-2"></i>');
+
                     return;
                 }
 
-                $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+                $('#step-1').hide();
+                $('#step-2').fadeIn();
 
-                $.post('/send-otp', {
-                    mobile: mobile,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                }).done(function() {
-                    $('#step-1').hide();
-                    $('#step-2').fadeIn();
-                    startTimer();
-                }).fail(function() {
-                    alert('خطا در ارسال کد');
-                    $('#btn-send').prop('disabled', false).html('ارسال کد تایید <i class="fas fa-arrow-left ms-2"></i>');
-                });
-            });
+                $('#alert-msg').html(`
+                    <div class="alert alert-warning">
+                        <strong>کد تستی:</strong>
+                        <span class="fw-bold fs-4 text-danger">
+                            ${res.otp}
+                        </span>
+                    </div>
+                `);
 
-            $('#btn-verify').click(function() {
-                let otp = "";
-                $('.otp-input').each(function() {
-                    otp += $(this).val();
-                });
+                startTimer();
+            },
 
-                $.post('/verify-otp', {
-                    mobile: $('#mobile').val(),
-                    code: otp,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                }).done(function(res) {
-                    if (res.status === 'success') {
-                        window.location.href = res.redirect;
-                    } else {
-                        $('#alert-msg').text(res.message).css('color', '#e74c3c');
-                    }
-                });
-            });
+            error: function (xhr) {
 
-            function startTimer() {
-                let time = 60;
-                let interval = setInterval(function() {
-                    time--;
-                    $('#timer').text(time);
+                console.log(xhr.responseText);
 
-                    if (time <= 0) {
-                        clearInterval(interval);
-                        $('#timer-box').html('<a href="#" onclick="location.reload()" class="text-success fw-bold">ارسال مجدد کد</a>');
-                    }
-                }, 1000);
+                $('#alert-msg')
+                    .html('خطا در ارتباط با سرور')
+                    .css('color', 'red');
+
+                $('#btn-send')
+                    .prop('disabled', false)
+                    .html('ارسال کد تایید <i class="fas fa-arrow-left ms-2"></i>');
             }
         });
-    </script>
+    });
+
+    $('#btn-verify').click(function () {
+
+        let otp = '';
+
+        $('.otp-input').each(function () {
+            otp += $(this).val();
+        });
+
+        $.ajax({
+
+            url: '/verify-otp',
+            type: 'POST',
+
+            data: {
+                phone: $('#mobile').val(),
+                otp: otp,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+
+            success: function (res) {
+
+                console.log(res);
+
+                if (res.success) {
+                    window.location.href = res.redirect;
+                } else {
+
+                    $('#alert-msg')
+                        .html(res.message)
+                        .css('color', 'red');
+                }
+            },
+
+            error: function (xhr) {
+
+                console.log(xhr.responseText);
+
+                $('#alert-msg')
+                    .html('خطا در تایید کد')
+                    .css('color', 'red');
+            }
+        });
+    });
+
+    function startTimer() {
+
+        let time = 60;
+
+        let interval = setInterval(function () {
+
+            time--;
+
+            $('#timer').text(time);
+
+            if (time <= 0) {
+
+                clearInterval(interval);
+
+                $('#timer-box').html(`
+                    <a href="" class="text-success fw-bold">
+                        ارسال مجدد کد
+                    </a>
+                `);
+            }
+
+        }, 1000);
+    }
+
+});
+</script>
 </body>
 </html>

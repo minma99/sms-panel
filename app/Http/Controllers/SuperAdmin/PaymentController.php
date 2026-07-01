@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SuperAdmin; // <-- این خط اصلاح شد
 
+use App\Http\Controllers\Controller; // <-- این خط اضافه شد
 use App\Models\Payment;
 use App\Models\Trainee;
 use Illuminate\Http\Request;
