@@ -1,4 +1,4 @@
-@extends('superadmin.layouts.main')
+@extends('admin.layouts.main')
 
 @section('title','داشبورد')
 @section('page_title','داشبورد مدیریت')

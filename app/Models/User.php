@@ -37,6 +37,11 @@ class User extends Authenticatable
         return $this->belongsTo(Trainee::class);
     }
 
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
     public function getIsSuperadminAttribute(): bool
     {
         return $this->role === 'super_admin';
