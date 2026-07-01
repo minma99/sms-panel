@@ -76,13 +76,4 @@ class TraineeController extends Controller
             ->route('admin.trainees.index')
             ->with('success', 'ویرایش انجام شد');
     }
-
-    public function destroy(Trainee $trainee)
-    {
-        $trainee->delete();
-
-        return redirect()
-            ->route('admin.trainees.index')
-            ->with('success', 'حذف شد');
-    }
 }

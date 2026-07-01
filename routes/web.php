@@ -88,6 +88,12 @@ Route::prefix('superadmin')
 |--------------------------------------------------------------------------
 */
 
+/*
+|--------------------------------------------------------------------------
+| Admin Panel
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth','role:admin'])
@@ -97,9 +103,13 @@ Route::prefix('admin')
         ->name('dashboard');
 
     Route::resource('courses', AdminCourseController::class);
+
     Route::resource('payments', AdminPaymentController::class);
-    Route::resource('trainees', AdminTraineeController::class);
+
+    Route::resource('trainees', AdminTraineeController::class)
+        ->except(['destroy']);
 });
+
 
 
 /*
