@@ -10,38 +10,45 @@
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    <div class="card shadow">
+    <div class="card shadow-sm">
 
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">لیست کارآموزان</h5>
 
-            <a href="{{ route('admin.trainees.create') }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i>
+            <h5 class="mb-0">
+                لیست کارآموزان
+            </h5>
+
+            <a href="{{ route('admin.trainees.create') }}"
+               class="btn btn-primary btn-sm">
                 افزودن کارآموز
             </a>
+
         </div>
 
         <div class="card-body">
 
             <div class="table-responsive">
 
-                <table class="table table-bordered table-hover text-center align-middle">
+                <table class="table table-hover table-bordered align-middle text-center">
 
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>نام و نام خانوادگی</th>
+                            <th>نام</th>
                             <th>دوره</th>
-                            <th>شهریه کل</th>
+                            <th>شهریه</th>
                             <th>تخفیف</th>
                             <th>شهریه نهایی</th>
-                            <th>پرداخت شده</th>
+                            <th>پرداخت</th>
                             <th>باقی‌مانده</th>
-                            <th>عملیات</th>
+                            <th width="260">عملیات</th>
                         </tr>
                     </thead>
 
@@ -53,7 +60,7 @@
 
                             <td>{{ $loop->iteration }}</td>
 
-                            <td class="text-nowrap">
+                            <td class="text-nowrap fw-semibold">
                                 {{ $trainee->first_name }} {{ $trainee->last_name }}
                             </td>
 
@@ -67,57 +74,55 @@
 
                             <td>
                                 {{ number_format($trainee->discount_amount ?? 0) }}
+                                <br>
                                 <small class="text-muted">
-                                    ({{ $trainee->discount_percent ?? 0 }}%)
+                                    {{ $trainee->discount_percent ?? 0 }}%
                                 </small>
                             </td>
 
-                            <td class="fw-bold">
+                            <td class="fw-bold text-primary">
                                 {{ number_format($trainee->final_fee ?? 0) }}
                             </td>
 
-                            <td class="text-success">
+                            <td class="text-success fw-semibold">
                                 {{ number_format($trainee->paid_amount ?? 0) }}
-                            </td>
-
-                            <td class="text-danger fw-bold">
-                                {{ number_format($trainee->remaining_amount ?? 0) }}
                             </td>
 
                             <td>
 
-                                <div class="btn-group btn-group-sm">
+                                @if(($trainee->remaining_amount ?? 0) > 0)
 
-                                    {{-- نمایش --}}
+                                    <span class="badge bg-danger">
+                                        {{ number_format($trainee->remaining_amount) }}
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-success">
+                                        تسویه
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+                            <td class="text-nowrap">
+
+                                <div class="d-flex justify-content-center gap-1">
+
                                     <a href="{{ route('admin.trainees.show',$trainee->id) }}"
-                                       class="btn btn-info text-white"
-                                       title="نمایش">
-
-                                       <i class="fas fa-eye"></i>
+                                       class="btn btn-sm btn-info text-white">
+                                        نمایش
                                     </a>
 
-                                    {{-- ویرایش --}}
                                     <a href="{{ route('admin.trainees.edit',$trainee->id) }}"
-                                       class="btn btn-warning text-white"
-                                       title="ویرایش">
-
-                                       <i class="fas fa-edit"></i>
+                                       class="btn btn-sm btn-warning text-white">
+                                        ویرایش
                                     </a>
 
-                                    {{-- ثبت پرداخت برای این کارآموز --}}
                                     <a href="{{ route('admin.payments.create',['trainee_id'=>$trainee->id]) }}"
-                                       class="btn btn-success"
-                                       title="ثبت پرداخت">
-
-                                       <i class="fas fa-money-check-alt"></i>
-                                    </a>
-
-                                    {{-- لیست پرداخت‌ها --}}
-                                    <a href="{{ route('admin.payments.index',['trainee_id'=>$trainee->id]) }}"
-                                       class="btn btn-primary"
-                                       title="لیست پرداخت‌ها">
-
-                                       <i class="fas fa-list"></i>
+                                       class="btn btn-sm btn-success">
+                                        ثبت پرداخت
                                     </a>
 
                                 </div>
@@ -129,7 +134,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="9" class="text-center">
+                            <td colspan="9" class="text-center text-muted">
                                 کارآموزی ثبت نشده است
                             </td>
                         </tr>
