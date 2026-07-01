@@ -5,96 +5,94 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between mb-4">
+<div class="container-fluid">
 
-<h4>همه کارآموزان</h4>
+    {{-- پیام موفقیت --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-<a href="{{ route('admin.trainees.create') }}" class="btn btn-primary">
-افزودن کارآموز
-</a>
+    <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">لیست کارآموزان</h5>
+            <a href="{{ route('admin.trainees.create') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i> افزودن کارآموز
+            </a>
+        </div>
 
-</div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>نام و نام خانوادگی</th>
+                            <th>دوره</th>
+                            <th>شهریه کل</th>
+                            <th>تخفیف</th>
+                            <th>شهریه نهایی</th>
+                            <th>پرداخت شده</th>
+                            <th>باقی‌مانده</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
 
-<table class="table table-bordered">
+                    <tbody>
+                        @forelse($trainees as $trainee)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
 
-<thead>
-<tr>
-<th>ID</th>
-<th>نام</th>
-<th>دوره</th>
-<th>شهریه</th>
-<th>پرداخت شده</th>
-<th>باقی مانده</th>
-<th>عملیات</th>
-</tr>
-</thead>
+                            <td class="text-nowrap">
+                                {{ $trainee->first_name }} {{ $trainee->last_name }}
+                            </td>
 
-<tbody>
+                            <td>{{ $trainee->course->title ?? '—' }}</td>
 
-@foreach($trainees as $trainee)
+                            <td>{{ number_format($trainee->total_fee) }}</td>
 
-@php
-$discount = ($trainee->total_fee * $trainee->discount_percent) / 100;
-$final_fee = $trainee->total_fee - $discount;
-$paid = $trainee->payments->sum('amount');
-$remaining = $final_fee - $paid;
-@endphp
+                            <td>
+                                {{ number_format($trainee->discount_amount) }}
+                                <small class="text-muted">
+                                    ({{ $trainee->discount_percent }}%)
+                                </small>
+                            </td>
 
-<tr>
+                            <td class="fw-bold">
+                                {{ number_format($trainee->final_fee) }}
+                            </td>
 
-<td>{{ $trainee->id }}</td>
+                            <td class="text-success">
+                                {{ number_format($trainee->paid_amount) }}
+                            </td>
 
-<td>
-{{ $trainee->first_name }} {{ $trainee->last_name }}
-</td>
+                            <td class="text-danger fw-bold">
+                                {{ number_format($trainee->remaining_amount) }}
+                            </td>
 
-<td>{{ $trainee->course->title ?? '-' }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
 
-<td>{{ number_format($final_fee) }}</td>
+                                    <a href="{{ route('admin.trainees.show', $trainee->id) }}"
+                                       class="btn btn-info text-white" title="نمایش">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
 
-<td class="text-success">
-{{ number_format($paid) }}
-</td>
+                                    <a href="{{ route('admin.trainees.edit', $trainee->id) }}"
+                                       class="btn btn-warning text-white" title="ویرایش">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
 
-<td class="text-danger">
-{{ number_format($remaining) }}
-</td>
+                                    <a href="{{ route('admin.payments.create', ['trainee_id' => $trainee->id]) }}"
+                                       class="btn btn-success" title="ثبت پرداخت">
+                                        <i class="fas fa-money-check-alt"></i>
+                                    </a>
 
-<td>
+                                    <a href="{{ route('admin.payments.index', ['trainee_id' => $trainee->id]) }}"
+                                       class="btn btn-primary" title="لیست پرداخت‌ها">
+                                        <i class="fas fa-list"></i>
+                                    </a>
 
-<a href="{{ route('admin.trainees.show',$trainee->id) }}"
-class="btn btn-sm btn-info">
-نمایش
-</a>
-
-<a href="{{ route('admin.trainees.edit',$trainee->id) }}"
-class="btn btn-sm btn-warning">
-ویرایش
-</a>
-
-<form action="{{ route('admin.trainees.destroy',$trainee->id) }}"
-method="POST"
-class="d-inline">
-
-@csrf
-@method('DELETE')
-
-<button class="btn btn-sm btn-danger">
-حذف
-</button>
-
-</form>
-
-</td>
-
-</tr>
-
-@endforeach
-
-</tbody>
-
-</table>
-
-{{ $trainees->links() }}
-
-@endsection
+                                    {{-- 
