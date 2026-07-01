@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\TraineeController as AdminTraineeController;
+use App\Http\Controllers\Admin\SmsSettingController;
 
 use App\Http\Controllers\Auth\SuperAdminAuthController;
 use App\Http\Controllers\Auth\OtpLoginController;
@@ -28,12 +29,13 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 
 /*
 |--------------------------------------------------------------------------
-| Welcome
+| Welcome / Login
 |--------------------------------------------------------------------------
 */
 
 Route::get('/', [OtpLoginController::class, 'showLogin'])
     ->name('login');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -63,30 +65,24 @@ Route::prefix('superadmin')
     ->middleware(['auth','role:super_admin'])
     ->group(function () {
 
-    Route::get('/', [DashboardController::class,'index'])
-        ->name('dashboard');
+        Route::get('/', [DashboardController::class,'index'])
+            ->name('dashboard');
 
-    Route::resource('courses', CourseController::class);
-    Route::resource('trainees', TraineeController::class);
-    Route::resource('payments', SuperAdminPaymentController::class);
-    Route::resource('users', UserController::class);
+        Route::resource('courses', CourseController::class);
+        Route::resource('trainees', TraineeController::class);
+        Route::resource('payments', SuperAdminPaymentController::class);
+        Route::resource('users', UserController::class);
 
-    Route::get('/reports/download', [ReportController::class, 'downloadPdf'])
-        ->name('reports.download');
+        Route::get('/reports/download', [ReportController::class, 'downloadPdf'])
+            ->name('reports.download');
 
-    Route::get('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'index'])
-        ->name('settings');
+        Route::get('/settings', [SmsSettingController::class, 'index'])
+            ->name('settings');
 
-    Route::post('/settings', [App\Http\Controllers\Admin\SmsSettingController::class, 'update'])
-        ->name('update');
+        Route::post('/settings', [SmsSettingController::class, 'update'])
+            ->name('settings.update');
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| Admin Panel
-|--------------------------------------------------------------------------
-*/
 
 /*
 |--------------------------------------------------------------------------
@@ -99,33 +95,30 @@ Route::prefix('admin')
     ->middleware(['auth','role:admin'])
     ->group(function () {
 
-    Route::get('/', [AdminDashboardController::class,'index'])
-        ->name('dashboard');
+        Route::get('/', [AdminDashboardController::class,'index'])
+            ->name('dashboard');
 
-    Route::resource('courses', AdminCourseController::class);
+        Route::resource('courses', AdminCourseController::class);
 
-    Route::resource('payments', AdminPaymentController::class);
+        Route::resource('payments', AdminPaymentController::class);
 
-    Route::resource('trainees', AdminTraineeController::class)
-        ->except(['destroy']);
+        // Admin اجازه حذف کارآموز ندارد
+        Route::resource('trainees', AdminTraineeController::class)
+            ->except(['destroy']);
 });
-
 
 
 /*
 |--------------------------------------------------------------------------
-| OTP Login (برای admin و user)
+| OTP Login (Admin + User)
 |--------------------------------------------------------------------------
 */
 
-
-
-// حذف middleware برای تست
+// ارسال OTP
 Route::post('/send-otp', [OtpLoginController::class, 'sendOtp']);
 
-// حذف middleware برای تست
+// تایید OTP
 Route::post('/verify-otp', [OtpLoginController::class, 'verifyOtp']);
-
 
 
 /*
@@ -139,7 +132,12 @@ Route::get('/dashboard', [UserDashboardController::class,'index'])
     ->name('user.dashboard');
 
 
+/*
+|--------------------------------------------------------------------------
+| Test Route
+|--------------------------------------------------------------------------
+*/
 
-    Route::get('/test-route', function () {
+Route::get('/test-route', function () {
     return "Route is working!";
 });
