@@ -1,67 +1,171 @@
 @extends('admin.layouts.main')
 
-@section('title','مدیریت دوره‌ها')
-@section('page_title','لیست دوره‌ها')
+@section('title','دوره‌ها')
+@section('page_title','مدیریت دوره‌ها')
 
 @section('content')
-<div class="card">
-    <div class="card-header d-flex justify-content-between">
-        <h5>دوره‌ها</h5>
-        <a href="{{ route('admin.courses.create') }}" class="btn btn-primary">افزودن دوره</a>
+
+<div class="card shadow-sm border-0">
+
+    {{-- Header --}}
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+        <div>
+            <h5 class="mb-0 fw-bold">لیست دوره‌ها</h5>
+            <small class="text-muted">
+                مدیریت و مشاهده دوره‌های ثبت شده
+            </small>
+        </div>
+
+        <a href="{{ route('admin.courses.create') }}"
+           class="btn btn-primary">
+
+            افزودن دوره
+        </a>
+
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>عنوان</th>
-                    <th>ظرفیت</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
+    {{-- Success Message --}}
+    @if(session('success'))
 
-            <tbody>
-                @forelse($courses as $course)
+        <div class="alert alert-success m-3 mb-0">
+            {{ session('success') }}
+        </div>
 
-                <tr>
-                    <td>{{ $course->title }}</td>
-                    <td>{{ $course->capacity }}</td>
+    @endif
 
-                    <td>
+    {{-- Table --}}
+    <div class="card-body p-0">
 
-                        <a href="{{ route('admin.courses.edit',$course->id) }}"
-                           class="btn btn-sm btn-warning">
-                           ویرایش
-                        </a>
+        <div class="table-responsive">
 
-                        <form action="{{ route('admin.courses.destroy',$course->id) }}"
-                              method="POST"
-                              style="display:inline">
-                            @csrf
-                            @method('DELETE')
+            <table class="table table-striped table-hover align-middle mb-0">
 
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('حذف شود؟')">
-                                حذف
-                            </button>
-                        </form>
+                <thead class="table-light">
 
-                    </td>
+                    <tr>
+                        <th>#</th>
+                        <th>عنوان</th>
+                        <th>قیمت</th>
+                        <th>مدت</th>
+                        <th>ظرفیت</th>
+                        <th>تاریخ شروع</th>
+                        <th>تاریخ پایان</th>
+                        <th width="220" class="text-center">عملیات</th>
+                    </tr>
 
-                </tr>
+                </thead>
 
-                @empty
+                <tbody>
 
-                <tr>
-                    <td colspan="3" class="text-center">
-                        هیچ دوره‌ای موجود نیست
-                    </td>
-                </tr>
+                    @forelse($courses as $course)
 
-                @endforelse
-            </tbody>
+                        <tr>
 
-        </table>
+                            <td>
+                                {{ $loop->iteration }}
+                            </td>
+
+                            <td class="fw-semibold">
+                                {{ $course->title }}
+                            </td>
+
+                            <td>
+                                {{ number_format($course->price ?? 0) }}
+                            </td>
+
+                            <td>
+                                {{ $course->duration ?? '-' }}
+                            </td>
+
+                            <td>
+                                <span class="badge bg-info">
+                                    {{ $course->capacity }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ $course->start_date_shamsi ?? '-' }}
+                            </td>
+
+                            <td>
+                                {{ $course->end_date_shamsi ?? '-' }}
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex justify-content-center gap-2">
+
+                                    {{-- Show --}}
+                                    <a href="{{ route('admin.courses.show',$course->id) }}"
+                                       class="btn btn-sm btn-info">
+
+                                        مشاهده
+                                    </a>
+
+                                    {{-- Edit --}}
+                                    <a href="{{ route('admin.courses.edit',$course->id) }}"
+                                       class="btn btn-sm btn-warning">
+
+                                        ویرایش
+                                    </a>
+
+                                    {{-- Delete --}}
+                                    <form action="{{ route('admin.courses.destroy',$course->id) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('آیا از حذف این دوره مطمئن هستید؟')">
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger">
+
+                                            حذف
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="text-center p-4 text-muted">
+
+                                هیچ دوره‌ای ثبت نشده است
+
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
+
+    {{-- Pagination --}}
+    @if($courses->hasPages())
+
+        <div class="card-footer bg-white">
+
+            {{ $courses->links() }}
+
+        </div>
+
+    @endif
+
 </div>
+
 @endsection
