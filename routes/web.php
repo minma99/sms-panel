@@ -62,10 +62,10 @@ Route::post('/superadmin/logout', [SuperAdminAuthController::class, 'logout'])
 
 Route::prefix('superadmin')
     ->name('superadmin.')
-    ->middleware(['auth','role:super_admin'])
+    ->middleware(['auth', 'role:super_admin'])
     ->group(function () {
 
-        Route::get('/', [DashboardController::class,'index'])
+        Route::get('/', [DashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::resource('courses', CourseController::class);
@@ -81,7 +81,7 @@ Route::prefix('superadmin')
 
         Route::post('/settings', [SmsSettingController::class, 'update'])
             ->name('settings.update');
-});
+    });
 
 
 /*
@@ -92,20 +92,22 @@ Route::prefix('superadmin')
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth','role:admin'])
+    ->middleware(['auth', 'role:admin'])
     ->group(function () {
 
-        Route::get('/', [AdminDashboardController::class,'index'])
+        Route::get('/', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::resource('courses', AdminCourseController::class);
 
-        Route::resource('payments', AdminPaymentController::class);
+        // Admin اجازه ویرایش، بروزرسانی و حذف پرداخت‌ها را ندارد
+        Route::resource('payments', AdminPaymentController::class)
+            ->except(['edit', 'update', 'destroy']);
 
         // Admin اجازه حذف کارآموز ندارد
         Route::resource('trainees', AdminTraineeController::class)
             ->except(['destroy']);
-});
+    });
 
 
 /*
@@ -127,7 +129,7 @@ Route::post('/verify-otp', [OtpLoginController::class, 'verifyOtp']);
 |--------------------------------------------------------------------------
 */
 
-Route::get('/dashboard', [UserDashboardController::class,'index'])
+Route::get('/dashboard', [UserDashboardController::class, 'index'])
     ->middleware('auth')
     ->name('user.dashboard');
 

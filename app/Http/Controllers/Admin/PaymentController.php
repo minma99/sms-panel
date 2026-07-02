@@ -9,82 +9,73 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
+    public function index(Request $request)
+    {
+        $payments = Payment::with(['trainee.course'])
+            ->when($request->filled('trainee_id'), function ($query) use ($request) {
+                $query->where('trainee_id', $request->trainee_id);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
-public function index()
-{
-    $payments = Payment::with('trainee')->latest()->paginate(10);
+        $filteredTrainee = null;
 
-    return view('admin.payments.index',compact('payments'));
-}
+        if ($request->filled('trainee_id')) {
+            $filteredTrainee = Trainee::find($request->trainee_id);
+        }
 
-public function create()
-{
-    $trainees = Trainee::all();
+        return view('admin.payments.index', compact('payments', 'filteredTrainee'));
+    }
 
-    return view('admin.payments.create',compact('trainees'));
-}
+    public function create(Request $request)
+    {
+        $trainees = Trainee::with('course')->get();
+        $selectedTrainee = $request->query('trainee_id');
 
-public function store(Request $request)
-{
-    $data = $request->validate([
-        'trainee_id'=>'required',
-        'amount'=>'required|numeric',
-        'payment_method'=>'nullable',
-        'payment_type'=>'nullable',
-        'tracking_code'=>'nullable',
-        'payment_date'=>'nullable',
-        'payment_date_shamsi'=>'nullable',
-        'remaining_after_payment'=>'nullable',
-        'note'=>'nullable'
-    ]);
+        return view('admin.payments.create', compact('trainees', 'selectedTrainee'));
+    }
 
-    Payment::create($data);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'trainee_id' => 'required|exists:trainees,id',
+            'amount' => 'required|numeric|min:1',
+            'payment_type' => 'nullable|string|max:255',
+            'payment_method' => 'nullable|string|max:255',
+            'tracking_code' => 'nullable|string|max:255',
+            'payment_date' => 'nullable|date',
+            'payment_date_shamsi' => 'nullable|string|max:50',
+            'note' => 'nullable|string',
+        ]);
 
-    return redirect()
-        ->route('admin.payments.index')
-        ->with('success','پرداخت ثبت شد');
-}
+        $trainee = Trainee::with('payments')->findOrFail($request->trainee_id);
 
-public function show(Payment $payment)
-{
-    return view('admin.payments.show',compact('payment'));
-}
+        $alreadyPaid = $trainee->payments->sum('amount');
+        $finalFee = $trainee->final_fee;
+        $remainingAfterPayment = max(0, $finalFee - ($alreadyPaid + $request->amount));
 
-public function edit(Payment $payment)
-{
-    $trainees = Trainee::all();
+        Payment::create([
+            'trainee_id' => $request->trainee_id,
+            'amount' => $request->amount,
+            'remaining_after_payment' => $remainingAfterPayment,
+            'payment_type' => $request->payment_type,
+            'payment_method' => $request->payment_method,
+            'tracking_code' => $request->tracking_code,
+            'payment_date' => $request->payment_date,
+            'payment_date_shamsi' => $request->payment_date_shamsi,
+            'note' => $request->note,
+        ]);
 
-    return view('admin.payments.edit',compact('payment','trainees'));
-}
+        return redirect()
+            ->route('admin.payments.index', ['trainee_id' => $request->trainee_id])
+            ->with('success', 'پرداخت با موفقیت ثبت شد.');
+    }
 
-public function update(Request $request, Payment $payment)
-{
-    $data = $request->validate([
-        'trainee_id'=>'required',
-        'amount'=>'required|numeric',
-        'payment_method'=>'nullable',
-        'payment_type'=>'nullable',
-        'tracking_code'=>'nullable',
-        'payment_date'=>'nullable',
-        'payment_date_shamsi'=>'nullable',
-        'remaining_after_payment'=>'nullable',
-        'note'=>'nullable'
-    ]);
+    public function show($id)
+    {
+        $payment = Payment::with(['trainee.course'])->findOrFail($id);
 
-    $payment->update($data);
-
-    return redirect()
-        ->route('admin.payments.index')
-        ->with('success','پرداخت بروزرسانی شد');
-}
-
-public function destroy(Payment $payment)
-{
-    $payment->delete();
-
-    return redirect()
-        ->route('admin.payments.index')
-        ->with('success','پرداخت حذف شد');
-}
-
+        return view('admin.payments.show', compact('payment'));
+    }
 }
