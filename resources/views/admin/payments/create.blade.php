@@ -1,14 +1,21 @@
 @extends('admin.layouts.main')
 
-@section('title', 'Create Payment')
+@section('title','Create Payment')
 @section('page_title','ثبت پرداخت جدید')
 
 @section('content')
 
-<div class="card">
+<div class="container-fluid">
+
+<div class="row">
+<div class="col-12">
+
+<div class="card shadow-sm">
+
 <div class="card-header">
 <h5 class="mb-0">ثبت پرداخت جدید</h5>
 </div>
+
 
 <div class="card-body">
 
@@ -92,6 +99,7 @@ step="0.01">
 
 
 <div class="col-md-6">
+
 <label class="form-label">مبلغ پرداخت</label>
 
 <input
@@ -111,6 +119,7 @@ step="0.01">
 
 
 <div class="col-md-6">
+
 <label class="form-label">نوع پرداخت</label>
 
 <select name="payment_type" class="form-select">
@@ -133,6 +142,7 @@ step="0.01">
 
 
 <div class="col-md-6">
+
 <label class="form-label">روش پرداخت</label>
 
 <select name="payment_method" class="form-select">
@@ -161,6 +171,7 @@ step="0.01">
 
 
 <div class="col-md-6">
+
 <label class="form-label">کد رهگیری</label>
 
 <input
@@ -177,6 +188,7 @@ class="form-control">
 
 
 <div class="col-md-6">
+
 <label class="form-label">تاریخ پرداخت</label>
 
 <input
@@ -193,6 +205,7 @@ class="form-control">
 
 
 <div class="col-md-6">
+
 <label class="form-label">تاریخ شمسی</label>
 
 <input
@@ -209,6 +222,7 @@ class="form-control">
 
 
 <div class="col-12">
+
 <label class="form-label">توضیحات</label>
 
 <textarea name="note" class="form-control" rows="4">
@@ -223,13 +237,15 @@ class="form-control">
 
 </div>
 
-<div class="mt-4">
+
+<div class="mt-4 d-flex gap-2">
 
 <button type="submit" class="btn btn-success">
 ثبت پرداخت
 </button>
 
-<a href="{{ route('admin.payments.index') }}" class="btn btn-secondary">
+<a href="{{ route('admin.payments.index') }}"
+class="btn btn-secondary">
 بازگشت
 </a>
 
@@ -238,6 +254,12 @@ class="form-control">
 </form>
 
 </div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 
 
@@ -267,6 +289,7 @@ paidAmountEl.textContent = '-';
 remainingAmountEl.textContent = '-';
 
 return;
+
 }
 
 totalFeeEl.textContent = formatNumber(trainee.final_fee);
