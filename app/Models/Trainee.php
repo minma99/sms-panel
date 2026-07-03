@@ -94,5 +94,10 @@ class Trainee extends Model
 {
     return $this->hasMany(\App\Models\Exam::class);
 }
+public function latestExam()
+{
+    return $this->hasOne(\App\Models\Exam::class)->latestOfMany('exam_date');
+}
+
 
 }

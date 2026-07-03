@@ -11,13 +11,16 @@ class TraineeController extends Controller
 {
     public function index()
     {
-        $trainees = Trainee::with(['course','payments'])
-            ->latest()
-            ->paginate(10);
+        $trainees = Trainee::with([
+            'course',
+            'payments',
+            'latestExam',
+        ])
+        ->latest()
+        ->paginate(10);
 
         return view('admin.trainees.index', compact('trainees'));
     }
-
 
     public function create()
     {
@@ -25,7 +28,6 @@ class TraineeController extends Controller
 
         return view('admin.trainees.create', compact('courses'));
     }
-
 
     public function store(Request $request)
     {
@@ -46,22 +48,24 @@ class TraineeController extends Controller
             ->with('success', 'کارآموز با موفقیت ایجاد شد');
     }
 
-
     public function show(Trainee $trainee)
     {
-        $trainee->load(['course','payments']);
+        $trainee->load([
+            'course',
+            'payments',
+            'exams',
+            'latestExam',
+        ]);
 
         return view('admin.trainees.show', compact('trainee'));
     }
-
 
     public function edit(Trainee $trainee)
     {
         $courses = Course::orderBy('title')->get();
 
-        return view('admin.trainees.edit', compact('trainee','courses'));
+        return view('admin.trainees.edit', compact('trainee', 'courses'));
     }
-
 
     public function update(Request $request, Trainee $trainee)
     {
