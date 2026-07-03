@@ -3,202 +3,78 @@
 namespace App\Services;
 
 use App\Models\Trainee;
-use Carbon\Carbon;
+use App\Models\Course;
+use Illuminate\Support\Facades\DB;
 
 class ReportService
 {
     /**
-     * گزارش کلی
+     * اعمال فیلترها روی کارآموزان و محاسبه مبالغ مالی
      */
-    public function getFinancialSummary()
+    public function getFinancialReport(array $filters)
     {
-        $trainees = Trainee::with([
-            'payments',
-            'course'
-        ])->get();
+        // کوئری پایه به همراه روابط مورد نیاز
+        $query = Trainee::with(['course', 'payments'])
+            ->withSum('payments', 'amount');
 
-        $totalFinalFee = 0;
-        $totalPaid = 0;
-
-        foreach ($trainees as $trainee) {
-
-            $finalFee = $this->getFinalFee($trainee);
-            $paid = $trainee->payments->sum('amount');
-
-            $totalFinalFee += $finalFee;
-            $totalPaid += $paid;
+        // ۱. فیلتر بر اساس دوره آموزشی
+        if (!empty($filters['course_id'])) {
+            $query->where('course_id', $filters['course_id']);
         }
 
-        return [
-            'report_type' => 'all',
-
-            'total_trainees' => $trainees->count(),
-
-            'total_fee' => $totalFinalFee,
-
-            'total_paid' => $totalPaid,
-
-            'total_remaining' => $totalFinalFee - $totalPaid,
-
-            'trainees' => $trainees,
-        ];
-    }
-
-    /**
-     * گزارش ماهانه
-     */
-    public function getMonthlyFinancialSummary($year, $month)
-    {
-        $startDate = Carbon::createFromDate(
-            $year,
-            $month,
-            1
-        )->startOfMonth();
-
-        $endDate = Carbon::createFromDate(
-            $year,
-            $month,
-            1
-        )->endOfMonth();
-
-        $trainees = Trainee::with([
-
-            'course',
-
-            'payments' => function ($query) use (
-                $startDate,
-                $endDate
-            ) {
-                $query->whereBetween(
-                    'created_at',
-                    [$startDate, $endDate]
-                );
+        // ۲. محاسبه شهریه نهایی با اعمال درصد تخفیف به صورت خام در SQL (یا فیلتر وضعیت مالی)
+        // وضعیت مالی: بدهکار (debtor) یا تسویه شده (paid)
+        if (!empty($filters['status'])) {
+            // فرمول محاسبه مانده بدهی کارآموز: (total_fee - (total_fee * discount_percent / 100)) - payments_sum_amount
+            $remainingSql = "(total_fee - (total_fee * COALESCE(discount_percent, 0) / 100))";
+            
+            if ($filters['status'] === 'debtor') {
+                $query->where(function($q) use ($remainingSql) {
+                    $q->whereRaw("{$remainingSql} > (SELECT COALESCE(SUM(amount), 0) FROM payments WHERE payments.trainee_id = trainees.id)");
+                });
+            } elseif ($filters['status'] === 'paid') {
+                $query->where(function($q) use ($remainingSql) {
+                    $q->whereRaw("{$remainingSql} <= (SELECT COALESCE(SUM(amount), 0) FROM payments WHERE payments.trainee_id = trainees.id)");
+                });
             }
+        }
 
-        ])
-        ->whereHas('payments', function ($query) use (
-            $startDate,
-            $endDate
-        ) {
-            $query->whereBetween(
-                'created_at',
-                [$startDate, $endDate]
-            );
-        })
-        ->get();
+        // ۳. فیلتر بر اساس بازه تاریخ شمسی پرداخت‌ها
+        if (!empty($filters['from_date']) && !empty($filters['to_date'])) {
+            $query->whereHas('payments', function ($q) use ($filters) {
+                $q->whereBetween('payment_date_shamsi', [$filters['from_date'], $filters['to_date']]);
+            });
+        }
 
-        $totalFinalFee = 0;
+        $trainees = $query->get();
+
+        // محاسبات آماری نهایی برای خلاصه گزارش
+        $totalFee = 0;
         $totalPaid = 0;
 
         foreach ($trainees as $trainee) {
+            // محاسبه شهریه پس از اعمال تخفیف
+            $discount = ($trainee->total_fee * ($trainee->discount_percent ?? 0)) / 100;
+            $finalFee = $trainee->total_fee - $discount;
+            $totalFee += $finalFee;
 
-            $finalFee = $this->getFinalFee($trainee);
-
-            $paid = $trainee->payments->sum('amount');
-
-            $totalFinalFee += $finalFee;
+            // مجموع پرداختی‌های ثبت شده کارآموز
+            $paid = $trainee->payments_sum_amount ?? 0;
             $totalPaid += $paid;
+
+            // افزودن صفات داینامیک به مدل برای استفاده آسان در View
+            $trainee->final_fee = $finalFee;
+            $trainee->total_paid = $paid;
+            $trainee->remaining_balance = $finalFee - $paid;
         }
 
         return [
-
-            'report_type' => 'monthly',
-
-            'year' => $year,
-            'month' => $month,
-
-            'from_date' => $startDate->format('Y-m-d'),
-            'to_date' => $endDate->format('Y-m-d'),
-
-            'total_trainees' => $trainees->count(),
-
-            'total_fee' => $totalFinalFee,
-
-            'total_paid' => $totalPaid,
-
-            'total_remaining' => $totalFinalFee - $totalPaid,
-
-            'trainees' => $trainees,
+            'trainees'        => $trainees,
+            'courses'         => Course::all(),
+            'total_trainees'  => $trainees->count(),
+            'total_fee'       => $totalFee,
+            'total_paid'      => $totalPaid,
+            'total_remaining' => $totalFee - $totalPaid,
         ];
-    }
-
-    /**
-     * گزارش بازه‌ای
-     */
-    public function getRangeFinancialSummary($from, $to)
-    {
-        $startDate = Carbon::parse($from)->startOfDay();
-        $endDate = Carbon::parse($to)->endOfDay();
-
-        $trainees = Trainee::with([
-
-            'course',
-
-            'payments' => function ($query) use (
-                $startDate,
-                $endDate
-            ) {
-                $query->whereBetween(
-                    'created_at',
-                    [$startDate, $endDate]
-                );
-            }
-
-        ])
-        ->whereHas('payments', function ($query) use (
-            $startDate,
-            $endDate
-        ) {
-            $query->whereBetween(
-                'created_at',
-                [$startDate, $endDate]
-            );
-        })
-        ->get();
-
-        $totalFinalFee = 0;
-        $totalPaid = 0;
-
-        foreach ($trainees as $trainee) {
-
-            $finalFee = $this->getFinalFee($trainee);
-
-            $paid = $trainee->payments->sum('amount');
-
-            $totalFinalFee += $finalFee;
-            $totalPaid += $paid;
-        }
-
-        return [
-
-            'report_type' => 'range',
-
-            'from_date' => $startDate->format('Y-m-d'),
-            'to_date' => $endDate->format('Y-m-d'),
-
-            'total_trainees' => $trainees->count(),
-
-            'total_fee' => $totalFinalFee,
-
-            'total_paid' => $totalPaid,
-
-            'total_remaining' => $totalFinalFee - $totalPaid,
-
-            'trainees' => $trainees,
-        ];
-    }
-
-    /**
-     * محاسبه شهریه نهایی
-     */
-    private function getFinalFee($trainee)
-    {
-        $totalFee = $trainee->total_fee ?? 0;
-
-        $discountPercent =
-            $trainee->discount_percent ?? 0;
-
-        return $totalFee -
-            (($totalFee * $discountPercent) / 100);
     }
 }

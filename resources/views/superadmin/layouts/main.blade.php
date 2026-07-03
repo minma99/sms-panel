@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'پنل مدیریت')</title>
+    <title>@yield('title', 'پنل سوپر ادمین')</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
@@ -131,139 +131,210 @@
 @php
     $user = auth()->user();
 
-    $dashboardRoute = 'user.dashboard';
-
-    if ($user && $user->is_superadmin) {
-        $dashboardRoute = 'superadmin.dashboard';
-    } elseif ($user && method_exists($user, 'hasRole') && $user->hasRole('admin')) {
-        $dashboardRoute = 'admin.dashboard';
-    }
+    $dashboardRoute = 'superadmin.dashboard';
 
     $coursesOpen = request()->routeIs('superadmin.courses.*');
     $traineesOpen = request()->routeIs('superadmin.trainees.*');
     $usersOpen = request()->routeIs('superadmin.users.*');
     $paymentsOpen = request()->routeIs('superadmin.payments.*');
     $examsOpen = request()->routeIs('superadmin.exams.*');
+    $reportsOpen = request()->routeIs('superadmin.reports.*');
     $superAdminOpen = request()->routeIs('superadmin.settings');
 @endphp
 
 <!-- MOBILE MENU -->
 <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="mobileSidebar">
     <div class="offcanvas-header">
-        <h5 class="mb-0">پنل مدیریت</h5>
-        <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+        <h5 class="mb-0">پنل سوپر ادمین</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
 
     <div class="offcanvas-body p-3">
         <a href="{{ route($dashboardRoute) }}"
-           class="sidebar-link {{ request()->routeIs($dashboardRoute) ? 'active' : '' }}">
+           class="sidebar-link {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}">
             <span>داشبورد</span>
         </a>
 
-        <a href="#coursesMobile"
-           data-bs-toggle="collapse"
-           class="sidebar-link {{ $coursesOpen ? 'active' : '' }}">
+        <a href="#coursesMobile" data-bs-toggle="collapse" class="sidebar-link {{ $coursesOpen ? 'active' : '' }}">
             <span>دوره‌ها</span>
             <span class="menu-arrow">⌄</span>
         </a>
-
         <div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMobile">
-            <a href="{{ route('superadmin.courses.index') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.courses.index') ? 'active' : '' }}">
-                لیست دوره‌ها
-            </a>
-
-            <a href="{{ route('superadmin.courses.create') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.courses.create') ? 'active' : '' }}">
-                ایجاد دوره
-            </a>
+            <a href="{{ route('superadmin.courses.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.courses.index') ? 'active' : '' }}">لیست دوره‌ها</a>
+            <a href="{{ route('superadmin.courses.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.courses.create') ? 'active' : '' }}">ایجاد دوره</a>
         </div>
 
-        <a href="#traineesMobile"
-           data-bs-toggle="collapse"
-           class="sidebar-link {{ $traineesOpen ? 'active' : '' }}">
+        <a href="#traineesMobile" data-bs-toggle="collapse" class="sidebar-link {{ $traineesOpen ? 'active' : '' }}">
             <span>کارآموزان</span>
             <span class="menu-arrow">⌄</span>
         </a>
-
         <div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMobile">
-            <a href="{{ route('superadmin.trainees.index') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.trainees.index') ? 'active' : '' }}">
-                لیست کارآموزان
-            </a>
-
-            <a href="{{ route('superadmin.trainees.create') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.trainees.create') ? 'active' : '' }}">
-                ایجاد کارآموز
-            </a>
+            <a href="{{ route('superadmin.trainees.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.trainees.index') ? 'active' : '' }}">لیست کارآموزان</a>
+            <a href="{{ route('superadmin.trainees.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.trainees.create') ? 'active' : '' }}">ایجاد کارآموز</a>
         </div>
 
-        <a href="#usersMobile"
-           data-bs-toggle="collapse"
-           class="sidebar-link {{ $usersOpen ? 'active' : '' }}">
+        <a href="#usersMobile" data-bs-toggle="collapse" class="sidebar-link {{ $usersOpen ? 'active' : '' }}">
             <span>کاربران</span>
             <span class="menu-arrow">⌄</span>
         </a>
-
         <div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersMobile">
-            <a href="{{ route('superadmin.users.index') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.users.index') ? 'active' : '' }}">
-                لیست کاربران
-            </a>
-
-            <a href="{{ route('superadmin.users.create') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.users.create') ? 'active' : '' }}">
-                ایجاد کاربر
-            </a>
+            <a href="{{ route('superadmin.users.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.users.index') ? 'active' : '' }}">لیست کاربران</a>
+            <a href="{{ route('superadmin.users.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.users.create') ? 'active' : '' }}">ایجاد کاربر</a>
         </div>
 
-        <a href="#paymentsMobile"
-           data-bs-toggle="collapse"
-           class="sidebar-link {{ $paymentsOpen ? 'active' : '' }}">
+        <a href="#paymentsMobile" data-bs-toggle="collapse" class="sidebar-link {{ $paymentsOpen ? 'active' : '' }}">
             <span>پرداخت‌ها</span>
             <span class="menu-arrow">⌄</span>
         </a>
-
         <div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMobile">
-            <a href="{{ route('superadmin.payments.index') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.payments.index') ? 'active' : '' }}">
-                لیست پرداخت‌ها
-            </a>
-
-            <a href="{{ route('superadmin.payments.create') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.payments.create') ? 'active' : '' }}">
-                ثبت پرداخت
-            </a>
+            <a href="{{ route('superadmin.payments.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.payments.index') ? 'active' : '' }}">لیست پرداخت‌ها</a>
+            <a href="{{ route('superadmin.payments.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.payments.create') ? 'active' : '' }}">ثبت پرداخت</a>
         </div>
 
-        <a href="#examsMobile"
-           data-bs-toggle="collapse"
-           class="sidebar-link {{ $examsOpen ? 'active' : '' }}">
+        <a href="#examsMobile" data-bs-toggle="collapse" class="sidebar-link {{ $examsOpen ? 'active' : '' }}">
             <span>آزمون‌ها</span>
             <span class="menu-arrow">⌄</span>
         </a>
-
         <div class="collapse {{ $examsOpen ? 'show' : '' }}" id="examsMobile">
-            <a href="{{ route('superadmin.exams.index') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.exams.index') ? 'active' : '' }}">
-                لیست آزمون‌ها
-            </a>
-
-            <a href="{{ route('superadmin.exams.create') }}"
-               class="sidebar-sublink {{ request()->routeIs('superadmin.exams.create') ? 'active' : '' }}">
-                ثبت آزمون
-            </a>
+            <a href="{{ route('superadmin.exams.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.exams.index') ? 'active' : '' }}">لیست آزمون‌ها</a>
+            <a href="{{ route('superadmin.exams.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.exams.create') ? 'active' : '' }}">ثبت آزمون</a>
         </div>
+
+        <!-- اضافه شدن بخش گزارش مالی در موبایل -->
+        <a href="{{ route('superadmin.reports.financial') }}" class="sidebar-link {{ $reportsOpen ? 'active' : '' }}">
+            <span>گزارش مالی</span>
+        </a>
 
         @if(auth()->check() && auth()->user()->is_superadmin)
             <hr>
-
             <a href="{{ route('superadmin.settings') }}"
                class="sidebar-link {{ request()->routeIs('superadmin.settings') ? 'active' : '' }}">
                 <span>تنظیمات پیامک</span>
             </a>
         @endif
+
+        <hr>
+
+        <a href="#"
+           class="sidebar-link"
+           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <span>خروج</span>
+        </a>
     </div>
 </div>
 
-<!-- 
+<!-- DESKTOP SIDEBAR -->
+<div class="sidebar d-none d-lg-block">
+    <div class="sidebar-title">پنل سوپر ادمین</div>
+
+    <a href="{{ route($dashboardRoute) }}"
+       class="sidebar-link {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}">
+        <span>داشبورد</span>
+    </a>
+
+    <a href="#coursesDesktop" data-bs-toggle="collapse" class="sidebar-link {{ $coursesOpen ? 'active' : '' }}">
+        <span>دوره‌ها</span>
+        <span class="menu-arrow">⌄</span>
+    </a>
+    <div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesDesktop">
+        <a href="{{ route('superadmin.courses.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.courses.index') ? 'active' : '' }}">لیست دوره‌ها</a>
+        <a href="{{ route('superadmin.courses.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.courses.create') ? 'active' : '' }}">ایجاد دوره</a>
+    </div>
+
+    <a href="#traineesDesktop" data-bs-toggle="collapse" class="sidebar-link {{ $traineesOpen ? 'active' : '' }}">
+        <span>کارآموزان</span>
+        <span class="menu-arrow">⌄</span>
+    </a>
+    <div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesDesktop">
+        <a href="{{ route('superadmin.trainees.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.trainees.index') ? 'active' : '' }}">لیست کارآموزان</a>
+        <a href="{{ route('superadmin.trainees.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.trainees.create') ? 'active' : '' }}">ایجاد کارآموز</a>
+    </div>
+
+    <a href="#usersDesktop" data-bs-toggle="collapse" class="sidebar-link {{ $usersOpen ? 'active' : '' }}">
+        <span>کاربران</span>
+        <span class="menu-arrow">⌄</span>
+    </a>
+    <div class="collapse {{ $usersOpen ? 'show' : '' }}" id="usersDesktop">
+        <a href="{{ route('superadmin.users.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.users.index') ? 'active' : '' }}">لیست کاربران</a>
+        <a href="{{ route('superadmin.users.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.users.create') ? 'active' : '' }}">ایجاد کاربر</a>
+    </div>
+
+    <a href="#paymentsDesktop" data-bs-toggle="collapse" class="sidebar-link {{ $paymentsOpen ? 'active' : '' }}">
+        <span>پرداخت‌ها</span>
+        <span class="menu-arrow">⌄</span>
+    </a>
+    <div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsDesktop">
+        <a href="{{ route('superadmin.payments.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.payments.index') ? 'active' : '' }}">لیست پرداخت‌ها</a>
+        <a href="{{ route('superadmin.payments.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.payments.create') ? 'active' : '' }}">ثبت پرداخت</a>
+    </div>
+
+    <a href="#examsDesktop" data-bs-toggle="collapse" class="sidebar-link {{ $examsOpen ? 'active' : '' }}">
+        <span>آزمون‌ها</span>
+        <span class="menu-arrow">⌄</span>
+    </a>
+    <div class="collapse {{ $examsOpen ? 'show' : '' }}" id="examsDesktop">
+        <a href="{{ route('superadmin.exams.index') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.exams.index') ? 'active' : '' }}">لیست آزمون‌ها</a>
+        <a href="{{ route('superadmin.exams.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.exams.create') ? 'active' : '' }}">ثبت آزمون</a>
+    </div>
+
+    <!-- اضافه شدن بخش گزارش مالی در دسکتاپ -->
+    <a href="{{ route('superadmin.reports.financial') }}" class="sidebar-link {{ $reportsOpen ? 'active' : '' }}">
+        <span>گزارش مالی</span>
+    </a>
+
+    @if(auth()->check() && auth()->user()->is_superadmin)
+        <hr class="border-secondary">
+        <a href="{{ route('superadmin.settings') }}"
+           class="sidebar-link {{ request()->routeIs('superadmin.settings') ? 'active' : '' }}">
+            <span>تنظیمات پیامک</span>
+        </a>
+    @endif
+
+    <hr class="border-secondary">
+
+    <a href="#"
+       class="sidebar-link"
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <span>خروج</span>
+    </a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+    <div class="header">
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-dark d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+                ☰
+            </button>
+            <h5 class="mb-0">@yield('page_title', 'داشبورد')</h5>
+        </div>
+
+        <div class="user-name">
+            {{ auth()->user()->name ?? 'کاربر' }}
+        </div>
+    </div>
+
+    <main>
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        @yield('content')
+    </main>
+
+    <div class="footer">
+        © {{ date('Y') }} - پنل سوپر ادمین
+    </div>
+</div>
+
+<form id="logout-form" action="{{ route('superadmin.logout') }}" method="POST" class="d-none">
+    @csrf
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>@yield('title')</title>
+<title>@yield('title', 'پنل ادمین')</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
@@ -90,6 +90,7 @@ $coursesOpen = request()->routeIs('admin.courses.*');
 $traineesOpen = request()->routeIs('admin.trainees.*');
 $paymentsOpen = request()->routeIs('admin.payments.*');
 $examsOpen = request()->routeIs('admin.exams.*');
+$reportsOpen = request()->routeIs('admin.reports.*');
 @endphp
 
 <!-- MOBILE MENU -->
@@ -101,7 +102,7 @@ $examsOpen = request()->routeIs('admin.exams.*');
 
 <div class="offcanvas-body p-3">
 
-<a href="{{ route('admin.dashboard') }}" class="sidebar-link">داشبورد</a>
+<a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">داشبورد</a>
 
 <a href="#coursesMobile" data-bs-toggle="collapse"
 class="sidebar-link {{ $coursesOpen ? 'active' : '' }}">دوره‌ها ⌄</a>
@@ -132,6 +133,9 @@ class="sidebar-link {{ $examsOpen ? 'active' : '' }}">آزمون‌ها ⌄</a>
 <a href="{{ route('admin.exams.index') }}" class="sidebar-sublink">لیست آزمون‌ها</a>
 <a href="{{ route('admin.exams.create') }}" class="sidebar-sublink">ثبت آزمون</a>
 </div>
+
+<!-- FINANCIAL REPORTS (MOBILE) -->
+<a href="{{ route('admin.reports.financial') }}" class="sidebar-link {{ $reportsOpen ? 'active' : '' }}">گزارش مالی</a>
 
 </div>
 </div>
@@ -194,6 +198,9 @@ class="sidebar-link d-flex justify-content-between align-items-center {{ $examsO
 <a href="{{ route('admin.exams.create') }}" class="sidebar-sublink">ثبت آزمون</a>
 </div>
 
+<!-- FINANCIAL REPORTS (DESKTOP) -->
+<a href="{{ route('admin.reports.financial') }}" class="sidebar-link {{ $reportsOpen ? 'active' : '' }}">گزارش مالی</a>
+
 </div>
 
 <!-- CONTENT AREA -->
@@ -206,7 +213,7 @@ class="sidebar-link d-flex justify-content-between align-items-center {{ $examsO
 data-bs-toggle="offcanvas"
 data-bs-target="#mobileSidebar">☰</button>
 
-<h5 class="mb-0">@yield('page_title')</h5>
+<h5 class="mb-0">@yield('page_title', 'داشبورد')</h5>
 </div>
 
 <div>
@@ -219,8 +226,9 @@ class="btn btn-sm btn-danger">
 خروج
 </a>
 
+<!-- روت خروج ادمین به صورت عمومی اصلاح شد تا مشکل روت وجود نداشته باشد -->
 <form id="logout-form"
-action="{{ route('admin.logout') }}"
+action="{{ route('logout') }}"
 method="POST"
 class="d-none">
 @csrf

@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('superadmin.layouts.main')
 
 @section('content')
 
@@ -26,7 +26,7 @@
                 لیست پرداخت‌ها
             </h5>
 
-            <a href="{{ route('admin.payments.create') }}"
+            <a href="{{ route('superadmin.payments.create') }}"
                class="btn btn-sm btn-primary">
                 ثبت پرداخت جدید
             </a>
@@ -45,7 +45,7 @@
                         <strong>{{ $filteredTrainee->full_name ?? 'کارآموز انتخاب‌شده' }}</strong>
                     </span>
 
-                    <a href="{{ route('admin.payments.index') }}"
+                    <a href="{{ route('superadmin.payments.index') }}"
                        class="btn btn-sm btn-secondary">
                         نمایش همه
                     </a>
@@ -99,16 +99,18 @@
                             </td>
 
                             <td>
-                                @if(($payment->remaining_amount ?? 0) > 0)
-                                    <span class="badge bg-danger">
-                                        {{ number_format($payment->remaining_amount) }}
-                                    </span>
-                                @else
-                                    <span class="badge bg-success">
-                                        تسویه
-                                    </span>
-                                @endif
-                            </td>
+    {{-- تغییر از remaining_amount به remaining_after_payment --}}
+    @if(($payment->remaining_after_payment ?? 0) > 0)
+        <span class="badge bg-danger">
+            {{ number_format($payment->remaining_after_payment) }}
+        </span>
+    @else
+        <span class="badge bg-success">
+            تسویه
+        </span>
+    @endif
+</td>
+
 
                             <td>
                                 {{ $payment->description ?? '—' }}
@@ -122,12 +124,12 @@
 
                                 <div class="d-flex justify-content-center gap-1">
 
-                                    <a href="{{ route('admin.payments.show', $payment->id) }}"
+                                    <a href="{{ route('superadmin.payments.show', $payment->id) }}"
                                        class="btn btn-sm btn-info text-white">
                                         نمایش
                                     </a>
 
-                                    <a href="{{ route('admin.payments.edit', $payment->id) }}"
+                                    <a href="{{ route('superadmin.payments.edit', $payment->id) }}"
                                        class="btn btn-sm btn-warning text-white">
                                         ویرایش
                                     </a>

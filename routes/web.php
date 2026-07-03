@@ -14,7 +14,9 @@ use App\Http\Controllers\SuperAdmin\PaymentController as SuperAdminPaymentContro
 use App\Http\Controllers\SuperAdmin\TraineeController;
 use App\Http\Controllers\SuperAdmin\UserController;
 use App\Http\Controllers\SuperAdmin\ExamController;
-use App\Http\Controllers\SuperAdmin\ReportController;
+
+// اصلاح شد: آدرس‌دهی مستقیم به کنترلر گزارشات مشترک در پوشه اصلی
+use App\Http\Controllers\ReportController; 
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
@@ -95,6 +97,21 @@ Route::prefix('superadmin')
 
         Route::resource('users', UserController::class);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Financial Reports (SuperAdmin)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/reports/financial', [ReportController::class, 'financial'])
+            ->name('reports.financial');
+
+        Route::get('/reports/financial/pdf', [ReportController::class, 'exportPdf'])
+            ->name('reports.pdf');
+
+        Route::get('/reports/financial/csv', [ReportController::class, 'exportCsv'])
+            ->name('reports.csv');
+
+        // متد قدیمی دانلود
         Route::get('/reports/download', [ReportController::class, 'downloadPdf'])
             ->name('reports.download');
 
@@ -155,6 +172,20 @@ Route::prefix('admin')
             ->except([
                 'destroy'
             ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Financial Reports (Admin)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/reports/financial', [ReportController::class, 'financial'])
+            ->name('reports.financial');
+
+        Route::get('/reports/financial/pdf', [ReportController::class, 'exportPdf'])
+            ->name('reports.pdf');
+
+        Route::get('/reports/financial/csv', [ReportController::class, 'exportCsv'])
+            ->name('reports.csv');
     });
 
 /*

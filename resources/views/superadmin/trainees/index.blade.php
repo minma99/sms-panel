@@ -34,7 +34,6 @@
                             <th style="min-width: 160px;">دوره</th>
                             <th style="min-width: 160px;">آخرین آزمون</th>
                             <th style="min-width: 130px;">تاریخ آزمون</th>
-                            <th style="min-width: 130px;">نوع آزمون</th>
                             <th style="min-width: 120px;">وضعیت آزمون</th>
                             <th style="min-width: 130px;">شهریه نهایی</th>
                             <th style="min-width: 120px;">پرداخت شده</th>
@@ -74,33 +73,6 @@
 
                             <td>
                                 {{ $latestExam->exam_date ?? '—' }}
-                            </td>
-
-                            <td>
-                                @if($latestExam)
-                                    @switch($latestExam->exam_type)
-                                        @case('technical')
-                                            فنی حرفه‌ای
-                                            @break
-
-                                        @case('internal')
-                                            داخلی
-                                            @break
-
-                                        @case('midterm')
-                                            میان‌دوره
-                                            @break
-
-                                        @case('final')
-                                            پایان‌دوره
-                                            @break
-
-                                        @default
-                                            {{ $latestExam->exam_type }}
-                                    @endswitch
-                                @else
-                                    —
-                                @endif
                             </td>
 
                             <td>
@@ -187,7 +159,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="11" class="text-muted py-4 text-center">
+                            <td colspan="10" class="text-muted py-4 text-center">
                                 هیچ کارآموزی یافت نشد.
                             </td>
                         </tr>
