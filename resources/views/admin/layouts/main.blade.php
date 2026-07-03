@@ -41,6 +41,8 @@ padding:8px 15px;
 padding-right:30px;
 text-decoration:none;
 font-size:14px;
+border-radius:8px;
+margin-bottom:4px;
 }
 
 .sidebar-sublink:hover{background:#1f2937;color:white}
@@ -87,6 +89,7 @@ color:#888;
 $coursesOpen = request()->routeIs('admin.courses.*');
 $traineesOpen = request()->routeIs('admin.trainees.*');
 $paymentsOpen = request()->routeIs('admin.payments.*');
+$examsOpen = request()->routeIs('admin.exams.*');
 @endphp
 
 <!-- MOBILE MENU -->
@@ -100,22 +103,34 @@ $paymentsOpen = request()->routeIs('admin.payments.*');
 
 <a href="{{ route('admin.dashboard') }}" class="sidebar-link">داشبورد</a>
 
-<a href="#coursesMobile" data-bs-toggle="collapse" class="sidebar-link">دوره‌ها ⌄</a>
+<a href="#coursesMobile" data-bs-toggle="collapse"
+class="sidebar-link {{ $coursesOpen ? 'active' : '' }}">دوره‌ها ⌄</a>
 <div class="collapse {{ $coursesOpen ? 'show' : '' }}" id="coursesMobile">
 <a href="{{ route('admin.courses.index') }}" class="sidebar-sublink">لیست دوره‌ها</a>
 <a href="{{ route('admin.courses.create') }}" class="sidebar-sublink">ایجاد دوره</a>
 </div>
 
-<a href="#traineesMobile" data-bs-toggle="collapse" class="sidebar-link">کارآموزان ⌄</a>
+<a href="#traineesMobile" data-bs-toggle="collapse"
+class="sidebar-link {{ $traineesOpen ? 'active' : '' }}">کارآموزان ⌄</a>
 <div class="collapse {{ $traineesOpen ? 'show' : '' }}" id="traineesMobile">
 <a href="{{ route('admin.trainees.index') }}" class="sidebar-sublink">لیست کارآموزان</a>
 <a href="{{ route('admin.trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
 </div>
 
-<a href="#paymentsMobile" data-bs-toggle="collapse" class="sidebar-link">پرداخت‌ها ⌄</a>
+<a href="#paymentsMobile" data-bs-toggle="collapse"
+class="sidebar-link {{ $paymentsOpen ? 'active' : '' }}">پرداخت‌ها ⌄</a>
 <div class="collapse {{ $paymentsOpen ? 'show' : '' }}" id="paymentsMobile">
 <a href="{{ route('admin.payments.index') }}" class="sidebar-sublink">لیست پرداخت‌ها</a>
 <a href="{{ route('admin.payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
+</div>
+
+<!-- EXAMS (MOBILE) -->
+<a href="#examsMobile" data-bs-toggle="collapse"
+class="sidebar-link {{ $examsOpen ? 'active' : '' }}">آزمون‌ها ⌄</a>
+
+<div class="collapse {{ $examsOpen ? 'show' : '' }}" id="examsMobile">
+<a href="{{ route('admin.exams.index') }}" class="sidebar-sublink">لیست آزمون‌ها</a>
+<a href="{{ route('admin.exams.create') }}" class="sidebar-sublink">ثبت آزمون</a>
 </div>
 
 </div>
@@ -131,6 +146,7 @@ class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
 داشبورد
 </a>
 
+<!-- COURSES -->
 <a href="#coursesDesktop" data-bs-toggle="collapse"
 class="sidebar-link d-flex justify-content-between align-items-center {{ $coursesOpen ? 'active' : '' }}">
 <span>دوره‌ها</span>
@@ -142,6 +158,7 @@ class="sidebar-link d-flex justify-content-between align-items-center {{ $course
 <a href="{{ route('admin.courses.create') }}" class="sidebar-sublink">ایجاد دوره</a>
 </div>
 
+<!-- TRAINEES -->
 <a href="#traineesDesktop" data-bs-toggle="collapse"
 class="sidebar-link d-flex justify-content-between align-items-center {{ $traineesOpen ? 'active' : '' }}">
 <span>کارآموزان</span>
@@ -153,6 +170,7 @@ class="sidebar-link d-flex justify-content-between align-items-center {{ $traine
 <a href="{{ route('admin.trainees.create') }}" class="sidebar-sublink">ایجاد کارآموز</a>
 </div>
 
+<!-- PAYMENTS -->
 <a href="#paymentsDesktop" data-bs-toggle="collapse"
 class="sidebar-link d-flex justify-content-between align-items-center {{ $paymentsOpen ? 'active' : '' }}">
 <span>پرداخت‌ها</span>
@@ -164,8 +182,21 @@ class="sidebar-link d-flex justify-content-between align-items-center {{ $paymen
 <a href="{{ route('admin.payments.create') }}" class="sidebar-sublink">ثبت پرداخت</a>
 </div>
 
+<!-- EXAMS (DESKTOP) -->
+<a href="#examsDesktop" data-bs-toggle="collapse"
+class="sidebar-link d-flex justify-content-between align-items-center {{ $examsOpen ? 'active' : '' }}">
+<span>آزمون‌ها</span>
+<span>⌄</span>
+</a>
+
+<div class="collapse {{ $examsOpen ? 'show' : '' }}" id="examsDesktop">
+<a href="{{ route('admin.exams.index') }}" class="sidebar-sublink">لیست آزمون‌ها</a>
+<a href="{{ route('admin.exams.create') }}" class="sidebar-sublink">ثبت آزمون</a>
 </div>
 
+</div>
+
+<!-- CONTENT AREA -->
 <div class="content">
 
 <div class="header">
@@ -189,7 +220,7 @@ class="btn btn-sm btn-danger">
 </a>
 
 <form id="logout-form"
-action="{{ route('superadmin.logout') }}"
+action="{{ route('admin.logout') }}"
 method="POST"
 class="d-none">
 @csrf
