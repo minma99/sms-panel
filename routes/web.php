@@ -21,7 +21,6 @@ use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\TraineeController as AdminTraineeController;
 use App\Http\Controllers\Admin\ExamController as AdminExamController;
-
 use App\Http\Controllers\Admin\SmsSettingController;
 
 use App\Http\Controllers\Auth\SuperAdminAuthController;
@@ -71,7 +70,6 @@ Route::post('/superadmin/login', [SuperAdminAuthController::class, 'login'])
 Route::post('/superadmin/logout', [SuperAdminAuthController::class, 'logout'])
     ->middleware('auth')
     ->name('superadmin.logout');
-    
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +86,7 @@ Route::prefix('superadmin')
             ->name('dashboard');
 
         Route::resource('courses', CourseController::class);
+
         Route::resource('exams', ExamController::class);
 
         Route::resource('trainees', TraineeController::class);
@@ -104,8 +103,6 @@ Route::prefix('superadmin')
 
         Route::post('/settings', [SmsSettingController::class, 'update'])
             ->name('settings.update');
-
-
     });
 
 /*
@@ -130,7 +127,6 @@ Route::prefix('admin')
         |--------------------------------------------------------------------------
         | Admin فقط مشاهده و ثبت پرداخت دارد
         */
-
         Route::resource('payments', AdminPaymentController::class)
             ->except([
                 'edit',
@@ -144,8 +140,18 @@ Route::prefix('admin')
         |--------------------------------------------------------------------------
         | Admin اجازه حذف ندارد
         */
-
         Route::resource('trainees', AdminTraineeController::class)
+            ->except([
+                'destroy'
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Exams
+        |--------------------------------------------------------------------------
+        | Admin اجازه حذف ندارد
+        */
+        Route::resource('exams', AdminExamController::class)
             ->except([
                 'destroy'
             ]);
