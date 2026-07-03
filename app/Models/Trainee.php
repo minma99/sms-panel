@@ -89,4 +89,10 @@ class Trainee extends Model
     {
         return max(0, (int)($this->final_fee - $this->paid_amount));
     }
+
+    public function exams()
+{
+    return $this->hasMany(\App\Models\Exam::class);
+}
+
 }

@@ -13,19 +13,21 @@ use App\Http\Controllers\SuperAdmin\CourseController;
 use App\Http\Controllers\SuperAdmin\PaymentController as SuperAdminPaymentController;
 use App\Http\Controllers\SuperAdmin\TraineeController;
 use App\Http\Controllers\SuperAdmin\UserController;
+use App\Http\Controllers\SuperAdmin\ExamController;
 use App\Http\Controllers\SuperAdmin\ReportController;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\TraineeController as AdminTraineeController;
+use App\Http\Controllers\Admin\ExamController as AdminExamController;
+
 use App\Http\Controllers\Admin\SmsSettingController;
 
 use App\Http\Controllers\Auth\SuperAdminAuthController;
 use App\Http\Controllers\Auth\OtpLoginController;
 
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -36,10 +38,27 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 Route::get('/', [OtpLoginController::class, 'showLogin'])
     ->name('login');
 
+/*
+|--------------------------------------------------------------------------
+| OTP Login / Logout
+|--------------------------------------------------------------------------
+*/
+
+// ارسال OTP
+Route::post('/send-otp', [OtpLoginController::class, 'sendOtp'])
+    ->name('otp.send');
+
+// تایید OTP
+Route::post('/verify-otp', [OtpLoginController::class, 'verifyOtp'])
+    ->name('otp.verify');
+
+// خروج عمومی
+Route::post('/logout', [OtpLoginController::class, 'logout'])
+    ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| SuperAdmin Auth (بدون OTP)
+| SuperAdmin Login
 |--------------------------------------------------------------------------
 */
 
@@ -52,7 +71,7 @@ Route::post('/superadmin/login', [SuperAdminAuthController::class, 'login'])
 Route::post('/superadmin/logout', [SuperAdminAuthController::class, 'logout'])
     ->middleware('auth')
     ->name('superadmin.logout');
-
+    
 
 /*
 |--------------------------------------------------------------------------
@@ -69,8 +88,12 @@ Route::prefix('superadmin')
             ->name('dashboard');
 
         Route::resource('courses', CourseController::class);
+        Route::resource('exams', ExamController::class);
+
         Route::resource('trainees', TraineeController::class);
+
         Route::resource('payments', SuperAdminPaymentController::class);
+
         Route::resource('users', UserController::class);
 
         Route::get('/reports/download', [ReportController::class, 'downloadPdf'])
@@ -81,8 +104,9 @@ Route::prefix('superadmin')
 
         Route::post('/settings', [SmsSettingController::class, 'update'])
             ->name('settings.update');
-    });
 
+
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -100,39 +124,42 @@ Route::prefix('admin')
 
         Route::resource('courses', AdminCourseController::class);
 
-        // Admin اجازه ویرایش، بروزرسانی و حذف پرداخت‌ها را ندارد
-        Route::resource('payments', AdminPaymentController::class)
-            ->except(['edit', 'update', 'destroy']);
+        /*
+        |--------------------------------------------------------------------------
+        | Payments
+        |--------------------------------------------------------------------------
+        | Admin فقط مشاهده و ثبت پرداخت دارد
+        */
 
-        // Admin اجازه حذف کارآموز ندارد
+        Route::resource('payments', AdminPaymentController::class)
+            ->except([
+                'edit',
+                'update',
+                'destroy'
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Trainees
+        |--------------------------------------------------------------------------
+        | Admin اجازه حذف ندارد
+        */
+
         Route::resource('trainees', AdminTraineeController::class)
-            ->except(['destroy']);
+            ->except([
+                'destroy'
+            ]);
     });
 
-
 /*
 |--------------------------------------------------------------------------
-| OTP Login (Admin + User)
-|--------------------------------------------------------------------------
-*/
-
-// ارسال OTP
-Route::post('/send-otp', [OtpLoginController::class, 'sendOtp']);
-
-// تایید OTP
-Route::post('/verify-otp', [OtpLoginController::class, 'verifyOtp']);
-
-
-/*
-|--------------------------------------------------------------------------
-| User Dashboard
+| User / Trainee Dashboard
 |--------------------------------------------------------------------------
 */
 
 Route::get('/dashboard', [UserDashboardController::class, 'index'])
-    ->middleware('auth')
+    ->middleware(\App\Http\Middleware\TraineeOrUserAuth::class)
     ->name('user.dashboard');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -141,5 +168,5 @@ Route::get('/dashboard', [UserDashboardController::class, 'index'])
 */
 
 Route::get('/test-route', function () {
-    return "Route is working!";
+    return 'Route is working!';
 });
