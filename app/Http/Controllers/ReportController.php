@@ -28,7 +28,9 @@ class ReportController extends Controller
         $data = $this->reportService->getFinancialReport($filters);
         
         // تعیین پیشوند روت جاری برای حفظ ساختار Layout مربوط به پنل ادمین یا سوپرادمین
-        $layout = request()->is('superadmin*') ? 'layouts.superadmin' : 'layouts.admin';
+       // تغییر نام لایوت‌ها بر اساس ساختار پوشه‌های شما
+$layout = request()->is('superadmin*') ? 'superadmin.layouts.main' : 'admin.layouts.main';
+
         $routePrefix = request()->is('superadmin*') ? 'superadmin' : 'admin';
 
         return view('reports.financial', array_merge($data, [

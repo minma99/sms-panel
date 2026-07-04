@@ -17,9 +17,6 @@ return new class extends Migration {
             $table->time('start_time')->nullable();       // ساعت شروع
             $table->time('end_time')->nullable();         // ساعت پایان
 
-            $table->string('exam_type', 50)->default('dakheli');
-            // fanni-herfei | dakheli | miandore | payan_dore (یا هرچی خواستی)
-
             $table->string('location')->nullable();       // محل برگزاری
             $table->string('status', 50)->nullable();     // نتیجه/وضعیت: passed/failed/absent/pending/...
 

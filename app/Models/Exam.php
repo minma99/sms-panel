@@ -12,7 +12,6 @@ class Exam extends Model
         'exam_date',
         'start_time',
         'end_time',
-        'exam_type',
         'location',
         'status',
         'note',

@@ -25,6 +25,34 @@
         </div>
 
         <div class="card-body">
+            <form method="GET" action="{{ route('superadmin.trainees.index') }}" class="row g-2 align-items-center mb-3">
+    <div class="col-12 col-md-6 col-lg-4">
+        <input
+            type="text"
+            name="q"
+            value="{{ request('q') }}"
+            class="form-control"
+            placeholder="جستجو: نام، نام خانوادگی، کد ملی یا موبایل...">
+    </div>
+
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">
+            جستجو
+        </button>
+        <a href="{{ route('superadmin.trainees.index') }}" class="btn btn-outline-secondary">
+            پاک کردن
+        </a>
+    </div>
+
+    @if(request('q'))
+        <div class="col-12">
+            <small class="text-muted">
+                نتیجه جستجو برای: <strong>{{ request('q') }}</strong>
+            </small>
+        </div>
+    @endif
+</form>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle text-center mb-0">
                     <thead class="table-light">
