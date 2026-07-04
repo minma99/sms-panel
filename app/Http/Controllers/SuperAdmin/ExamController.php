@@ -13,11 +13,11 @@ class ExamController extends Controller
     {
         $query = Exam::with('trainee');
 
-        // فیلترها
         if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('trainee', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
                   ->orWhere('national_code', 'like', "%{$search}%");
             })->orWhere('exam_title', 'like', "%{$search}%");
         }
@@ -37,7 +37,6 @@ class ExamController extends Controller
         $selected_trainee = null;
         $prefilled_exam = null;
 
-        // اگر درخواست معرفی مجدد از یک آزمون قبلی باشد
         if ($request->has('retest_from')) {
             $prefilled_exam = Exam::findOrFail($request->retest_from);
             $selected_trainee = $prefilled_exam->trainee_id;
@@ -62,14 +61,23 @@ class ExamController extends Controller
             'note'        => 'nullable|string',
         ]);
 
-        Exam::create($validated);
+        $exam = Exam::create($validated);
+        $trainee = Trainee::findOrFail($validated['trainee_id']);
 
-        return redirect()->route('superadmin.exams.index')->with('success', 'آزمون جدید با موفقیت ثبت شد.');
+        $smsMessage = "کارآموز گرامی {$trainee->full_name}، شما برای آزمون «{$exam->exam_title}» در تاریخ {$exam->exam_date} معرفی/ثبت شدید.";
+
+        return redirect()
+            ->route('superadmin.trainees.show', $trainee->id)
+            ->with('success', 'آزمون جدید با موفقیت ثبت شد.')
+            ->with('show_sms_box', true)
+            ->with('sms_message', $smsMessage)
+            ->with('sms_context', 'exam_created');
     }
 
     public function edit(Exam $exam)
     {
         $trainees = Trainee::all();
+
         return view('superadmin.exams.edit', compact('exam', 'trainees'));
     }
 
@@ -88,13 +96,26 @@ class ExamController extends Controller
         ]);
 
         $exam->update($validated);
+        $trainee = Trainee::findOrFail($validated['trainee_id']);
 
-        return redirect()->route('superadmin.exams.index')->with('success', 'اطلاعات آزمون با موفقیت بروزرسانی شد.');
+        $smsMessage = "کارآموز گرامی {$trainee->full_name}، اطلاعات آزمون شما با موفقیت بروزرسانی شد. عنوان آزمون: {$exam->exam_title}.";
+
+        return redirect()
+            ->route('superadmin.trainees.show', $trainee->id)
+            ->with('success', 'اطلاعات آزمون با موفقیت بروزرسانی شد.')
+            ->with('show_sms_box', true)
+            ->with('sms_message', $smsMessage)
+            ->with('sms_context', 'exam_updated');
     }
 
     public function destroy(Exam $exam)
     {
+        $traineeId = $exam->trainee_id;
+
         $exam->delete();
-        return redirect()->route('superadmin.exams.index')->with('success', 'آزمون مورد نظر حذف شد.');
+
+        return redirect()
+            ->route('superadmin.trainees.show', $traineeId)
+            ->with('success', 'آزمون مورد نظر حذف شد.');
     }
 }

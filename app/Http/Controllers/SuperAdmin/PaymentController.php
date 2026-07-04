@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\SuperAdmin; // <-- این خط اصلاح شد
+namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\Controller; // <-- این خط اضافه شد
+use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Trainee;
 use Illuminate\Http\Request;
@@ -55,7 +55,7 @@ class PaymentController extends Controller
         $finalFee = $trainee->final_fee;
         $remainingAfterPayment = max(0, $finalFee - ($alreadyPaid + $request->amount));
 
-        Payment::create([
+        $payment = Payment::create([
             'trainee_id' => $request->trainee_id,
             'amount' => $request->amount,
             'remaining_after_payment' => $remainingAfterPayment,
@@ -67,9 +67,14 @@ class PaymentController extends Controller
             'note' => $request->note,
         ]);
 
+        $smsMessage = "کارآموز گرامی {$trainee->full_name}، مبلغ " . number_format($payment->amount) . " تومان بابت پرداخت شما ثبت شد.";
+
         return redirect()
-            ->route('superadmin.payments.index', ['trainee_id' => $request->trainee_id])
-            ->with('success', 'پرداخت با موفقیت ثبت شد.');
+            ->route('superadmin.trainees.show', $trainee->id)
+            ->with('success', 'پرداخت با موفقیت ثبت شد.')
+            ->with('show_sms_box', true)
+            ->with('sms_message', $smsMessage)
+            ->with('sms_context', 'payment_created');
     }
 
     public function show($id)
@@ -122,9 +127,14 @@ class PaymentController extends Controller
             'note' => $request->note,
         ]);
 
+        $smsMessage = "کارآموز گرامی {$trainee->full_name}، اطلاعات پرداخت شما با موفقیت بروزرسانی شد. مبلغ: " . number_format($request->amount) . " تومان.";
+
         return redirect()
-            ->route('superadmin.payments.index', ['trainee_id' => $request->trainee_id])
-            ->with('success', 'پرداخت با موفقیت ویرایش شد.');
+            ->route('superadmin.trainees.show', $trainee->id)
+            ->with('success', 'پرداخت با موفقیت ویرایش شد.')
+            ->with('show_sms_box', true)
+            ->with('sms_message', $smsMessage)
+            ->with('sms_context', 'payment_updated');
     }
 
     public function destroy($id)
@@ -135,7 +145,7 @@ class PaymentController extends Controller
         $payment->delete();
 
         return redirect()
-            ->route('superadmin.payments.index', ['trainee_id' => $traineeId])
+            ->route('superadmin.trainees.show', $traineeId)
             ->with('success', 'پرداخت با موفقیت حذف شد.');
     }
 }

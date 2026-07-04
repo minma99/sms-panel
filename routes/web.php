@@ -120,6 +120,13 @@ Route::prefix('superadmin')
 
         Route::post('/settings', [SmsSettingController::class, 'update'])
             ->name('settings.update');
+
+            Route::resource('trainees', TraineeController::class);
+
+            Route::post('/trainees/{trainee}/send-sms', 
+                [TraineeController::class, 'sendSms']
+            )->name('trainees.send-sms');
+
     });
 
 /*
