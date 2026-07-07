@@ -123,28 +123,29 @@
 
         .site-footer {
             background:
-                radial-gradient(circle at top left, rgba(46, 204, 113, 0.10), transparent 25%),
-                radial-gradient(circle at bottom right, rgba(244, 197, 66, 0.10), transparent 25%),
+                linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)),
                 var(--brand-navy);
             color: #cbd5e1;
             margin-top: 48px;
+            border-top: 1px solid rgba(255,255,255,0.06);
         }
 
         .footer-title {
             color: #fff;
             font-weight: 800;
             margin-bottom: 16px;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
 
         .footer-text {
             line-height: 2;
             color: #cbd5e1;
+            margin-bottom: 0;
         }
 
         .footer-link {
             color: #cbd5e1;
-            display: inline-block;
+            display: block;
             margin-bottom: 10px;
             transition: 0.25s ease;
         }
@@ -154,13 +155,30 @@
             transform: translateX(-2px);
         }
 
+        .footer-contact {
+            display: grid;
+            gap: 12px;
+        }
+
         .footer-contact-item {
-            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
             line-height: 1.9;
+            color: #cbd5e1;
+        }
+
+        .footer-contact-item i {
+            color: var(--brand-green);
+            margin-top: 4px;
+            width: 18px;
+            text-align: center;
+            flex: 0 0 18px;
         }
 
         .footer-contact-item strong {
             color: #fff;
+            margin-left: 6px;
         }
 
         .footer-bottom {
@@ -251,7 +269,7 @@
             <div class="row g-4">
                 <div class="col-lg-4">
                     <h5 class="footer-title">آموزشگاه تفکر نو</h5>
-                    <p class="footer-text mb-0">
+                    <p class="footer-text">
                         آموزشگاه تفکر نو با هدف آموزش مهارت‌های تخصصی، فناوری و مسیر رشد کارآموزان
                         ایجاد شده و تلاش می‌کند تجربه‌ای حرفه‌ای و مطمئن برای کاربران فراهم کند.
                     </p>
@@ -259,37 +277,58 @@
 
                 <div class="col-lg-3">
                     <h5 class="footer-title">دسترسی سریع</h5>
-                    <a href="{{ route('login') }}" class="footer-link d-block">Login</a>
-                    <a href="{{ route('about') }}" class="footer-link d-block">درباره ما</a>
-                    <a href="{{ route('contact') }}" class="footer-link d-block">تماس با ما</a>
+                    <a href="{{ route('login') }}" class="footer-link">ورود</a>
+                    <a href="{{ route('about') }}" class="footer-link">درباره ما</a>
+                    <a href="{{ route('contact') }}" class="footer-link">تماس با ما</a>
+                    <a href="{{ route('terms') }}" class="footer-link">قوانین و مقررات</a>
+                    <a href="{{ route('privacy') }}" class="footer-link">حریم خصوصی</a>
                 </div>
 
                 <div class="col-lg-5">
                     <h5 class="footer-title">اطلاعات تماس</h5>
 
-                    <div class="footer-contact-item">
-                        <strong>آدرس:</strong>
-                        [آدرس کامل آموزشگاه را اینجا وارد کنید]
-                    </div>
+                    <div class="footer-contact">
+                        <div class="footer-contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>آدرس:</strong>
+                                خیابان یک‌شه‌وه، کوچه لاچین 3
+                            </div>
+                        </div>
 
-                    <div class="footer-contact-item">
-                        <strong>تلفن ثابت:</strong>
-                        [021-xxxxxxx]
-                    </div>
+                        <div class="footer-contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <strong>تلفن ثابت:</strong>
+                                04446284124
+                            </div>
+                        </div>
 
-                    <div class="footer-contact-item">
-                        <strong>موبایل:</strong>
-                        [09xxxxxxxxx]
-                    </div>
+                        <div class="footer-contact-item">
+                            <i class="fas fa-mobile-screen-button"></i>
+                            <div>
+                                <strong>موبایل:</strong>
+                                09109915180
+                            </div>
+                        </div>
 
-                    <div class="footer-contact-item">
-                        <strong>ایمیل:</strong>
-                        [info@example.com]
-                    </div>
+                        <div class="footer-contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>ایمیل:</strong>
+                                <a href="mailto:mina.mamrasouli1999@gmail.com" class="footer-link d-inline">
+                                    mina.mamrasouli1999@gmail.com
+                                </a>
+                            </div>
+                        </div>
 
-                    <div class="footer-contact-item">
-                        <strong>ساعات پاسخگویی:</strong>
-                        شنبه تا پنجشنبه، 9 صبح تا 6 عصر
+                        <div class="footer-contact-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <strong>ساعات پاسخگویی:</strong>
+                                شنبه تا پنجشنبه، 9 صبح تا 6 عصر
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
