@@ -1,80 +1,53 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
+@extends('user.layouts.main')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>داشبورد کارآموز</title>
+@section('title', 'داشبورد کارآموز')
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+@push('styles')
+<style>
+    body {
+        background: #f4f7f6;
+        font-family: Tahoma, sans-serif;
+    }
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
 
-    <style>
-        body {
-            background: #f4f7f6;
-            font-family: Tahoma, sans-serif;
-        }
+    .card-header {
+        background: #2c3e50;
+        color: #fff;
+        border-radius: 15px 15px 0 0 !important;
+        font-weight: bold;
+        padding: 15px;
+    }
 
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
+    .info-label {
+        color: #7f8c8d;
+        font-size: 0.85rem;
+    }
 
-        .card-header {
-            background: #2c3e50;
-            color: #fff;
-            border-radius: 15px 15px 0 0 !important;
-            font-weight: bold;
-            padding: 15px;
-        }
+    .info-value {
+        font-weight: 700;
+        color: #2c3e50;
+    }
 
-        .info-label {
-            color: #7f8c8d;
-            font-size: 0.85rem;
-        }
+    .profile-image {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+    }
 
-        .info-value {
-            font-weight: 700;
-            color: #2c3e50;
-        }
+    .section-title {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 0;
+    }
+</style>
+@endpush
 
-        .profile-image {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-        }
-
-        .section-title {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 0;
-        }
-    </style>
-</head>
-
-<body>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <i class="fas fa-user-graduate"></i>
-            پنل کاربری
-        </a>
-
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button class="btn btn-outline-danger btn-sm" type="submit">
-                <i class="fas fa-sign-out-alt"></i>
-                خروج
-            </button>
-        </form>
-    </div>
-</nav>
-
+@section('content')
 <div class="container py-5">
 
     @if(!$trainee)
@@ -85,7 +58,6 @@
 
         <div class="row g-4">
 
-            <!-- پروفایل -->
             <div class="col-lg-4">
                 <div class="card text-center p-4">
 
@@ -124,15 +96,37 @@
                             <span class="info-label">کد ملی:</span>
                             <div class="info-value">{{ $trainee->national_code ?? '-' }}</div>
                         </div>
-                    </div>
 
+                        <div class="mb-2">
+                            <span class="info-label">تاریخ تولد:</span>
+                            <div class="info-value">
+                                {{ $trainee->birth_date_shamsi ?? $trainee->birth_date ?? '-' }}
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <span class="info-label">فایل پرونده:</span>
+                            <div class="info-value">
+                                @if(!empty($trainee->file))
+                                    <div class="mb-2 text-muted" style="font-size: 13px;">
+                                        {{ basename($trainee->file) }}
+                                    </div>
+
+                                    <a href="{{ route('user.dashboard.file.download') }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-download"></i>
+                                        دانلود فایل
+                                    </a>
+                                @else
+                                    <span class="text-muted">فایلی ثبت نشده است</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- اطلاعات اصلی -->
             <div class="col-lg-8">
 
-                <!-- وضعیت مالی -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <i class="fas fa-wallet"></i>
@@ -174,7 +168,6 @@
                     </div>
                 </div>
 
-                <!-- لیست پرداخت‌ها -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <i class="fas fa-receipt"></i>
@@ -219,7 +212,6 @@
                     </div>
                 </div>
 
-                <!-- سوابق آزمون‌ها -->
                 <div class="card">
                     <div class="card-header">
                         <i class="fas fa-file-alt"></i>
@@ -310,8 +302,4 @@
     @endif
 
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+@endsection

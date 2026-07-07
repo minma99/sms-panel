@@ -15,8 +15,8 @@ use App\Http\Controllers\SuperAdmin\TraineeController;
 use App\Http\Controllers\SuperAdmin\UserController;
 use App\Http\Controllers\SuperAdmin\ExamController;
 
-// اصلاح شد: آدرس‌دهی مستقیم به کنترلر گزارشات مشترک در پوشه اصلی
-use App\Http\Controllers\ReportController; 
+// کنترلر گزارشات
+use App\Http\Controllers\ReportController;
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
@@ -36,8 +36,12 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 |--------------------------------------------------------------------------
 */
 
+
 Route::get('/', [OtpLoginController::class, 'showLogin'])
     ->name('login');
+
+Route::view('/about', 'about')->name('about');
+Route::view('/contact', 'contact')->name('contact');
 
 /*
 |--------------------------------------------------------------------------
@@ -121,12 +125,8 @@ Route::prefix('superadmin')
         Route::post('/settings', [SmsSettingController::class, 'update'])
             ->name('settings.update');
 
-            Route::resource('trainees', TraineeController::class);
-
-            Route::post('/trainees/{trainee}/send-sms', 
-                [TraineeController::class, 'sendSms']
-            )->name('trainees.send-sms');
-
+        Route::post('/trainees/{trainee}/send-sms', [TraineeController::class, 'sendSms'])
+            ->name('trainees.send-sms');
     });
 
 /*
@@ -201,9 +201,13 @@ Route::prefix('admin')
 |--------------------------------------------------------------------------
 */
 
-Route::get('/dashboard', [UserDashboardController::class, 'index'])
-    ->middleware(\App\Http\Middleware\TraineeOrUserAuth::class)
-    ->name('user.dashboard');
+Route::middleware(\App\Http\Middleware\TraineeOrUserAuth::class)->group(function () {
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])
+        ->name('user.dashboard');
+
+    Route::get('/dashboard/download-file', [UserDashboardController::class, 'downloadFile'])
+        ->name('user.dashboard.file.download');
+});
 
 /*
 |--------------------------------------------------------------------------
