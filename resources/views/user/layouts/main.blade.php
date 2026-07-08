@@ -280,8 +280,6 @@
                     <a href="{{ route('login') }}" class="footer-link">ورود</a>
                     <a href="{{ route('about') }}" class="footer-link">درباره ما</a>
                     <a href="{{ route('contact') }}" class="footer-link">تماس با ما</a>
-                    <a href="{{ route('terms') }}" class="footer-link">قوانین و مقررات</a>
-                    <a href="{{ route('privacy') }}" class="footer-link">حریم خصوصی</a>
                 </div>
 
                 <div class="col-lg-5">
