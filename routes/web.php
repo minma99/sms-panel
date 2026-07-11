@@ -30,6 +30,18 @@ use App\Http\Controllers\Auth\OtpLoginController;
 
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/clear', function () {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('optimize:clear');
+
+    return 'All caches cleared!';
+});
+
+
 /*
 |--------------------------------------------------------------------------
 | Welcome / Login

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'پنل سوپر ادمین')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         body {
@@ -125,12 +127,12 @@
             }
         }
     </style>
+
+    @stack('styles')
 </head>
 
 <body>
 @php
-    $user = auth()->user();
-
     $dashboardRoute = 'superadmin.dashboard';
 
     $coursesOpen = request()->routeIs('superadmin.courses.*');
@@ -139,7 +141,6 @@
     $paymentsOpen = request()->routeIs('superadmin.payments.*');
     $examsOpen = request()->routeIs('superadmin.exams.*');
     $reportsOpen = request()->routeIs('superadmin.reports.*');
-    $superAdminOpen = request()->routeIs('superadmin.settings');
 @endphp
 
 <!-- MOBILE MENU -->
@@ -200,7 +201,6 @@
             <a href="{{ route('superadmin.exams.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.exams.create') ? 'active' : '' }}">ثبت آزمون</a>
         </div>
 
-        <!-- اضافه شدن بخش گزارش مالی در موبایل -->
         <a href="{{ route('superadmin.reports.financial') }}" class="sidebar-link {{ $reportsOpen ? 'active' : '' }}">
             <span>گزارش مالی</span>
         </a>
@@ -277,7 +277,6 @@
         <a href="{{ route('superadmin.exams.create') }}" class="sidebar-sublink {{ request()->routeIs('superadmin.exams.create') ? 'active' : '' }}">ثبت آزمون</a>
     </div>
 
-    <!-- اضافه شدن بخش گزارش مالی در دسکتاپ -->
     <a href="{{ route('superadmin.reports.financial') }}" class="sidebar-link {{ $reportsOpen ? 'active' : '' }}">
         <span>گزارش مالی</span>
     </a>
@@ -323,6 +322,16 @@
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         @yield('content')
     </main>
 
@@ -336,5 +345,6 @@
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+@stack('scripts')
 </body>
 </html>

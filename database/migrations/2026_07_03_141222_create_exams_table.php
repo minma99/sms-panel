@@ -26,7 +26,7 @@ return new class extends Migration {
 
             // ایندکس‌های مفید برای گزارش/فیلتر
             $table->index(['trainee_id', 'exam_date']);
-            $table->index(['exam_type', 'status']);
+            $table->index(['status']);
         });
     }
 
