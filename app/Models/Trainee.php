@@ -3,101 +3,36 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Trainee extends Model
+class Trainee extends Authenticatable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Notifiable;
 
     protected $fillable = [
-        'course_id',
-        'first_name',
-        'last_name',
-        'father_name',
-        'national_code',
+        'user_id',
+        'full_name',
         'phone',
-        'birth_date',
-        'registration_status',
-        'exam_status',
-        'certificate_status',
-        'total_fee',
-        'discount_percent',
-        'exam_fee',
-        'exam_date',
-        'exam_date_shamsi',
-        'image',
-        'file',
-        'note',
+        'otp_code',
+        'otp_expires_at',
+        'otp_verified_at',
+        // هر فیلد دیگری که داری
+    ];
+
+    protected $hidden = [
+        'otp_code',
+        'remember_token',
     ];
 
     protected $casts = [
-        'birth_date' => 'date',
-        'exam_date' => 'date',
-        'total_fee' => 'integer',
-        'discount_percent' => 'integer',
-        'exam_fee' => 'integer',
+        'otp_expires_at' => 'datetime',
+        'otp_verified_at' => 'datetime',
     ];
 
-    protected $appends = [
-        'full_name',
-        'discount_amount',
-        'final_fee',
-        'paid_amount',
-        'remaining_amount',
-    ];
-
-    public function course(): BelongsTo
-    {
-        return $this->belongsTo(Course::class);
-    }
-
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class);
-    }
-
-    public function user(): HasOne
+    public function user()
     {
         return $this->hasOne(User::class);
     }
-
-    public function getFullNameAttribute(): string
-    {
-        return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
-    }
-
-    public function getDiscountAmountAttribute(): int
-    {
-        return (int)(($this->total_fee * $this->discount_percent) / 100);
-    }
-
-    public function getFinalFeeAttribute(): int
-    {
-        return (int)($this->total_fee - $this->discount_amount);
-    }
-
-    public function getPaidAmountAttribute(): int
-    {
-        return (int)$this->payments()->sum('amount');
-    }
-
-    public function getRemainingAmountAttribute(): int
-    {
-        return max(0, (int)($this->final_fee - $this->paid_amount));
-    }
-
-    public function exams()
-{
-    return $this->hasMany(\App\Models\Exam::class);
-}
-public function latestExam()
-{
-    return $this->hasOne(\App\Models\Exam::class)->latestOfMany('exam_date');
-}
-
-
 }
